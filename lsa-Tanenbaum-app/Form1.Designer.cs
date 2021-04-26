@@ -29,16 +29,16 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.connectToTargetBtn = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.textProcessIp = new System.Windows.Forms.TextBox();
             this.textProcessPort = new System.Windows.Forms.TextBox();
-            this.textSourceIp = new System.Windows.Forms.TextBox();
+            this.textProcessIp = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.textSourcePort = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.textSourceIp = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.connectToTargetBtn = new System.Windows.Forms.Button();
             this.listMessage = new System.Windows.Forms.ListBox();
             this.textMessage = new System.Windows.Forms.TextBox();
             this.sendMessageBtn = new System.Windows.Forms.Button();
@@ -59,6 +59,38 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Process";
             // 
+            // textProcessPort
+            // 
+            this.textProcessPort.Location = new System.Drawing.Point(119, 87);
+            this.textProcessPort.Name = "textProcessPort";
+            this.textProcessPort.Size = new System.Drawing.Size(130, 22);
+            this.textProcessPort.TabIndex = 3;
+            // 
+            // textProcessIp
+            // 
+            this.textProcessIp.Location = new System.Drawing.Point(119, 37);
+            this.textProcessIp.Name = "textProcessIp";
+            this.textProcessIp.Size = new System.Drawing.Size(130, 22);
+            this.textProcessIp.TabIndex = 3;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(24, 87);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(89, 17);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "Process Port";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(24, 37);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(75, 17);
+            this.label1.TabIndex = 3;
+            this.label1.Text = "Process IP";
+            // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.textSourcePort);
@@ -72,41 +104,12 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Target";
             // 
-            // connectToTargetBtn
+            // textSourcePort
             // 
-            this.connectToTargetBtn.Location = new System.Drawing.Point(713, 12);
-            this.connectToTargetBtn.Name = "connectToTargetBtn";
-            this.connectToTargetBtn.Size = new System.Drawing.Size(127, 54);
-            this.connectToTargetBtn.TabIndex = 2;
-            this.connectToTargetBtn.Text = "Connect";
-            this.connectToTargetBtn.UseVisualStyleBackColor = true;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(24, 37);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(75, 17);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "Process IP";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(24, 87);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(89, 17);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "Process Port";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(24, 37);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(66, 17);
-            this.label3.TabIndex = 3;
-            this.label3.Text = "Target IP";
+            this.textSourcePort.Location = new System.Drawing.Point(137, 87);
+            this.textSourcePort.Name = "textSourcePort";
+            this.textSourcePort.Size = new System.Drawing.Size(100, 22);
+            this.textSourcePort.TabIndex = 4;
             // 
             // label4
             // 
@@ -117,20 +120,6 @@
             this.label4.TabIndex = 4;
             this.label4.Text = "Target Port";
             // 
-            // textProcessIp
-            // 
-            this.textProcessIp.Location = new System.Drawing.Point(119, 37);
-            this.textProcessIp.Name = "textProcessIp";
-            this.textProcessIp.Size = new System.Drawing.Size(130, 22);
-            this.textProcessIp.TabIndex = 3;
-            // 
-            // textProcessPort
-            // 
-            this.textProcessPort.Location = new System.Drawing.Point(119, 87);
-            this.textProcessPort.Name = "textProcessPort";
-            this.textProcessPort.Size = new System.Drawing.Size(130, 22);
-            this.textProcessPort.TabIndex = 3;
-            // 
             // textSourceIp
             // 
             this.textSourceIp.Location = new System.Drawing.Point(137, 37);
@@ -138,12 +127,24 @@
             this.textSourceIp.Size = new System.Drawing.Size(100, 22);
             this.textSourceIp.TabIndex = 3;
             // 
-            // textSourcePort
+            // label3
             // 
-            this.textSourcePort.Location = new System.Drawing.Point(137, 87);
-            this.textSourcePort.Name = "textSourcePort";
-            this.textSourcePort.Size = new System.Drawing.Size(100, 22);
-            this.textSourcePort.TabIndex = 4;
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(24, 37);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(66, 17);
+            this.label3.TabIndex = 3;
+            this.label3.Text = "Target IP";
+            // 
+            // connectToTargetBtn
+            // 
+            this.connectToTargetBtn.Location = new System.Drawing.Point(713, 12);
+            this.connectToTargetBtn.Name = "connectToTargetBtn";
+            this.connectToTargetBtn.Size = new System.Drawing.Size(127, 54);
+            this.connectToTargetBtn.TabIndex = 2;
+            this.connectToTargetBtn.Text = "Connect";
+            this.connectToTargetBtn.UseVisualStyleBackColor = true;
+            this.connectToTargetBtn.Click += new System.EventHandler(this.connectToTargetBtn_Click);
             // 
             // listMessage
             // 
@@ -169,6 +170,7 @@
             this.sendMessageBtn.TabIndex = 5;
             this.sendMessageBtn.Text = "msg";
             this.sendMessageBtn.UseVisualStyleBackColor = true;
+            this.sendMessageBtn.Click += new System.EventHandler(this.sendMessageBtn_Click);
             // 
             // Form1
             // 
