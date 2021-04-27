@@ -3,15 +3,16 @@ using System.Windows.Forms;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using lsa_Tanenbaum_app.Properties;
 
 namespace lsa_Tanenbaum_app
 {
     public partial class Form1 : Form
     {
         Socket sck;
+        IAsyncResult sckResult;
         EndPoint epProcess, epTarget;
         byte[] buffer;  // for sending messages
-
 
         public Form1()
         {
@@ -20,9 +21,8 @@ namespace lsa_Tanenbaum_app
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            // setup socket
-            sck = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-            sck.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+            //
+            disconnectFromTargetBtn.Enabled = false;
 
             // get user IP
             textProcessIp.Text = GetLocalAddress();
@@ -34,10 +34,14 @@ namespace lsa_Tanenbaum_app
 
         private void connectToTargetBtn_Click(object sender, EventArgs e)
         {
+            // Setup socket
+            sck = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            sck.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+
             // binding Socket
             epProcess = new IPEndPoint(IPAddress.Parse(textProcessIp.Text), 
                 Convert.ToInt32(textProcessPort.Text));
-
+            
             sck.Bind(epProcess);
 
             // connecting to remote IP (target)
@@ -48,8 +52,26 @@ namespace lsa_Tanenbaum_app
 
             // listening to specific port
             buffer = new byte[1500];
-            sck.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref epTarget, new AsyncCallback(MessageCallBack), buffer);
+            sckResult = sck.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref epTarget, new AsyncCallback(MessageCallBack), buffer);
+
+            if (sck.Connected)
+            {
+                pictureBoxConnectionStatus.Image = Resources.status_connected;
+                labelConnectionStatus.Text = "Connected";
+                SwapEnabledForConnectAndDisconnectBtns();
+            }       
         }
+
+        private void disconnectFromTargetBtn_Click(object sender, EventArgs e)
+        {
+            // sck.EndReceive(sckResult);
+            sck.Close();
+            listMessage.Items.Add("Socket is connected? " + sck.Connected);
+            pictureBoxConnectionStatus.Image = Resources.status_notconnected;
+            labelConnectionStatus.Text = "Not Connected";
+            SwapEnabledForConnectAndDisconnectBtns();
+        }
+
 
         private void sendMessageBtn_Click(object sender, EventArgs e)
         {
@@ -83,26 +105,35 @@ namespace lsa_Tanenbaum_app
 
         private void MessageCallBack(IAsyncResult result)
         {
-            try
+            if (sck.Connected)
             {
-                byte[] receivedData = new byte[1500];
-                receivedData = (byte[]) result.AsyncState;
+                try
+                {
+                    byte[] receivedData = new byte[1500];
+                    receivedData = (byte[])result.AsyncState;
 
-                // Convert byte[] to string
-                ASCIIEncoding encoding = new ASCIIEncoding();
-                string receivedMessage = encoding.GetString(receivedData);
+                    // Convert byte[] to string
+                    ASCIIEncoding encoding = new ASCIIEncoding();
+                    string receivedMessage = encoding.GetString(receivedData);
 
-                // Add message to the console
-                Invoke((Func<string, int>) listMessage.Items.Add, "Friend: " + receivedMessage);
+                    // Add message to the console
+                    Invoke((Func<string, int>)listMessage.Items.Add, "Friend: " + receivedMessage);
 
-                // callback again
-                buffer = new byte[1500];
-                sck.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref epTarget, new AsyncCallback(MessageCallBack), buffer);
+                    // callback again
+                    buffer = new byte[1500];
+                    sck.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref epTarget, new AsyncCallback(MessageCallBack), buffer);
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.ToString());
+                }
             }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.ToString());
-            }
+        }
+
+        private void SwapEnabledForConnectAndDisconnectBtns()
+        {
+            connectToTargetBtn.Enabled = !connectToTargetBtn.Enabled;
+            disconnectFromTargetBtn.Enabled = !disconnectFromTargetBtn.Enabled;
         }
     }
 }
