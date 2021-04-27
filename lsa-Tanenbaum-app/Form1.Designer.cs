@@ -29,14 +29,16 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.textProcessName = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
             this.textProcessPort = new System.Windows.Forms.TextBox();
             this.textProcessIp = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.textSourcePort = new System.Windows.Forms.TextBox();
+            this.textTargetPort = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.textSourceIp = new System.Windows.Forms.TextBox();
+            this.textTargetIp = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.connectToTargetBtn = new System.Windows.Forms.Button();
             this.listMessage = new System.Windows.Forms.ListBox();
@@ -45,10 +47,10 @@
             this.disconnectFromTargetBtn = new System.Windows.Forms.Button();
             this.pictureBoxConnectionStatus = new System.Windows.Forms.PictureBox();
             this.labelConnectionStatus = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.textProcessName = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxConnectionStatus)).BeginInit();
@@ -68,6 +70,23 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Process";
+            // 
+            // textProcessName
+            // 
+            this.textProcessName.Location = new System.Drawing.Point(30, 47);
+            this.textProcessName.MaxLength = 25;
+            this.textProcessName.Name = "textProcessName";
+            this.textProcessName.Size = new System.Drawing.Size(158, 22);
+            this.textProcessName.TabIndex = 5;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(27, 27);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(45, 17);
+            this.label7.TabIndex = 4;
+            this.label7.Text = "Name";
             // 
             // textProcessPort
             // 
@@ -105,9 +124,9 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.textSourcePort);
+            this.groupBox2.Controls.Add(this.textTargetPort);
             this.groupBox2.Controls.Add(this.label4);
-            this.groupBox2.Controls.Add(this.textSourceIp);
+            this.groupBox2.Controls.Add(this.textTargetIp);
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Location = new System.Drawing.Point(12, 325);
             this.groupBox2.Name = "groupBox2";
@@ -116,13 +135,13 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Target Process";
             // 
-            // textSourcePort
+            // textTargetPort
             // 
-            this.textSourcePort.Location = new System.Drawing.Point(30, 112);
-            this.textSourcePort.MaxLength = 25;
-            this.textSourcePort.Name = "textSourcePort";
-            this.textSourcePort.Size = new System.Drawing.Size(158, 22);
-            this.textSourcePort.TabIndex = 4;
+            this.textTargetPort.Location = new System.Drawing.Point(30, 112);
+            this.textTargetPort.MaxLength = 25;
+            this.textTargetPort.Name = "textTargetPort";
+            this.textTargetPort.Size = new System.Drawing.Size(158, 22);
+            this.textTargetPort.TabIndex = 4;
             // 
             // label4
             // 
@@ -133,13 +152,13 @@
             this.label4.TabIndex = 4;
             this.label4.Text = "Port";
             // 
-            // textSourceIp
+            // textTargetIp
             // 
-            this.textSourceIp.Location = new System.Drawing.Point(30, 57);
-            this.textSourceIp.MaxLength = 25;
-            this.textSourceIp.Name = "textSourceIp";
-            this.textSourceIp.Size = new System.Drawing.Size(158, 22);
-            this.textSourceIp.TabIndex = 3;
+            this.textTargetIp.Location = new System.Drawing.Point(30, 57);
+            this.textTargetIp.MaxLength = 25;
+            this.textTargetIp.Name = "textTargetIp";
+            this.textTargetIp.Size = new System.Drawing.Size(158, 22);
+            this.textTargetIp.TabIndex = 3;
             // 
             // label3
             // 
@@ -165,9 +184,9 @@
             // 
             this.listMessage.FormattingEnabled = true;
             this.listMessage.ItemHeight = 16;
-            this.listMessage.Location = new System.Drawing.Point(761, 64);
+            this.listMessage.Location = new System.Drawing.Point(808, 64);
             this.listMessage.Name = "listMessage";
-            this.listMessage.Size = new System.Drawing.Size(414, 340);
+            this.listMessage.Size = new System.Drawing.Size(367, 340);
             this.listMessage.TabIndex = 3;
             // 
             // textMessage
@@ -216,15 +235,6 @@
             this.labelConnectionStatus.TabIndex = 8;
             this.labelConnectionStatus.Text = "Not Connected";
             // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(758, 44);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(32, 17);
-            this.label5.TabIndex = 9;
-            this.label5.Text = "Log";
-            // 
             // label6
             // 
             this.label6.AutoSize = true;
@@ -236,30 +246,45 @@
             this.label6.Text = "Configuration";
             this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // label7
+            // label8
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(27, 27);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(45, 17);
-            this.label7.TabIndex = 4;
-            this.label7.Text = "Name";
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("MV Boli", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.Location = new System.Drawing.Point(381, 20);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(221, 31);
+            this.label8.TabIndex = 11;
+            this.label8.Text = "Parameters Setup";
+            this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // textProcessName
+            // label9
             // 
-            this.textProcessName.Location = new System.Drawing.Point(30, 47);
-            this.textProcessName.MaxLength = 25;
-            this.textProcessName.Name = "textProcessName";
-            this.textProcessName.Size = new System.Drawing.Size(158, 22);
-            this.textProcessName.TabIndex = 5;
+            this.label9.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label9.Location = new System.Drawing.Point(277, 58);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(5, 500);
+            this.label9.TabIndex = 12;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("MV Boli", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.Location = new System.Drawing.Point(875, 9);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(52, 31);
+            this.label10.TabIndex = 13;
+            this.label10.Text = "Log";
+            this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1204, 600);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.label8);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.label5);
             this.Controls.Add(this.labelConnectionStatus);
             this.Controls.Add(this.pictureBoxConnectionStatus);
             this.Controls.Add(this.disconnectFromTargetBtn);
@@ -295,18 +320,20 @@
         private System.Windows.Forms.Button connectToTargetBtn;
         private System.Windows.Forms.TextBox textProcessPort;
         private System.Windows.Forms.TextBox textProcessIp;
-        private System.Windows.Forms.TextBox textSourcePort;
-        private System.Windows.Forms.TextBox textSourceIp;
+        private System.Windows.Forms.TextBox textTargetPort;
+        private System.Windows.Forms.TextBox textTargetIp;
         private System.Windows.Forms.ListBox listMessage;
         private System.Windows.Forms.TextBox textMessage;
         private System.Windows.Forms.Button sendMessageBtn;
         private System.Windows.Forms.Button disconnectFromTargetBtn;
         private System.Windows.Forms.PictureBox pictureBoxConnectionStatus;
         private System.Windows.Forms.Label labelConnectionStatus;
-        private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox textProcessName;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label10;
     }
 }
 

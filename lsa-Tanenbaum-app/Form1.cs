@@ -28,12 +28,15 @@ namespace lsa_Tanenbaum_app
             randomizer = new Random();
             RandomizeProcessIdentity();
 
+            listOfAllProcesses = new List<string>();
+            listOfProcessesPriorities = new List<int>();
+
             //
             disconnectFromTargetBtn.Enabled = false;
 
             // get user IP
             textProcessIp.Text = GetLocalAddress();
-            textSourceIp.Text = GetLocalAddress();
+            textTargetIp.Text = GetLocalAddress();
 
 
 
@@ -52,8 +55,8 @@ namespace lsa_Tanenbaum_app
             sck.Bind(epProcess);
 
             // connecting to remote IP (target)
-            epTarget = new IPEndPoint(IPAddress.Parse(textSourceIp.Text), 
-                Convert.ToInt32(textSourcePort.Text));
+            epTarget = new IPEndPoint(IPAddress.Parse(textTargetIp.Text), 
+                Convert.ToInt32(textTargetPort.Text));
 
             sck.Connect(epTarget);
 
@@ -63,9 +66,10 @@ namespace lsa_Tanenbaum_app
 
             if (sck.Connected)
             {
+                listOfAllProcesses.Add(textProcessName.Text);
                 pictureBoxConnectionStatus.Image = Resources.status_connected;
                 labelConnectionStatus.Text = "Connected";
-                SwapEnabledForConnectAndDisconnectBtns();
+                SwapEnabledForConnectAndDisconnectBtns();            
             }       
         }
 
