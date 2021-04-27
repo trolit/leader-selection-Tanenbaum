@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using lsa_Tanenbaum_app.Properties;
+using System.Collections.Generic;
 
 namespace lsa_Tanenbaum_app
 {
@@ -13,6 +14,9 @@ namespace lsa_Tanenbaum_app
         IAsyncResult sckResult;
         EndPoint epProcess, epTarget;
         byte[] buffer;  // for sending messages
+        List<string> listOfAllProcesses;
+        List<int> listOfProcessesPriorities;
+        Random randomizer;
 
         public Form1()
         {
@@ -21,6 +25,9 @@ namespace lsa_Tanenbaum_app
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            randomizer = new Random();
+            RandomizeProcessIdentity();
+
             //
             disconnectFromTargetBtn.Enabled = false;
 
@@ -134,6 +141,11 @@ namespace lsa_Tanenbaum_app
         {
             connectToTargetBtn.Enabled = !connectToTargetBtn.Enabled;
             disconnectFromTargetBtn.Enabled = !disconnectFromTargetBtn.Enabled;
+        }
+
+        private void RandomizeProcessIdentity()
+        {
+            textProcessName.Text = "P-" + randomizer.Next(1000, 9999);
         }
     }
 }
