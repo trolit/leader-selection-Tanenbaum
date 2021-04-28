@@ -5,6 +5,8 @@ using System.Net.Sockets;
 using System.Text;
 using lsa_Tanenbaum_app.Properties;
 using System.Collections.Generic;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 namespace lsa_Tanenbaum_app
 {
@@ -17,6 +19,7 @@ namespace lsa_Tanenbaum_app
         List<string> listOfAllProcesses;
         List<int> listOfProcessesPriorities;
         Random randomizer;
+        string processesTmpContainer;
 
         public Form1()
         {
@@ -30,6 +33,7 @@ namespace lsa_Tanenbaum_app
 
             listOfAllProcesses = new List<string>();
             listOfProcessesPriorities = new List<int>();
+            processesTmpContainer = "CONF:";
 
             //
             disconnectFromTargetBtn.Enabled = false;
@@ -51,18 +55,22 @@ namespace lsa_Tanenbaum_app
             // binding Socket
             epProcess = new IPEndPoint(IPAddress.Parse(textProcessIp.Text), 
                 Convert.ToInt32(textProcessPort.Text));
-            
             sck.Bind(epProcess);
 
             // connecting to remote IP (target)
             epTarget = new IPEndPoint(IPAddress.Parse(textTargetIp.Text), 
                 Convert.ToInt32(textTargetPort.Text));
 
+            
+            Invoke((Func<string, int>)listMessage.Items.Add, $"Configured");
             sck.Connect(epTarget);
+
+            ASCIIEncoding encoding = new ASCIIEncoding();
 
             // listening to specific port
             buffer = new byte[1500];
             sckResult = sck.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref epTarget, new AsyncCallback(MessageCallBack), buffer);
+            sck2.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref epProcess, new AsyncCallback(MessageCallBack), buffer);
 
             if (sck.Connected)
             {
@@ -126,13 +134,17 @@ namespace lsa_Tanenbaum_app
                     // Convert byte[] to string
                     ASCIIEncoding encoding = new ASCIIEncoding();
                     string receivedMessage = encoding.GetString(receivedData);
+                    if (receivedMessage.Contains("CONF:"))
+                    {
+                        processesTmpContainer = "CONF:";
 
-                    // Add message to the console
-                    Invoke((Func<string, int>)listMessage.Items.Add, "Friend: " + receivedMessage);
-
-                    // callback again
-                    buffer = new byte[1500];
-                    sck.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref epTarget, new AsyncCallback(MessageCallBack), buffer);
+                        // Add message to the console
+                        Invoke((Func<string, int>)listMessage.Items.Add, $"{textProcessName.Text}: Received msg: {receivedMessage}");
+                        
+                        // callback again
+                        buffer = new byte[1500];
+                        sck.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref epTarget, new AsyncCallback(MessageCallBack), buffer);
+                    }
                 }
                 catch (Exception e)
                 {
@@ -145,6 +157,39 @@ namespace lsa_Tanenbaum_app
         {
             connectToTargetBtn.Enabled = !connectToTargetBtn.Enabled;
             disconnectFromTargetBtn.Enabled = !disconnectFromTargetBtn.Enabled;
+        }
+
+        private void obtainRingBtn_Click(object sender, EventArgs e)
+        {
+            if (!processesTmpContainer.Contains(textProcessName.Text))
+            {
+                PerformConfigurationRequest();
+            }
+        }
+
+        private void PerformConfigurationRequest()
+        {
+            // Convert string message to byte[]
+            ASCIIEncoding encoding = new ASCIIEncoding();
+            byte[] sendingMessage = new byte[1500];
+
+            // processesTmpContainer = processesTmpContainer == "CONF:" ? processesTmpContainer + textProcessName.Text :
+            //    processesTmpContainer + $"-{textProcessName.Text}";
+
+            sendingMessage = encoding.GetBytes(processesTmpContainer == "CONF:" ? processesTmpContainer + textProcessName.Text :
+                processesTmpContainer + $"-{textProcessName.Text}");
+
+            // Send encoded message to the target
+            // sck.Send(sendingMessage);
+
+            sck.Send(sendingMessage);
+            Invoke((Func<string, int>)listMessage.Items.Add, $"Sent from {textProcessName.Text} to {textTargetPort.Text}");
+
+
+            // Add to the listbox
+            listMessage.Items.Add($"{textProcessName.Text}: {processesTmpContainer} sent");
+
+            textMessage.Text = "";
         }
 
         private void RandomizeProcessIdentity()

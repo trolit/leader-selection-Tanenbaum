@@ -51,9 +51,20 @@
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.label11 = new System.Windows.Forms.Label();
+            this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
+            this.obtainRingBtn = new System.Windows.Forms.Button();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.textPrevTargetPort = new System.Windows.Forms.TextBox();
+            this.label14 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxConnectionStatus)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -64,7 +75,7 @@
             this.groupBox1.Controls.Add(this.textProcessIp);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Location = new System.Drawing.Point(12, 100);
+            this.groupBox1.Location = new System.Drawing.Point(12, 90);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(222, 207);
             this.groupBox1.TabIndex = 0;
@@ -128,7 +139,7 @@
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.textTargetIp);
             this.groupBox2.Controls.Add(this.label3);
-            this.groupBox2.Location = new System.Drawing.Point(12, 325);
+            this.groupBox2.Location = new System.Drawing.Point(12, 315);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(222, 155);
             this.groupBox2.TabIndex = 1;
@@ -172,7 +183,7 @@
             // connectToTargetBtn
             // 
             this.connectToTargetBtn.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.connectToTargetBtn.Location = new System.Drawing.Point(16, 499);
+            this.connectToTargetBtn.Location = new System.Drawing.Point(17, 472);
             this.connectToTargetBtn.Name = "connectToTargetBtn";
             this.connectToTargetBtn.Size = new System.Drawing.Size(99, 54);
             this.connectToTargetBtn.TabIndex = 2;
@@ -184,21 +195,21 @@
             // 
             this.listMessage.FormattingEnabled = true;
             this.listMessage.ItemHeight = 16;
-            this.listMessage.Location = new System.Drawing.Point(808, 64);
+            this.listMessage.Location = new System.Drawing.Point(809, 127);
             this.listMessage.Name = "listMessage";
-            this.listMessage.Size = new System.Drawing.Size(367, 340);
+            this.listMessage.Size = new System.Drawing.Size(383, 340);
             this.listMessage.TabIndex = 3;
             // 
             // textMessage
             // 
-            this.textMessage.Location = new System.Drawing.Point(623, 429);
+            this.textMessage.Location = new System.Drawing.Point(623, 482);
             this.textMessage.Name = "textMessage";
             this.textMessage.Size = new System.Drawing.Size(373, 22);
             this.textMessage.TabIndex = 4;
             // 
             // sendMessageBtn
             // 
-            this.sendMessageBtn.Location = new System.Drawing.Point(623, 469);
+            this.sendMessageBtn.Location = new System.Drawing.Point(623, 522);
             this.sendMessageBtn.Name = "sendMessageBtn";
             this.sendMessageBtn.Size = new System.Drawing.Size(109, 43);
             this.sendMessageBtn.TabIndex = 5;
@@ -208,7 +219,7 @@
             // 
             // disconnectFromTargetBtn
             // 
-            this.disconnectFromTargetBtn.Location = new System.Drawing.Point(122, 500);
+            this.disconnectFromTargetBtn.Location = new System.Drawing.Point(122, 472);
             this.disconnectFromTargetBtn.Name = "disconnectFromTargetBtn";
             this.disconnectFromTargetBtn.Size = new System.Drawing.Size(105, 54);
             this.disconnectFromTargetBtn.TabIndex = 6;
@@ -219,7 +230,7 @@
             // pictureBoxConnectionStatus
             // 
             this.pictureBoxConnectionStatus.Image = global::lsa_Tanenbaum_app.Properties.Resources.status_notconnected;
-            this.pictureBoxConnectionStatus.Location = new System.Drawing.Point(12, 65);
+            this.pictureBoxConnectionStatus.Location = new System.Drawing.Point(12, 56);
             this.pictureBoxConnectionStatus.Name = "pictureBoxConnectionStatus";
             this.pictureBoxConnectionStatus.Size = new System.Drawing.Size(13, 23);
             this.pictureBoxConnectionStatus.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -229,7 +240,7 @@
             // labelConnectionStatus
             // 
             this.labelConnectionStatus.AutoSize = true;
-            this.labelConnectionStatus.Location = new System.Drawing.Point(31, 68);
+            this.labelConnectionStatus.Location = new System.Drawing.Point(31, 59);
             this.labelConnectionStatus.Name = "labelConnectionStatus";
             this.labelConnectionStatus.Size = new System.Drawing.Size(102, 17);
             this.labelConnectionStatus.TabIndex = 8;
@@ -250,7 +261,7 @@
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("MV Boli", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(381, 20);
+            this.label8.Location = new System.Drawing.Point(333, 20);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(221, 31);
             this.label8.TabIndex = 11;
@@ -269,19 +280,104 @@
             // 
             this.label10.AutoSize = true;
             this.label10.Font = new System.Drawing.Font("MV Boli", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label10.Location = new System.Drawing.Point(875, 9);
+            this.label10.Location = new System.Drawing.Point(994, 20);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(52, 31);
             this.label10.TabIndex = 13;
             this.label10.Text = "Log";
             this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(336, 88);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(52, 17);
+            this.label5.TabIndex = 6;
+            this.label5.Text = "Priority";
+            // 
+            // numericUpDown1
+            // 
+            this.numericUpDown1.Location = new System.Drawing.Point(339, 110);
+            this.numericUpDown1.Name = "numericUpDown1";
+            this.numericUpDown1.Size = new System.Drawing.Size(167, 22);
+            this.numericUpDown1.TabIndex = 14;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(336, 153);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(124, 17);
+            this.label11.TabIndex = 15;
+            this.label11.Text = "Ping frequency (s)";
+            // 
+            // numericUpDown2
+            // 
+            this.numericUpDown2.Location = new System.Drawing.Point(339, 177);
+            this.numericUpDown2.Name = "numericUpDown2";
+            this.numericUpDown2.Size = new System.Drawing.Size(167, 22);
+            this.numericUpDown2.TabIndex = 16;
+            // 
+            // obtainRingBtn
+            // 
+            this.obtainRingBtn.Location = new System.Drawing.Point(34, 542);
+            this.obtainRingBtn.Name = "obtainRingBtn";
+            this.obtainRingBtn.Size = new System.Drawing.Size(167, 31);
+            this.obtainRingBtn.TabIndex = 17;
+            this.obtainRingBtn.Text = "Obtain Ring";
+            this.obtainRingBtn.UseVisualStyleBackColor = true;
+            this.obtainRingBtn.Click += new System.EventHandler(this.obtainRingBtn_Click);
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(806, 71);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(69, 17);
+            this.label12.TabIndex = 18;
+            this.label12.Text = "Hierarchy";
+            // 
+            // label13
+            // 
+            this.label13.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label13.Location = new System.Drawing.Point(17, 534);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(210, 5);
+            this.label13.TabIndex = 19;
+            // 
+            // textPrevTargetPort
+            // 
+            this.textPrevTargetPort.Location = new System.Drawing.Point(324, 268);
+            this.textPrevTargetPort.MaxLength = 25;
+            this.textPrevTargetPort.Name = "textPrevTargetPort";
+            this.textPrevTargetPort.Size = new System.Drawing.Size(158, 22);
+            this.textPrevTargetPort.TabIndex = 7;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(321, 248);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(98, 17);
+            this.label14.TabIndex = 6;
+            this.label14.Text = "Prev Target Ip";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1204, 600);
+            this.Controls.Add(this.textPrevTargetPort);
+            this.Controls.Add(this.label13);
+            this.Controls.Add(this.label14);
+            this.Controls.Add(this.label12);
+            this.Controls.Add(this.obtainRingBtn);
+            this.Controls.Add(this.numericUpDown2);
+            this.Controls.Add(this.label11);
+            this.Controls.Add(this.numericUpDown1);
             this.Controls.Add(this.label10);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label6);
@@ -304,6 +400,8 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxConnectionStatus)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -334,6 +432,15 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.NumericUpDown numericUpDown2;
+        private System.Windows.Forms.Button obtainRingBtn;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.TextBox textPrevTargetPort;
+        private System.Windows.Forms.Label label14;
     }
 }
 
