@@ -5,21 +5,25 @@ using System.Net.Sockets;
 using System.Text;
 using lsa_Tanenbaum_app.Properties;
 using System.Collections.Generic;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.IO;
 
 namespace lsa_Tanenbaum_app
 {
     public partial class Form1 : Form
     {
         Socket sck;
-        IAsyncResult sckResult;
+        Random randomizer;
+        DateTime date = DateTime.Now;
+
         EndPoint epProcess, epTarget, epReceiveFrom;
         byte[] buffer;  // for sending messages
+
+        bool isConnectionEstablished = false; // for handling simple fields checking with disconnect btn behaviour
+        
         List<string> listOfAllProcesses;
         List<int> listOfProcessesPriorities;
-        Random randomizer;
+        
         string processesTmpContainer;
+        
 
         public Form1()
         {
@@ -35,74 +39,63 @@ namespace lsa_Tanenbaum_app
             listOfProcessesPriorities = new List<int>();
             processesTmpContainer = "CONF:";
 
-            //
             disconnectFromTargetBtn.Enabled = false;
 
             // get user IP
             textProcessIp.Text = GetLocalAddress();
             textTargetIp.Text = GetLocalAddress();
             textReceiveFromIp.Text = GetLocalAddress();
-
-
-        }
-
-        private bool BindSocket()
-        {
-            sck.Bind(epProcess);
-            return true;
-        }
-
-        private bool ConnectToTarget()
-        {
-            sck.Connect(epTarget);
-            return true;
         }
 
         private void connectToTargetBtn_Click(object sender, EventArgs e)
         {
-            // Setup socket
+            // init socket
             sck = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             sck.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
 
-            // binding Socket
+            // bind socket
             epProcess = new IPEndPoint(IPAddress.Parse(textProcessIp.Text), Convert.ToInt32(textProcessPort.Text));
-            Invoke((Func<bool>) BindSocket);
+            sck.Bind(epProcess);
 
-            
+            // init target
+            epTarget = new IPEndPoint(IPAddress.Parse(textTargetIp.Text), Convert.ToInt32(textTargetPort.Text));
+
+            // connect 
             epReceiveFrom = new IPEndPoint(IPAddress.Parse(textReceiveFromIp.Text), Convert.ToInt32(textReceiveFromPort.Text));
 
-            // connecting to remote IP (target)
-            epTarget = new IPEndPoint(IPAddress.Parse(textTargetIp.Text), Convert.ToInt32(textTargetPort.Text));
-            
-            Invoke((Func<string, int>)listMessage.Items.Add, $"Configured");
-            // Invoke((Func<bool>) ConnectToTarget);
             sck.Connect(epReceiveFrom);
-            Invoke((Func<string, int>)listMessage.Items.Add, $"{sck.RemoteEndPoint}");
 
-            ASCIIEncoding encoding = new ASCIIEncoding();
-
-            // listening to specific port
+            // configure listening
             buffer = new byte[1500];
-            sckResult = sck.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref epReceiveFrom, new AsyncCallback(MessageCallBack), buffer);
+            sck.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref epReceiveFrom, new AsyncCallback(MessageCallBack), buffer);
             
             if (sck.Connected)
             {
+                LogEvent($"{textProcessName.Text} connected.");
+
                 listOfAllProcesses.Add(textProcessName.Text);
                 pictureBoxConnectionStatus.Image = Resources.status_connected;
                 labelConnectionStatus.Text = "Connected";
                 SwapEnabledForConnectAndDisconnectBtns();
                 ringSynchronizationBtn.Enabled = true;
+                isConnectionEstablished = true;
             }       
+        }
+
+        private void LogEvent(string text)
+        {
+            Invoke((Func<DateTime, string, bool>)logBox.AppendText, date, text);
         }
 
         private void disconnectFromTargetBtn_Click(object sender, EventArgs e)
         {
-            // sck.EndReceive(sckResult);
             sck.Close();
             listMessage.Items.Add("Socket is connected? " + sck.Connected);
             pictureBoxConnectionStatus.Image = Resources.status_notconnected;
             labelConnectionStatus.Text = "Not Connected";
             SwapEnabledForConnectAndDisconnectBtns();
+            isConnectionEstablished = false;
+            processConfigChanged(sender, e);
         }
 
 
@@ -110,8 +103,7 @@ namespace lsa_Tanenbaum_app
         {
             // Convert string message to byte[]
             ASCIIEncoding encoding = new ASCIIEncoding();
-            byte[] sendingMessage = new byte[1500];
-            sendingMessage = encoding.GetBytes(textMessage.Text);
+            byte[] sendingMessage = encoding.GetBytes(textMessage.Text);
 
             // Send encoded message to the target
             sck.SendTo(sendingMessage, epTarget);
@@ -150,11 +142,13 @@ namespace lsa_Tanenbaum_app
                     string receivedMessage = encoding.GetString(receivedData);
                     if (receivedMessage.Contains("CONF:"))
                     {
-                        processesTmpContainer = "CONF:";
-
                         // Add message to the console
                         Invoke((Func<string, int>)listMessage.Items.Add, $"{textProcessName.Text}: Received msg: {receivedMessage}");
-                        
+
+                        processesTmpContainer = $"{receivedMessage}";
+
+                        Invoke((Func<string, int>)listMessage.Items.Add, $"{textProcessName.Text}: my process container: {processesTmpContainer}");
+
                         // callback again
                         buffer = new byte[1500];
                         sck.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref epTarget, new AsyncCallback(MessageCallBack), buffer);
@@ -175,35 +169,62 @@ namespace lsa_Tanenbaum_app
 
         private void ringSynchronizationBtn_Click(object sender, EventArgs e)
         {
-            if (!processesTmpContainer.Contains(textProcessName.Text))
+            RequestRingSynchronization();
+        }
+
+        private void processConfigChanged(object sender, EventArgs e)
+        {
+            if (!isConnectionEstablished)
             {
-                PerformConfigurationRequest();
+                connectToTargetBtn.Enabled = CheckIfConfigFieldsAreNotEmpty() ? true : false;
             }
         }
 
-        private void PerformConfigurationRequest()
+        private bool CheckIfConfigFieldsAreNotEmpty()
+        {
+            bool result = true;
+            int kappa = 1;
+
+            string[] configFieldsValues = new string[] {
+                textProcessName.Text,
+                textProcessIp.Text,
+                textProcessPort.Text,
+                textTargetIp.Text,
+                textTargetPort.Text,
+                textReceiveFromIp.Text,
+                textReceiveFromPort.Text
+            };
+
+            foreach (string fieldValue in configFieldsValues)
+            {
+                if (string.IsNullOrWhiteSpace(fieldValue))
+                {
+                    result = false;
+                    break;
+                }
+                kappa++;
+            }
+
+            return result;
+        }
+
+        private void RequestRingSynchronization()
         {
             // Convert string message to byte[]
             ASCIIEncoding encoding = new ASCIIEncoding();
             byte[] sendingMessage = new byte[1500];
 
-            // processesTmpContainer = processesTmpContainer == "CONF:" ? processesTmpContainer + textProcessName.Text :
-            //    processesTmpContainer + $"-{textProcessName.Text}";
+            processesTmpContainer = processesTmpContainer.Equals("CONF:") ? 
+                $"CONF: {textProcessName.Text}" : $"{processesTmpContainer}:{textProcessName.Text}";
 
-            sendingMessage = encoding.GetBytes(processesTmpContainer == "CONF:" ? processesTmpContainer + textProcessName.Text :
-                processesTmpContainer + $"-{textProcessName.Text}");
-
-            // Send encoded message to the target
-            // sck.Send(sendingMessage);
+            sendingMessage = encoding.GetBytes(processesTmpContainer);
 
             sck.SendTo(sendingMessage, epTarget);
             
             Invoke((Func<string, int>)listMessage.Items.Add, $"Sent from {textProcessName.Text} to {textTargetPort.Text}");
 
-
             // Add to the listbox
             listMessage.Items.Add($"{textProcessName.Text}: {processesTmpContainer} sent");
-
             textMessage.Text = "";
         }
 

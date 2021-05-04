@@ -59,9 +59,9 @@
             this.label11 = new System.Windows.Forms.Label();
             this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
             this.ringSynchronizationBtn = new System.Windows.Forms.Button();
-            this.label12 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
+            this.logBox = new System.Windows.Forms.RichTextBox();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxConnectionStatus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
@@ -112,11 +112,12 @@
             // textTargetPort
             // 
             this.textTargetPort.Location = new System.Drawing.Point(187, 211);
-            this.textTargetPort.MaxLength = 25;
+            this.textTargetPort.MaxLength = 6;
             this.textTargetPort.Name = "textTargetPort";
             this.textTargetPort.Size = new System.Drawing.Size(54, 22);
             this.textTargetPort.TabIndex = 7;
             this.textTargetPort.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textTargetPort.TextChanged += new System.EventHandler(this.processConfigChanged);
             // 
             // textReceiveFromIp
             // 
@@ -126,6 +127,7 @@
             this.textReceiveFromIp.Size = new System.Drawing.Size(158, 22);
             this.textReceiveFromIp.TabIndex = 4;
             this.textReceiveFromIp.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textReceiveFromIp.TextChanged += new System.EventHandler(this.processConfigChanged);
             // 
             // label15
             // 
@@ -144,6 +146,7 @@
             this.textTargetIp.Size = new System.Drawing.Size(158, 22);
             this.textTargetIp.TabIndex = 6;
             this.textTargetIp.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textTargetIp.TextChanged += new System.EventHandler(this.processConfigChanged);
             // 
             // label14
             // 
@@ -171,15 +174,17 @@
             this.textProcessName.Size = new System.Drawing.Size(158, 22);
             this.textProcessName.TabIndex = 1;
             this.textProcessName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textProcessName.TextChanged += new System.EventHandler(this.processConfigChanged);
             // 
             // textReceiveFromPort
             // 
             this.textReceiveFromPort.Location = new System.Drawing.Point(187, 157);
-            this.textReceiveFromPort.MaxLength = 25;
+            this.textReceiveFromPort.MaxLength = 6;
             this.textReceiveFromPort.Name = "textReceiveFromPort";
             this.textReceiveFromPort.Size = new System.Drawing.Size(54, 22);
             this.textReceiveFromPort.TabIndex = 5;
             this.textReceiveFromPort.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textReceiveFromPort.TextChanged += new System.EventHandler(this.processConfigChanged);
             // 
             // label7
             // 
@@ -193,11 +198,12 @@
             // textProcessPort
             // 
             this.textProcessPort.Location = new System.Drawing.Point(187, 103);
-            this.textProcessPort.MaxLength = 25;
+            this.textProcessPort.MaxLength = 6;
             this.textProcessPort.Name = "textProcessPort";
             this.textProcessPort.Size = new System.Drawing.Size(54, 22);
             this.textProcessPort.TabIndex = 3;
             this.textProcessPort.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textProcessPort.TextChanged += new System.EventHandler(this.processConfigChanged);
             // 
             // textProcessIp
             // 
@@ -207,6 +213,7 @@
             this.textProcessIp.Size = new System.Drawing.Size(158, 22);
             this.textProcessIp.TabIndex = 2;
             this.textProcessIp.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textProcessIp.TextChanged += new System.EventHandler(this.processConfigChanged);
             // 
             // label2
             // 
@@ -219,6 +226,7 @@
             // 
             // connectToTargetBtn
             // 
+            this.connectToTargetBtn.Enabled = false;
             this.connectToTargetBtn.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.connectToTargetBtn.Location = new System.Drawing.Point(104, 354);
             this.connectToTargetBtn.Name = "connectToTargetBtn";
@@ -232,9 +240,9 @@
             // 
             this.listMessage.FormattingEnabled = true;
             this.listMessage.ItemHeight = 16;
-            this.listMessage.Location = new System.Drawing.Point(809, 127);
+            this.listMessage.Location = new System.Drawing.Point(291, 571);
             this.listMessage.Name = "listMessage";
-            this.listMessage.Size = new System.Drawing.Size(383, 340);
+            this.listMessage.Size = new System.Drawing.Size(383, 36);
             this.listMessage.TabIndex = 3;
             // 
             // textMessage
@@ -259,9 +267,9 @@
             this.disconnectFromTargetBtn.BackColor = System.Drawing.Color.PaleVioletRed;
             this.disconnectFromTargetBtn.FlatAppearance.BorderSize = 0;
             this.disconnectFromTargetBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.disconnectFromTargetBtn.Location = new System.Drawing.Point(139, 39);
+            this.disconnectFromTargetBtn.Location = new System.Drawing.Point(161, 39);
             this.disconnectFromTargetBtn.Name = "disconnectFromTargetBtn";
-            this.disconnectFromTargetBtn.Size = new System.Drawing.Size(107, 26);
+            this.disconnectFromTargetBtn.Size = new System.Drawing.Size(92, 26);
             this.disconnectFromTargetBtn.TabIndex = 6;
             this.disconnectFromTargetBtn.Text = "Disconnect";
             this.disconnectFromTargetBtn.UseVisualStyleBackColor = false;
@@ -364,20 +372,11 @@
             this.ringSynchronizationBtn.Enabled = false;
             this.ringSynchronizationBtn.Location = new System.Drawing.Point(104, 435);
             this.ringSynchronizationBtn.Name = "ringSynchronizationBtn";
-            this.ringSynchronizationBtn.Size = new System.Drawing.Size(123, 56);
+            this.ringSynchronizationBtn.Size = new System.Drawing.Size(127, 56);
             this.ringSynchronizationBtn.TabIndex = 17;
             this.ringSynchronizationBtn.Text = "Ring sync.";
             this.ringSynchronizationBtn.UseVisualStyleBackColor = true;
             this.ringSynchronizationBtn.Click += new System.EventHandler(this.ringSynchronizationBtn_Click);
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(806, 71);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(69, 17);
-            this.label12.TabIndex = 18;
-            this.label12.Text = "Hierarchy";
             // 
             // label1
             // 
@@ -385,9 +384,9 @@
             this.label1.Font = new System.Drawing.Font("Leelawadee", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(48, 364);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(31, 36);
+            this.label1.Size = new System.Drawing.Size(38, 36);
             this.label1.TabIndex = 25;
-            this.label1.Text = "1";
+            this.label1.Text = "1.";
             // 
             // label16
             // 
@@ -395,18 +394,27 @@
             this.label16.Font = new System.Drawing.Font("Leelawadee", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label16.Location = new System.Drawing.Point(48, 445);
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(31, 36);
+            this.label16.Size = new System.Drawing.Size(38, 36);
             this.label16.TabIndex = 26;
-            this.label16.Text = "2";
+            this.label16.Text = "2.";
+            // 
+            // logBox
+            // 
+            this.logBox.Location = new System.Drawing.Point(719, 85);
+            this.logBox.Name = "logBox";
+            this.logBox.ReadOnly = true;
+            this.logBox.Size = new System.Drawing.Size(473, 331);
+            this.logBox.TabIndex = 27;
+            this.logBox.Text = "";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1204, 635);
+            this.Controls.Add(this.logBox);
             this.Controls.Add(this.label16);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.label12);
             this.Controls.Add(this.ringSynchronizationBtn);
             this.Controls.Add(this.numericUpDown2);
             this.Controls.Add(this.label11);
@@ -464,7 +472,6 @@
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.NumericUpDown numericUpDown2;
         private System.Windows.Forms.Button ringSynchronizationBtn;
-        private System.Windows.Forms.Label label12;
         private System.Windows.Forms.TextBox textReceiveFromPort;
         private System.Windows.Forms.TextBox textReceiveFromIp;
         private System.Windows.Forms.Label label14;
@@ -475,6 +482,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.RichTextBox logBox;
     }
 }
 
