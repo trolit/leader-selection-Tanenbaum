@@ -90,7 +90,8 @@ namespace lsa_Tanenbaum_app
                 listOfAllProcesses.Add(textProcessName.Text);
                 pictureBoxConnectionStatus.Image = Resources.status_connected;
                 labelConnectionStatus.Text = "Connected";
-                SwapEnabledForConnectAndDisconnectBtns();            
+                SwapEnabledForConnectAndDisconnectBtns();
+                ringSynchronizationBtn.Enabled = true;
             }       
         }
 
@@ -172,7 +173,7 @@ namespace lsa_Tanenbaum_app
             disconnectFromTargetBtn.Enabled = !disconnectFromTargetBtn.Enabled;
         }
 
-        private void obtainRingBtn_Click(object sender, EventArgs e)
+        private void ringSynchronizationBtn_Click(object sender, EventArgs e)
         {
             if (!processesTmpContainer.Contains(textProcessName.Text))
             {

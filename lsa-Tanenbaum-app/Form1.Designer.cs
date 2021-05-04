@@ -29,12 +29,20 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.textTargetPort = new System.Windows.Forms.TextBox();
+            this.textReceiveFromIp = new System.Windows.Forms.TextBox();
+            this.label15 = new System.Windows.Forms.Label();
+            this.textTargetIp = new System.Windows.Forms.TextBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.textProcessName = new System.Windows.Forms.TextBox();
+            this.textReceiveFromPort = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.textProcessPort = new System.Windows.Forms.TextBox();
             this.textProcessIp = new System.Windows.Forms.TextBox();
-            this.textTargetPort = new System.Windows.Forms.TextBox();
-            this.textTargetIp = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.connectToTargetBtn = new System.Windows.Forms.Button();
             this.listMessage = new System.Windows.Forms.ListBox();
             this.textMessage = new System.Windows.Forms.TextBox();
@@ -50,16 +58,8 @@
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             this.label11 = new System.Windows.Forms.Label();
             this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
-            this.obtainRingBtn = new System.Windows.Forms.Button();
+            this.ringSynchronizationBtn = new System.Windows.Forms.Button();
             this.label12 = new System.Windows.Forms.Label();
-            this.textReceiveFromPort = new System.Windows.Forms.TextBox();
-            this.textReceiveFromIp = new System.Windows.Forms.TextBox();
-            this.label14 = new System.Windows.Forms.Label();
-            this.label15 = new System.Windows.Forms.Label();
-            this.label13 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.textProcessName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
@@ -91,6 +91,96 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Process";
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(172, 105);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(12, 17);
+            this.label4.TabIndex = 24;
+            this.label4.Text = ":";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(172, 214);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(12, 17);
+            this.label13.TabIndex = 23;
+            this.label13.Text = ":";
+            // 
+            // textTargetPort
+            // 
+            this.textTargetPort.Location = new System.Drawing.Point(187, 211);
+            this.textTargetPort.MaxLength = 25;
+            this.textTargetPort.Name = "textTargetPort";
+            this.textTargetPort.Size = new System.Drawing.Size(54, 22);
+            this.textTargetPort.TabIndex = 7;
+            this.textTargetPort.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // textReceiveFromIp
+            // 
+            this.textReceiveFromIp.Location = new System.Drawing.Point(10, 157);
+            this.textReceiveFromIp.MaxLength = 25;
+            this.textReceiveFromIp.Name = "textReceiveFromIp";
+            this.textReceiveFromIp.Size = new System.Drawing.Size(158, 22);
+            this.textReceiveFromIp.TabIndex = 4;
+            this.textReceiveFromIp.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(172, 160);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(12, 17);
+            this.label15.TabIndex = 22;
+            this.label15.Text = ":";
+            // 
+            // textTargetIp
+            // 
+            this.textTargetIp.Location = new System.Drawing.Point(10, 211);
+            this.textTargetIp.MaxLength = 25;
+            this.textTargetIp.Name = "textTargetIp";
+            this.textTargetIp.Size = new System.Drawing.Size(158, 22);
+            this.textTargetIp.TabIndex = 6;
+            this.textTargetIp.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(7, 137);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(91, 17);
+            this.label14.TabIndex = 20;
+            this.label14.Text = "Receive from";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(7, 191);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(57, 17);
+            this.label3.TabIndex = 3;
+            this.label3.Text = "Send to";
+            // 
+            // textProcessName
+            // 
+            this.textProcessName.Location = new System.Drawing.Point(10, 48);
+            this.textProcessName.MaxLength = 25;
+            this.textProcessName.Name = "textProcessName";
+            this.textProcessName.Size = new System.Drawing.Size(158, 22);
+            this.textProcessName.TabIndex = 1;
+            this.textProcessName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // textReceiveFromPort
+            // 
+            this.textReceiveFromPort.Location = new System.Drawing.Point(187, 157);
+            this.textReceiveFromPort.MaxLength = 25;
+            this.textReceiveFromPort.Name = "textReceiveFromPort";
+            this.textReceiveFromPort.Size = new System.Drawing.Size(54, 22);
+            this.textReceiveFromPort.TabIndex = 5;
+            this.textReceiveFromPort.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // label7
             // 
             this.label7.AutoSize = true;
@@ -118,32 +208,14 @@
             this.textProcessIp.TabIndex = 2;
             this.textProcessIp.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // textTargetPort
+            // label2
             // 
-            this.textTargetPort.Location = new System.Drawing.Point(187, 211);
-            this.textTargetPort.MaxLength = 25;
-            this.textTargetPort.Name = "textTargetPort";
-            this.textTargetPort.Size = new System.Drawing.Size(54, 22);
-            this.textTargetPort.TabIndex = 7;
-            this.textTargetPort.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // textTargetIp
-            // 
-            this.textTargetIp.Location = new System.Drawing.Point(10, 211);
-            this.textTargetIp.MaxLength = 25;
-            this.textTargetIp.Name = "textTargetIp";
-            this.textTargetIp.Size = new System.Drawing.Size(158, 22);
-            this.textTargetIp.TabIndex = 6;
-            this.textTargetIp.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(7, 191);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(57, 17);
-            this.label3.TabIndex = 3;
-            this.label3.Text = "Send to";
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(7, 83);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(60, 17);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "Address";
             // 
             // connectToTargetBtn
             // 
@@ -287,15 +359,16 @@
             this.numericUpDown2.Size = new System.Drawing.Size(167, 22);
             this.numericUpDown2.TabIndex = 16;
             // 
-            // obtainRingBtn
+            // ringSynchronizationBtn
             // 
-            this.obtainRingBtn.Location = new System.Drawing.Point(104, 435);
-            this.obtainRingBtn.Name = "obtainRingBtn";
-            this.obtainRingBtn.Size = new System.Drawing.Size(123, 56);
-            this.obtainRingBtn.TabIndex = 17;
-            this.obtainRingBtn.Text = "Ring synch.";
-            this.obtainRingBtn.UseVisualStyleBackColor = true;
-            this.obtainRingBtn.Click += new System.EventHandler(this.obtainRingBtn_Click);
+            this.ringSynchronizationBtn.Enabled = false;
+            this.ringSynchronizationBtn.Location = new System.Drawing.Point(104, 435);
+            this.ringSynchronizationBtn.Name = "ringSynchronizationBtn";
+            this.ringSynchronizationBtn.Size = new System.Drawing.Size(123, 56);
+            this.ringSynchronizationBtn.TabIndex = 17;
+            this.ringSynchronizationBtn.Text = "Ring sync.";
+            this.ringSynchronizationBtn.UseVisualStyleBackColor = true;
+            this.ringSynchronizationBtn.Click += new System.EventHandler(this.ringSynchronizationBtn_Click);
             // 
             // label12
             // 
@@ -305,78 +378,6 @@
             this.label12.Size = new System.Drawing.Size(69, 17);
             this.label12.TabIndex = 18;
             this.label12.Text = "Hierarchy";
-            // 
-            // textReceiveFromPort
-            // 
-            this.textReceiveFromPort.Location = new System.Drawing.Point(187, 157);
-            this.textReceiveFromPort.MaxLength = 25;
-            this.textReceiveFromPort.Name = "textReceiveFromPort";
-            this.textReceiveFromPort.Size = new System.Drawing.Size(54, 22);
-            this.textReceiveFromPort.TabIndex = 5;
-            this.textReceiveFromPort.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // textReceiveFromIp
-            // 
-            this.textReceiveFromIp.Location = new System.Drawing.Point(10, 157);
-            this.textReceiveFromIp.MaxLength = 25;
-            this.textReceiveFromIp.Name = "textReceiveFromIp";
-            this.textReceiveFromIp.Size = new System.Drawing.Size(158, 22);
-            this.textReceiveFromIp.TabIndex = 4;
-            this.textReceiveFromIp.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(7, 137);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(91, 17);
-            this.label14.TabIndex = 20;
-            this.label14.Text = "Receive from";
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(172, 160);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(12, 17);
-            this.label15.TabIndex = 22;
-            this.label15.Text = ":";
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(172, 214);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(12, 17);
-            this.label13.TabIndex = 23;
-            this.label13.Text = ":";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(172, 105);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(12, 17);
-            this.label4.TabIndex = 24;
-            this.label4.Text = ":";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(7, 83);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(60, 17);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "Address";
-            // 
-            // textProcessName
-            // 
-            this.textProcessName.Location = new System.Drawing.Point(10, 48);
-            this.textProcessName.MaxLength = 25;
-            this.textProcessName.Name = "textProcessName";
-            this.textProcessName.Size = new System.Drawing.Size(158, 22);
-            this.textProcessName.TabIndex = 1;
-            this.textProcessName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label1
             // 
@@ -406,7 +407,7 @@
             this.Controls.Add(this.label16);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.label12);
-            this.Controls.Add(this.obtainRingBtn);
+            this.Controls.Add(this.ringSynchronizationBtn);
             this.Controls.Add(this.numericUpDown2);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.numericUpDown1);
@@ -462,7 +463,7 @@
         private System.Windows.Forms.NumericUpDown numericUpDown1;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.NumericUpDown numericUpDown2;
-        private System.Windows.Forms.Button obtainRingBtn;
+        private System.Windows.Forms.Button ringSynchronizationBtn;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.TextBox textReceiveFromPort;
         private System.Windows.Forms.TextBox textReceiveFromIp;
