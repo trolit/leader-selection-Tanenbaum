@@ -14,7 +14,7 @@ namespace lsa_Tanenbaum_app
     {
         Socket sck;
         IAsyncResult sckResult;
-        EndPoint epProcess, epTarget;
+        EndPoint epProcess, epTarget, epReceiveFrom;
         byte[] buffer;  // for sending messages
         List<string> listOfAllProcesses;
         List<int> listOfProcessesPriorities;
@@ -41,9 +41,21 @@ namespace lsa_Tanenbaum_app
             // get user IP
             textProcessIp.Text = GetLocalAddress();
             textTargetIp.Text = GetLocalAddress();
+            textReceiveFromIp.Text = GetLocalAddress();
 
 
+        }
 
+        private bool BindSocket()
+        {
+            sck.Bind(epProcess);
+            return true;
+        }
+
+        private bool ConnectToTarget()
+        {
+            sck.Connect(epTarget);
+            return true;
         }
 
         private void connectToTargetBtn_Click(object sender, EventArgs e)
@@ -53,25 +65,26 @@ namespace lsa_Tanenbaum_app
             sck.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
 
             // binding Socket
-            epProcess = new IPEndPoint(IPAddress.Parse(textProcessIp.Text), 
-                Convert.ToInt32(textProcessPort.Text));
-            sck.Bind(epProcess);
-
-            // connecting to remote IP (target)
-            epTarget = new IPEndPoint(IPAddress.Parse(textTargetIp.Text), 
-                Convert.ToInt32(textTargetPort.Text));
+            epProcess = new IPEndPoint(IPAddress.Parse(textProcessIp.Text), Convert.ToInt32(textProcessPort.Text));
+            Invoke((Func<bool>) BindSocket);
 
             
+            epReceiveFrom = new IPEndPoint(IPAddress.Parse(textReceiveFromIp.Text), Convert.ToInt32(textReceiveFromPort.Text));
+
+            // connecting to remote IP (target)
+            epTarget = new IPEndPoint(IPAddress.Parse(textTargetIp.Text), Convert.ToInt32(textTargetPort.Text));
+            
             Invoke((Func<string, int>)listMessage.Items.Add, $"Configured");
-            sck.Connect(epTarget);
+            // Invoke((Func<bool>) ConnectToTarget);
+            sck.Connect(epReceiveFrom);
+            Invoke((Func<string, int>)listMessage.Items.Add, $"{sck.RemoteEndPoint}");
 
             ASCIIEncoding encoding = new ASCIIEncoding();
 
             // listening to specific port
             buffer = new byte[1500];
-            sckResult = sck.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref epTarget, new AsyncCallback(MessageCallBack), buffer);
-            sck2.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref epProcess, new AsyncCallback(MessageCallBack), buffer);
-
+            sckResult = sck.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref epReceiveFrom, new AsyncCallback(MessageCallBack), buffer);
+            
             if (sck.Connected)
             {
                 listOfAllProcesses.Add(textProcessName.Text);
@@ -100,7 +113,7 @@ namespace lsa_Tanenbaum_app
             sendingMessage = encoding.GetBytes(textMessage.Text);
 
             // Send encoded message to the target
-            sck.Send(sendingMessage);
+            sck.SendTo(sendingMessage, epTarget);
 
             // Add to the listbox
             listMessage.Items.Add("Me: " + textMessage.Text);
@@ -182,7 +195,8 @@ namespace lsa_Tanenbaum_app
             // Send encoded message to the target
             // sck.Send(sendingMessage);
 
-            sck.Send(sendingMessage);
+            sck.SendTo(sendingMessage, epTarget);
+            
             Invoke((Func<string, int>)listMessage.Items.Add, $"Sent from {textProcessName.Text} to {textTargetPort.Text}");
 
 

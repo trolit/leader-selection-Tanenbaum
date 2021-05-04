@@ -58,8 +58,10 @@
             this.obtainRingBtn = new System.Windows.Forms.Button();
             this.label12 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
-            this.textPrevTargetPort = new System.Windows.Forms.TextBox();
+            this.textReceiveFromPort = new System.Windows.Forms.TextBox();
+            this.textReceiveFromIp = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxConnectionStatus)).BeginInit();
@@ -346,31 +348,50 @@
             this.label13.Size = new System.Drawing.Size(210, 5);
             this.label13.TabIndex = 19;
             // 
-            // textPrevTargetPort
+            // textReceiveFromPort
             // 
-            this.textPrevTargetPort.Location = new System.Drawing.Point(324, 268);
-            this.textPrevTargetPort.MaxLength = 25;
-            this.textPrevTargetPort.Name = "textPrevTargetPort";
-            this.textPrevTargetPort.Size = new System.Drawing.Size(158, 22);
-            this.textPrevTargetPort.TabIndex = 7;
+            this.textReceiveFromPort.Location = new System.Drawing.Point(318, 321);
+            this.textReceiveFromPort.MaxLength = 25;
+            this.textReceiveFromPort.Name = "textReceiveFromPort";
+            this.textReceiveFromPort.Size = new System.Drawing.Size(158, 22);
+            this.textReceiveFromPort.TabIndex = 7;
+            // 
+            // textReceiveFromIp
+            // 
+            this.textReceiveFromIp.Location = new System.Drawing.Point(318, 384);
+            this.textReceiveFromIp.MaxLength = 25;
+            this.textReceiveFromIp.Name = "textReceiveFromIp";
+            this.textReceiveFromIp.Size = new System.Drawing.Size(158, 22);
+            this.textReceiveFromIp.TabIndex = 21;
             // 
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(321, 248);
+            this.label14.Location = new System.Drawing.Point(315, 364);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(98, 17);
-            this.label14.TabIndex = 6;
-            this.label14.Text = "Prev Target Ip";
+            this.label14.Size = new System.Drawing.Size(161, 17);
+            this.label14.TabIndex = 20;
+            this.label14.Text = "Begin Receive From (IP)";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(315, 301);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(175, 17);
+            this.label15.TabIndex = 22;
+            this.label15.Text = "Begin Receive From (Port)";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1204, 600);
-            this.Controls.Add(this.textPrevTargetPort);
-            this.Controls.Add(this.label13);
+            this.Controls.Add(this.label15);
+            this.Controls.Add(this.textReceiveFromIp);
             this.Controls.Add(this.label14);
+            this.Controls.Add(this.textReceiveFromPort);
+            this.Controls.Add(this.label13);
             this.Controls.Add(this.label12);
             this.Controls.Add(this.obtainRingBtn);
             this.Controls.Add(this.numericUpDown2);
@@ -439,8 +460,10 @@
         private System.Windows.Forms.Button obtainRingBtn;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.TextBox textPrevTargetPort;
+        private System.Windows.Forms.TextBox textReceiveFromPort;
+        private System.Windows.Forms.TextBox textReceiveFromIp;
         private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label15;
     }
 }
 
