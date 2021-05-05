@@ -59,6 +59,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
             this.logBox = new System.Windows.Forms.RichTextBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.textRingStatus = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxConnectionStatus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
@@ -376,19 +378,40 @@
             this.logBox.Cursor = System.Windows.Forms.Cursors.Cross;
             this.logBox.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.logBox.HideSelection = false;
-            this.logBox.Location = new System.Drawing.Point(694, 85);
+            this.logBox.Location = new System.Drawing.Point(694, 71);
             this.logBox.Name = "logBox";
             this.logBox.ReadOnly = true;
             this.logBox.Size = new System.Drawing.Size(498, 480);
             this.logBox.TabIndex = 27;
             this.logBox.Text = "// ------------------------------------------\n// LSA - Tanenbaum log\n// ---------" +
     "---------------------------------\n";
+            this.logBox.WordWrap = false;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(691, 565);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(129, 17);
+            this.label12.TabIndex = 28;
+            this.label12.Text = "My ring knowledge:";
+            // 
+            // textRingStatus
+            // 
+            this.textRingStatus.AutoSize = true;
+            this.textRingStatus.Location = new System.Drawing.Point(691, 591);
+            this.textRingStatus.Name = "textRingStatus";
+            this.textRingStatus.Size = new System.Drawing.Size(53, 17);
+            this.textRingStatus.TabIndex = 29;
+            this.textRingStatus.Text = "80->81";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1204, 635);
+            this.Controls.Add(this.textRingStatus);
+            this.Controls.Add(this.label12);
             this.Controls.Add(this.logBox);
             this.Controls.Add(this.label16);
             this.Controls.Add(this.label1);
@@ -454,6 +477,8 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.RichTextBox logBox;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label textRingStatus;
     }
 }
 

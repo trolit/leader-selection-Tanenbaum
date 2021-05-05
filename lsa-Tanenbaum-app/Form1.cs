@@ -14,11 +14,14 @@ namespace lsa_Tanenbaum_app
         Random randomizer;
         DateTime date = DateTime.Now;
 
+        ASCIIEncoding encoding;
+
         EndPoint epProcess, epTarget, epReceiveFrom;
         byte[] buffer;  // for sending messages
 
         bool isConnectionEstablished = false; // for handling simple fields checking with disconnect btn behaviour
-        
+        bool isRingObtained = false;
+
         List<string> listOfAllProcesses;
         List<int> listOfProcessesPriorities;
         
@@ -32,6 +35,7 @@ namespace lsa_Tanenbaum_app
         private void Form1_Load(object sender, EventArgs e)
         {
             randomizer = new Random();
+            encoding = new ASCIIEncoding();
             RandomizeProcessIdentity();
 
             listOfAllProcesses = new List<string>();
@@ -71,6 +75,7 @@ namespace lsa_Tanenbaum_app
             if (sck.Connected)
             {
                 LogEvent($"{textProcessName.Text} connection established.");
+                MakeNewLineInLog();
 
                 listOfAllProcesses.Add(textProcessName.Text);
                 pictureBoxConnectionStatus.Image = Resources.status_connected;
@@ -86,7 +91,12 @@ namespace lsa_Tanenbaum_app
 
         private void LogEvent(string text)
         {
-            Invoke((Func<DateTime, string, bool>)logBox.AppendText, date, text);
+            Invoke((Func<DateTime, string, bool>) logBox.AppendText, date, text);
+        }
+
+        private void MakeNewLineInLog()
+        {
+            Invoke((Func<bool>) logBox.AppendNewLine);
         }
 
         private void disconnectFromTargetBtn_Click(object sender, EventArgs e)
@@ -124,18 +134,52 @@ namespace lsa_Tanenbaum_app
                     receivedData = (byte[])result.AsyncState;
 
                     // Convert byte[] to string
-                    ASCIIEncoding encoding = new ASCIIEncoding();
                     string receivedMessage = encoding.GetString(receivedData);
+
                     if (receivedMessage.Contains("CONF:"))
                     {
                         // Add message to the console
-                        LogEvent($"Received synchronization request with package: {receivedMessage}.");
-                        
-                        processesTmpContainer = $"{receivedMessage}";
+                        LogEvent($"Received synchronization request.");
+                        MakeNewLineInLog();
+
+                        processesTmpContainer = RemoveZeroCharactersFromString(receivedMessage);
 
                         // callback again
                         buffer = new byte[1500];
-                        sck.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref epTarget, new AsyncCallback(MessageCallBack), buffer);
+                        sck.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref epReceiveFrom, new AsyncCallback(MessageCallBack), buffer);
+
+                        if (processesTmpContainer.Contains(textProcessName.Text))
+                        {
+                            isRingObtained = true;
+                            UpdateRingStatusText(processesTmpContainer);
+                            SendRingList();
+                        } else
+                        {
+                            RequestRingSynchronization();
+                        }
+                    } else if (receivedMessage.Contains("LIST:") && !isRingObtained)
+                    {
+                        isRingObtained = true;
+
+                        UpdateRingStatusText(processesTmpContainer);
+
+                        processesTmpContainer = RemoveZeroCharactersFromString(receivedMessage);
+
+                        LogEvent($"Ring structure obtained [{processesTmpContainer}]. ");
+                        MakeNewLineInLog();
+
+                        SendRingList();
+                    } else if (receivedMessage.Contains("LIST:") && isRingObtained)
+                    {
+                        LogEvent("Ring structure obtained.");
+                        if (processesTmpContainer != receivedMessage)
+                        {
+                            processesTmpContainer = receivedMessage;
+                            LogEvent("Changes found! Overwriting ring structure.");
+                        } else
+                        {
+                            LogEvent("No changes found. Package ignored.");
+                        }
                     }
                 }
                 catch (Exception e)
@@ -143,6 +187,16 @@ namespace lsa_Tanenbaum_app
                     MessageBox.Show(e.ToString());
                 }
             }
+        }
+
+        private void UpdateRingStatusText(string text)
+        {
+            MethodInvoker inv = delegate
+            {
+                textRingStatus.Text = text;
+            };
+
+            Invoke(inv);
         }
 
         private void SwapEnabledForConnectAndDisconnectBtns()
@@ -194,22 +248,39 @@ namespace lsa_Tanenbaum_app
 
         private void RequestRingSynchronization()
         {
-            // Convert string message to byte[]
-            ASCIIEncoding encoding = new ASCIIEncoding();
+            if (processesTmpContainer == "CONF:") {
+                processesTmpContainer = $"CONF:{textProcessName.Text}";
+            } 
+            else if (processesTmpContainer.Contains(textProcessName.Text) == false) {
+                processesTmpContainer = $"{processesTmpContainer}:{textProcessName.Text}";
+            }
 
-            processesTmpContainer = processesTmpContainer.Equals("CONF:") ? 
-                $"CONF: {textProcessName.Text}" : $"{processesTmpContainer}:{textProcessName.Text}";
+            processesTmpContainer = RemoveZeroCharactersFromString(processesTmpContainer);
 
             byte[] sendingMessage = encoding.GetBytes(processesTmpContainer);
 
-            sck.SendTo(sendingMessage, epTarget);
+            LogEvent($"Send updated structure [{processesTmpContainer}] to the next target.");
+            MakeNewLineInLog();
 
-            LogEvent($"Synchronization request sent to {textTargetIp.Text}:{textTargetPort.Text}.");
+            sck.SendTo(sendingMessage, epTarget);
+        }
+
+        private void SendRingList()
+        {
+            processesTmpContainer = processesTmpContainer.Replace("CONF:", "LIST:");
+            byte[] message = encoding.GetBytes(processesTmpContainer);
+            sck.SendTo(message, epTarget);
+            LogEvent($"Forward ring to the target.");
         }
 
         private void RandomizeProcessIdentity()
         {
             textProcessName.Text = "P-" + randomizer.Next(1000, 9999);
+        }
+
+        private string RemoveZeroCharactersFromString(string text)
+        {
+            return text.Replace("\0", "");
         }
     }
 }

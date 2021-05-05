@@ -15,8 +15,20 @@ namespace System.Windows.Forms
             box.SelectionColor = box.ForeColor;
 
             box.SelectionColor = Color.Black;
-            box.AppendText($" {text}\n");
+            box.AppendText($" {text}");
 
+            box.AppendText(Environment.NewLine);
+            box.ScrollToCaret();
+
+            return true;
+        }
+
+        public static bool AppendNewLine(this RichTextBox box)
+        {
+            box.SelectionStart = box.TextLength;
+            box.SelectionLength = 0;
+            box.AppendText(Environment.NewLine);
+            box.ScrollToCaret();
             return true;
         }
 
