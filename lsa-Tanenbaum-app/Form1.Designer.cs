@@ -44,9 +44,6 @@
             this.textProcessIp = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.connectToTargetBtn = new System.Windows.Forms.Button();
-            this.listMessage = new System.Windows.Forms.ListBox();
-            this.textMessage = new System.Windows.Forms.TextBox();
-            this.sendMessageBtn = new System.Windows.Forms.Button();
             this.disconnectFromTargetBtn = new System.Windows.Forms.Button();
             this.pictureBoxConnectionStatus = new System.Windows.Forms.PictureBox();
             this.labelConnectionStatus = new System.Windows.Forms.Label();
@@ -236,32 +233,6 @@
             this.connectToTargetBtn.UseVisualStyleBackColor = true;
             this.connectToTargetBtn.Click += new System.EventHandler(this.connectToTargetBtn_Click);
             // 
-            // listMessage
-            // 
-            this.listMessage.FormattingEnabled = true;
-            this.listMessage.ItemHeight = 16;
-            this.listMessage.Location = new System.Drawing.Point(291, 571);
-            this.listMessage.Name = "listMessage";
-            this.listMessage.Size = new System.Drawing.Size(383, 36);
-            this.listMessage.TabIndex = 3;
-            // 
-            // textMessage
-            // 
-            this.textMessage.Location = new System.Drawing.Point(623, 482);
-            this.textMessage.Name = "textMessage";
-            this.textMessage.Size = new System.Drawing.Size(373, 22);
-            this.textMessage.TabIndex = 4;
-            // 
-            // sendMessageBtn
-            // 
-            this.sendMessageBtn.Location = new System.Drawing.Point(623, 522);
-            this.sendMessageBtn.Name = "sendMessageBtn";
-            this.sendMessageBtn.Size = new System.Drawing.Size(109, 43);
-            this.sendMessageBtn.TabIndex = 5;
-            this.sendMessageBtn.Text = "msg";
-            this.sendMessageBtn.UseVisualStyleBackColor = true;
-            this.sendMessageBtn.Click += new System.EventHandler(this.sendMessageBtn_Click);
-            // 
             // disconnectFromTargetBtn
             // 
             this.disconnectFromTargetBtn.BackColor = System.Drawing.Color.PaleVioletRed;
@@ -400,12 +371,18 @@
             // 
             // logBox
             // 
-            this.logBox.Location = new System.Drawing.Point(719, 85);
+            this.logBox.BackColor = System.Drawing.Color.LightGray;
+            this.logBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.logBox.Cursor = System.Windows.Forms.Cursors.Cross;
+            this.logBox.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.logBox.HideSelection = false;
+            this.logBox.Location = new System.Drawing.Point(694, 85);
             this.logBox.Name = "logBox";
             this.logBox.ReadOnly = true;
-            this.logBox.Size = new System.Drawing.Size(473, 331);
+            this.logBox.Size = new System.Drawing.Size(498, 480);
             this.logBox.TabIndex = 27;
-            this.logBox.Text = "";
+            this.logBox.Text = "// ------------------------------------------\n// LSA - Tanenbaum log\n// ---------" +
+    "---------------------------------\n";
             // 
             // Form1
             // 
@@ -427,9 +404,6 @@
             this.Controls.Add(this.labelConnectionStatus);
             this.Controls.Add(this.pictureBoxConnectionStatus);
             this.Controls.Add(this.disconnectFromTargetBtn);
-            this.Controls.Add(this.sendMessageBtn);
-            this.Controls.Add(this.textMessage);
-            this.Controls.Add(this.listMessage);
             this.Controls.Add(this.connectToTargetBtn);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -456,9 +430,6 @@
         private System.Windows.Forms.TextBox textProcessIp;
         private System.Windows.Forms.TextBox textTargetPort;
         private System.Windows.Forms.TextBox textTargetIp;
-        private System.Windows.Forms.ListBox listMessage;
-        private System.Windows.Forms.TextBox textMessage;
-        private System.Windows.Forms.Button sendMessageBtn;
         private System.Windows.Forms.Button disconnectFromTargetBtn;
         private System.Windows.Forms.PictureBox pictureBoxConnectionStatus;
         private System.Windows.Forms.Label labelConnectionStatus;

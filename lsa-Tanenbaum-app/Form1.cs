@@ -24,7 +24,6 @@ namespace lsa_Tanenbaum_app
         
         string processesTmpContainer;
         
-
         public Form1()
         {
             InitializeComponent();
@@ -71,7 +70,7 @@ namespace lsa_Tanenbaum_app
             
             if (sck.Connected)
             {
-                LogEvent($"{textProcessName.Text} connected.");
+                LogEvent($"{textProcessName.Text} connection established.");
 
                 listOfAllProcesses.Add(textProcessName.Text);
                 pictureBoxConnectionStatus.Image = Resources.status_connected;
@@ -79,7 +78,10 @@ namespace lsa_Tanenbaum_app
                 SwapEnabledForConnectAndDisconnectBtns();
                 ringSynchronizationBtn.Enabled = true;
                 isConnectionEstablished = true;
-            }       
+            } else
+            {
+                MessageBox.Show("Connection request failed!!");
+            }      
         }
 
         private void LogEvent(string text)
@@ -90,7 +92,6 @@ namespace lsa_Tanenbaum_app
         private void disconnectFromTargetBtn_Click(object sender, EventArgs e)
         {
             sck.Close();
-            listMessage.Items.Add("Socket is connected? " + sck.Connected);
             pictureBoxConnectionStatus.Image = Resources.status_notconnected;
             labelConnectionStatus.Text = "Not Connected";
             SwapEnabledForConnectAndDisconnectBtns();
@@ -98,21 +99,6 @@ namespace lsa_Tanenbaum_app
             processConfigChanged(sender, e);
         }
 
-
-        private void sendMessageBtn_Click(object sender, EventArgs e)
-        {
-            // Convert string message to byte[]
-            ASCIIEncoding encoding = new ASCIIEncoding();
-            byte[] sendingMessage = encoding.GetBytes(textMessage.Text);
-
-            // Send encoded message to the target
-            sck.SendTo(sendingMessage, epTarget);
-
-            // Add to the listbox
-            listMessage.Items.Add("Me: " + textMessage.Text);
-
-            textMessage.Text = "";
-        }
 
         private string GetLocalAddress()
         {
@@ -143,11 +129,9 @@ namespace lsa_Tanenbaum_app
                     if (receivedMessage.Contains("CONF:"))
                     {
                         // Add message to the console
-                        Invoke((Func<string, int>)listMessage.Items.Add, $"{textProcessName.Text}: Received msg: {receivedMessage}");
-
+                        LogEvent($"Received synchronization request with package: {receivedMessage}.");
+                        
                         processesTmpContainer = $"{receivedMessage}";
-
-                        Invoke((Func<string, int>)listMessage.Items.Add, $"{textProcessName.Text}: my process container: {processesTmpContainer}");
 
                         // callback again
                         buffer = new byte[1500];
@@ -212,20 +196,15 @@ namespace lsa_Tanenbaum_app
         {
             // Convert string message to byte[]
             ASCIIEncoding encoding = new ASCIIEncoding();
-            byte[] sendingMessage = new byte[1500];
 
             processesTmpContainer = processesTmpContainer.Equals("CONF:") ? 
                 $"CONF: {textProcessName.Text}" : $"{processesTmpContainer}:{textProcessName.Text}";
 
-            sendingMessage = encoding.GetBytes(processesTmpContainer);
+            byte[] sendingMessage = encoding.GetBytes(processesTmpContainer);
 
             sck.SendTo(sendingMessage, epTarget);
-            
-            Invoke((Func<string, int>)listMessage.Items.Add, $"Sent from {textProcessName.Text} to {textTargetPort.Text}");
 
-            // Add to the listbox
-            listMessage.Items.Add($"{textProcessName.Text}: {processesTmpContainer} sent");
-            textMessage.Text = "";
+            LogEvent($"Synchronization request sent to {textTargetIp.Text}:{textTargetPort.Text}.");
         }
 
         private void RandomizeProcessIdentity()
