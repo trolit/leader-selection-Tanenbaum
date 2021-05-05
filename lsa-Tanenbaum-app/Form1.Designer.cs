@@ -52,18 +52,21 @@
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.numPriority = new System.Windows.Forms.NumericUpDown();
             this.label11 = new System.Windows.Forms.Label();
             this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
             this.ringSynchronizationBtn = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
             this.logBox = new System.Windows.Forms.RichTextBox();
+            this.addressesListBox = new System.Windows.Forms.ListBox();
+            this.prioritiesListBox = new System.Windows.Forms.ListBox();
+            this.label17 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
-            this.textRingStatus = new System.Windows.Forms.Label();
+            this.label18 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxConnectionStatus)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numPriority)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
             this.SuspendLayout();
             // 
@@ -317,12 +320,17 @@
             this.label5.TabIndex = 6;
             this.label5.Text = "Priority";
             // 
-            // numericUpDown1
+            // numPriority
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(339, 110);
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(167, 22);
-            this.numericUpDown1.TabIndex = 14;
+            this.numPriority.Location = new System.Drawing.Point(339, 110);
+            this.numPriority.Name = "numPriority";
+            this.numPriority.Size = new System.Drawing.Size(167, 22);
+            this.numPriority.TabIndex = 14;
+            this.numPriority.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
             // 
             // label11
             // 
@@ -378,7 +386,7 @@
             this.logBox.Cursor = System.Windows.Forms.Cursors.Cross;
             this.logBox.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.logBox.HideSelection = false;
-            this.logBox.Location = new System.Drawing.Point(694, 71);
+            this.logBox.Location = new System.Drawing.Point(694, 96);
             this.logBox.Name = "logBox";
             this.logBox.ReadOnly = true;
             this.logBox.Size = new System.Drawing.Size(498, 480);
@@ -387,38 +395,68 @@
     "---------------------------------\n";
             this.logBox.WordWrap = false;
             // 
+            // addressesListBox
+            // 
+            this.addressesListBox.FormattingEnabled = true;
+            this.addressesListBox.ItemHeight = 16;
+            this.addressesListBox.Location = new System.Drawing.Point(434, 428);
+            this.addressesListBox.Name = "addressesListBox";
+            this.addressesListBox.Size = new System.Drawing.Size(191, 148);
+            this.addressesListBox.TabIndex = 30;
+            // 
+            // prioritiesListBox
+            // 
+            this.prioritiesListBox.FormattingEnabled = true;
+            this.prioritiesListBox.ItemHeight = 16;
+            this.prioritiesListBox.Location = new System.Drawing.Point(631, 428);
+            this.prioritiesListBox.Name = "prioritiesListBox";
+            this.prioritiesListBox.Size = new System.Drawing.Size(41, 148);
+            this.prioritiesListBox.TabIndex = 31;
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(431, 408);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(75, 17);
+            this.label17.TabIndex = 32;
+            this.label17.Text = "Addresses";
+            // 
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(691, 565);
+            this.label12.Location = new System.Drawing.Point(19, 424);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(129, 17);
-            this.label12.TabIndex = 28;
-            this.label12.Text = "My ring knowledge:";
+            this.label12.Size = new System.Drawing.Size(75, 17);
+            this.label12.TabIndex = 33;
+            this.label12.Text = "Addresses";
             // 
-            // textRingStatus
+            // label18
             // 
-            this.textRingStatus.AutoSize = true;
-            this.textRingStatus.Location = new System.Drawing.Point(691, 591);
-            this.textRingStatus.Name = "textRingStatus";
-            this.textRingStatus.Size = new System.Drawing.Size(53, 17);
-            this.textRingStatus.TabIndex = 29;
-            this.textRingStatus.Text = "80->81";
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(620, 408);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(63, 17);
+            this.label18.TabIndex = 34;
+            this.label18.Text = "Priorities";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1204, 635);
-            this.Controls.Add(this.textRingStatus);
+            this.Controls.Add(this.label18);
             this.Controls.Add(this.label12);
+            this.Controls.Add(this.label17);
+            this.Controls.Add(this.prioritiesListBox);
+            this.Controls.Add(this.addressesListBox);
             this.Controls.Add(this.logBox);
             this.Controls.Add(this.label16);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.ringSynchronizationBtn);
             this.Controls.Add(this.numericUpDown2);
             this.Controls.Add(this.label11);
-            this.Controls.Add(this.numericUpDown1);
+            this.Controls.Add(this.numPriority);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label9);
@@ -437,7 +475,7 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxConnectionStatus)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numPriority)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -462,7 +500,7 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.NumericUpDown numPriority;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.NumericUpDown numericUpDown2;
         private System.Windows.Forms.Button ringSynchronizationBtn;
@@ -477,8 +515,11 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.RichTextBox logBox;
+        private System.Windows.Forms.ListBox addressesListBox;
+        private System.Windows.Forms.ListBox prioritiesListBox;
+        private System.Windows.Forms.Label label17;
         private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.Label textRingStatus;
+        private System.Windows.Forms.Label label18;
     }
 }
 

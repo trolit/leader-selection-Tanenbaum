@@ -153,7 +153,10 @@ namespace lsa_Tanenbaum_app
                         {
                             isRingObtained = true;
                             LogEvent("Ring structure completed!");
-                            UpdateRingStatusText(processesTmpContainer);
+                            (List<IPEndPoint>, List<int>) x = TranslateDataFromProcessesTmpContainer(processesTmpContainer);
+                            UpdateList(addressesListBox, x.Item1);
+                            UpdateList(prioritiesListBox, x.Item2);
+
                             SendRingList();
                         } else
                         {
@@ -162,8 +165,10 @@ namespace lsa_Tanenbaum_app
                     } else if (receivedMessage.Contains("LIST:") && !isRingObtained)
                     {
                         isRingObtained = true;
+                        (List<IPEndPoint>, List<int>) x = TranslateDataFromProcessesTmpContainer(processesTmpContainer);
+                        UpdateList(addressesListBox, x.Item1);
+                        UpdateList(prioritiesListBox, x.Item2);
 
-                        UpdateRingStatusText(processesTmpContainer);
 
                         processesTmpContainer = receivedMessage;
 
@@ -192,11 +197,11 @@ namespace lsa_Tanenbaum_app
             }
         }
 
-        private void UpdateRingStatusText(string text)
+        private void UpdateList<T>(ListBox listBox, List<T> list)
         {
             MethodInvoker inv = delegate
             {
-                textRingStatus.Text = text;
+                listBox.DataSource = list;
             };
 
             Invoke(inv);
@@ -211,10 +216,10 @@ namespace lsa_Tanenbaum_app
         private void RequestRingSynchronization()
         {
             if (processesTmpContainer == "CONF:") {
-                processesTmpContainer = $"CONF:|{textProcessIp.Text}:{textProcessPort.Text}";
+                processesTmpContainer = $"CONF:|{textProcessIp.Text}:{textProcessPort.Text}:{numPriority.Value}";
             } 
             else if (processesTmpContainer.Contains($"{textProcessIp.Text}{textProcessPort.Text}") == false) {
-                processesTmpContainer = $"{processesTmpContainer}|{textProcessIp.Text}:{textProcessPort.Text}";
+                processesTmpContainer = $"{processesTmpContainer}|{textProcessIp.Text}:{textProcessPort.Text}:{numPriority.Value}";
             }
 
             processesTmpContainer = RemoveZeroCharactersFromString(processesTmpContainer);
