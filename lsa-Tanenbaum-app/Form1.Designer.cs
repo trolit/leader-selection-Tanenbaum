@@ -235,6 +235,7 @@
             // 
             this.connectToTargetBtn.Enabled = false;
             this.connectToTargetBtn.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.connectToTargetBtn.Font = new System.Drawing.Font("Consolas", 7.8F);
             this.connectToTargetBtn.Location = new System.Drawing.Point(104, 354);
             this.connectToTargetBtn.Name = "connectToTargetBtn";
             this.connectToTargetBtn.Size = new System.Drawing.Size(127, 56);
@@ -329,7 +330,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(92, 559);
+            this.label11.Location = new System.Drawing.Point(313, 224);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(124, 17);
             this.label11.TabIndex = 15;
@@ -337,7 +338,7 @@
             // 
             // numericUpDown2
             // 
-            this.numericUpDown2.Location = new System.Drawing.Point(95, 583);
+            this.numericUpDown2.Location = new System.Drawing.Point(316, 248);
             this.numericUpDown2.Name = "numericUpDown2";
             this.numericUpDown2.Size = new System.Drawing.Size(167, 22);
             this.numericUpDown2.TabIndex = 16;
@@ -345,6 +346,7 @@
             // ringSynchronizationBtn
             // 
             this.ringSynchronizationBtn.Enabled = false;
+            this.ringSynchronizationBtn.Font = new System.Drawing.Font("Consolas", 7.8F);
             this.ringSynchronizationBtn.Location = new System.Drawing.Point(104, 435);
             this.ringSynchronizationBtn.Name = "ringSynchronizationBtn";
             this.ringSynchronizationBtn.Size = new System.Drawing.Size(127, 56);
@@ -443,12 +445,15 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(555, 282);
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.button1.Font = new System.Drawing.Font("Consolas", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.Location = new System.Drawing.Point(316, 142);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(133, 33);
+            this.button1.Size = new System.Drawing.Size(336, 29);
             this.button1.TabIndex = 36;
-            this.button1.Text = "Call Update";
+            this.button1.Text = "call priority update";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.callPriorityUpdateBtn);
             // 
             // priorityTrackBar
             // 
@@ -497,11 +502,11 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1204, 635);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.label19);
             this.Controls.Add(this.label12);
             this.Controls.Add(this.textPriority);
             this.Controls.Add(this.priorityTrackBar);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.logBox);
             this.Controls.Add(this.label16);
             this.Controls.Add(this.label1);

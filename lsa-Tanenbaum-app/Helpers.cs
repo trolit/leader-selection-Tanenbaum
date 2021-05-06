@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Text;
 using System.Windows.Forms;
 
 namespace lsa_Tanenbaum_app
@@ -23,6 +24,20 @@ namespace lsa_Tanenbaum_app
             {
                 textBox.ReadOnly = !textBox.ReadOnly;
             }
+        }
+
+        public static byte[] PackMessage(ASCIIEncoding encoding, string message)
+        {
+            return encoding.GetBytes(
+                RemoveZeroCharactersFromString(message)
+            );
+        }
+
+        public static string UnpackMessage(ASCIIEncoding encoding, byte[] message)
+        {
+            return RemoveZeroCharactersFromString(
+                encoding.GetString(message)
+            );
         }
 
         // pattern: LIST:|IP:Port:Priority|IP:Port:Priority|

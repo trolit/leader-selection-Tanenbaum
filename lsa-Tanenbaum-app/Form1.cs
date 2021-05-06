@@ -26,7 +26,8 @@ namespace lsa_Tanenbaum_app
         List<string> listOfAllProcesses;
         List<int> listOfProcessesPriorities;
         
-        string processesTmpContainer;
+        string processesTmpContainer; // variable for particular target - obtaining network structure data
+        string message; // other messages (priority update, ping)
 
         TextBox[] configurationTextBoxes;
 
@@ -157,7 +158,7 @@ namespace lsa_Tanenbaum_app
                     receivedData = (byte[])result.AsyncState;
 
                     // Convert byte[] to string
-                    string receivedMessage = RemoveZeroCharactersFromString(encoding.GetString(receivedData));
+                    string receivedMessage = UnpackMessage(encoding, receivedData);
 
                     if (receivedMessage.Contains("CONF:"))
                     {
@@ -246,19 +247,16 @@ namespace lsa_Tanenbaum_app
 
             processesTmpContainer = RemoveZeroCharactersFromString(processesTmpContainer);
 
-            byte[] sendingMessage = encoding.GetBytes(processesTmpContainer);
-
             LogEvent($"Request network synchronization [{processesTmpContainer}].");
             MakeNewLineInLog();
 
-            sck.SendTo(sendingMessage, epTarget);
+            sck.SendTo(PackMessage(encoding, processesTmpContainer), epTarget);
         }
 
         private void SendRingList()
         {
             processesTmpContainer = processesTmpContainer.Replace("CONF:", "LIST:");
-            byte[] message = encoding.GetBytes(processesTmpContainer);
-            sck.SendTo(message, epTarget);
+            sck.SendTo(PackMessage(encoding, processesTmpContainer), epTarget);
             LogEvent($"Forward ring to the target.");
         }
 
@@ -281,6 +279,11 @@ namespace lsa_Tanenbaum_app
                 if (result >= 1 && result <= 100)
                     priorityTrackBar.Value = result;
             }
+        }
+
+        private void callPriorityUpdateBtn(object sender, EventArgs e)
+        {
+
         }
 
         private void SwapEnabledForConnectAndDisconnectBtns()
