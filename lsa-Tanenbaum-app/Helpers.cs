@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Net;
 using System.Text;
 using System.Windows.Forms;
@@ -38,6 +39,11 @@ namespace lsa_Tanenbaum_app
             return RemoveZeroCharactersFromString(
                 encoding.GetString(message)
             );
+        }
+
+        public static IPEndPoint BuildIPEndPoint(string address, string port)
+        {
+            return new IPEndPoint(IPAddress.Parse(address), Convert.ToInt32(port));
         }
 
         // pattern: LIST:|IP:Port:Priority|IP:Port:Priority|
