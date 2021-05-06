@@ -453,7 +453,7 @@
             this.button1.TabIndex = 36;
             this.button1.Text = "call priority update";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.callPriorityUpdateBtn);
+            this.button1.Click += new System.EventHandler(this.callPriorityUpdateBtn_Click);
             // 
             // priorityTrackBar
             // 
@@ -525,6 +525,7 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.knowledgeGroupBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "LSA - Tanenbaum";

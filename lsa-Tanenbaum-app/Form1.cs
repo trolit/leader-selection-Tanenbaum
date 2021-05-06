@@ -13,7 +13,6 @@ namespace lsa_Tanenbaum_app
     {
         Socket sck;
         Random randomizer;
-        DateTime date = DateTime.Now;
 
         ASCIIEncoding encoding;
 
@@ -23,9 +22,9 @@ namespace lsa_Tanenbaum_app
         bool isConnectionEstablished = false; // for handling simple fields checking with disconnect btn behaviour
         bool isRingObtained = false;
 
-        List<string> listOfAllProcesses;
-        List<int> listOfProcessesPriorities;
-        
+        List<IPEndPoint> listOfAddresses;
+        List<int> listOfPriorities;
+
         string processesTmpContainer; // variable for particular target - obtaining network structure data
         string message; // other messages (priority update, ping)
 
@@ -52,8 +51,8 @@ namespace lsa_Tanenbaum_app
             encoding = new ASCIIEncoding();
             RandomizeProcessIdentity(textProcessName, randomizer);
 
-            listOfAllProcesses = new List<string>();
-            listOfProcessesPriorities = new List<int>();
+            listOfAddresses = new List<IPEndPoint>();
+            listOfPriorities = new List<int>();
             processesTmpContainer = "CONF:";
 
             disconnectFromTargetBtn.Enabled = false;
@@ -63,6 +62,138 @@ namespace lsa_Tanenbaum_app
             textTargetIp.Text = GetLocalAddress();
             textReceiveFromIp.Text = GetLocalAddress();
         }
+
+        // **************************************************
+        //
+        //            DISTRIBUTED COMMUNICATION
+        //
+        // **************************************************
+
+        private void MessageCallBack(IAsyncResult result)
+        {
+            if (sck.Connected)
+            {
+                try
+                {
+                    byte[] receivedData = new byte[1500];
+                    receivedData = (byte[])result.AsyncState;
+
+                    // Convert byte[] to string
+                    string receivedMessage = UnpackMessage(encoding, receivedData);
+
+                    if (receivedMessage.Contains("CONF:"))
+                    {
+
+                        processesTmpContainer = receivedMessage;
+
+                        if (processesTmpContainer.Contains($"{textProcessIp.Text}:{textProcessPort.Text}"))
+                        {
+                            LogEvent("CONF: Synchronization request returned, ring collected.");
+                            isRingObtained = true;                       
+                            MakeNewLineInLog();
+                            UpdateKnowledgeSection();
+                            SendRingList();
+                        } else
+                        {
+                            LogEvent($"CONF: Received synchronization request.");
+                            RequestRingSynchronization();
+                        }
+                    } else if (receivedMessage.Contains("LIST:") && !isRingObtained)
+                    {
+                        isRingObtained = true;
+                        UpdateKnowledgeSection();
+                        processesTmpContainer = receivedMessage;
+
+                        MakeNewLineInLog();
+                        LogEvent($"LIST: Ring structure obtained \n[{processesTmpContainer}]. ");
+                        SendRingList();
+                    } else if (receivedMessage.Contains("LIST:") && isRingObtained)
+                    {
+                        MakeNewLineInLog();
+                        LogEvent("LIST: Ring structure returned.");
+                        if (processesTmpContainer != receivedMessage)
+                        {
+                            processesTmpContainer = receivedMessage;
+                            LogEvent("LIST: Changes found! Overwriting ring structure.");
+                        } else
+                        {
+                            LogEvent("LIST: No changes found. Package ignored.");
+                        }
+                    } else if (receivedMessage.Contains("PRIO:"))
+                    {
+                        MakeNewLineInLog();
+                        LogEvent("PRIO request received.");
+                        if (receivedMessage.Contains($"{textProcessIp.Text}:{textProcessPort.Text}"))
+                        {
+                            LogEvent($"PRIO: Updating knowledge..");
+                            UpdatePriorityInListBox(receivedMessage);
+                            LogEvent($"PRIO: Request deleted.");
+                            MakeNewLineInLog();
+                        } else
+                        {                            
+                            LogEvent("PRIO: Updating knowledge..");
+                            UpdatePriorityInListBox(receivedMessage);
+                            LogEvent("PRIO: Sending PRIORITY UPDATE request further.");
+                            MakeNewLineInLog();
+                            sck.SendTo(receivedData, epTarget);                   
+                        }
+                    }
+
+                    // callback again
+                    buffer = new byte[1500];
+                    sck.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref epReceiveFrom, new AsyncCallback(MessageCallBack), buffer);
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.ToString());
+                }
+            }
+        }
+
+
+        // **************************************************
+        //
+        //            THREAD UI UPDATE FUNCTIONS
+        //
+        // **************************************************
+
+        private void UpdateList<T>(ListBox listBox, List<T> list)
+        {
+            MethodInvoker inv = delegate
+            {
+                if (listBox.DataSource != null)
+                    listBox.DataSource = null;
+
+                listBox.DataSource = list;
+            };
+
+            Invoke(inv);
+        }
+
+        private void UpdateKnowledgeSection()
+        {
+            (List<IPEndPoint>, List<int>) data = TranslateDataFromProcessesTmpContainer(processesTmpContainer);
+            listOfAddresses = data.Item1;
+            listOfPriorities = data.Item2;
+            UpdateList(addressesListBox, listOfAddresses);
+            UpdateList(prioritiesListBox, listOfPriorities);
+        }
+
+        private void LogEvent(string text)
+        {
+            Invoke((Func<string, bool>)logBox.AppendText, text);
+        }
+
+        private void MakeNewLineInLog()
+        {
+            Invoke((Func<bool>)logBox.AppendNewLine);
+        }
+
+        // **************************************************
+        //
+        //                 GUI FUNCTIONS
+        //
+        // **************************************************
 
         private void connectToTargetBtn_Click(object sender, EventArgs e)
         {
@@ -85,37 +216,27 @@ namespace lsa_Tanenbaum_app
             // configure listening
             buffer = new byte[1500];
             sck.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref epReceiveFrom, new AsyncCallback(MessageCallBack), buffer);
-            
+
             if (sck.Connected)
             {
                 ChangeTextBoxCollectionReadOnlyStatus(configurationTextBoxes);
 
-                LogEvent($"{textProcessName.Text} connection established.");
+                LogEvent($"INFO: {textProcessName.Text} connection established.");
                 MakeNewLineInLog();
 
                 knowledgeGroupBox.Visible = true;
                 knowledgeGroupBox.Text = $"{textProcessName.Text} knowledge";
 
-                listOfAllProcesses.Add(textProcessName.Text);
                 pictureBoxConnectionStatus.Image = Resources.status_connected;
                 labelConnectionStatus.Text = "Connected";
                 SwapEnabledForConnectAndDisconnectBtns();
                 ringSynchronizationBtn.Enabled = true;
                 isConnectionEstablished = true;
-            } else
+            }
+            else
             {
                 MessageBox.Show("Connection request failed!!");
-            }      
-        }
-
-        private void LogEvent(string text)
-        {
-            Invoke((Func<DateTime, string, bool>) logBox.AppendText, date, text);
-        }
-
-        private void MakeNewLineInLog()
-        {
-            Invoke((Func<bool>) logBox.AppendNewLine);
+            }
         }
 
         private void disconnectFromTargetBtn_Click(object sender, EventArgs e)
@@ -129,10 +250,49 @@ namespace lsa_Tanenbaum_app
 
             ChangeTextBoxCollectionReadOnlyStatus(configurationTextBoxes);
 
-            LogEvent($"{textProcessName.Text} connection closed.");
+            LogEvent($"INFO: {textProcessName.Text} connection closed.");
             MakeNewLineInLog();
         }
 
+        private void ringSynchronizationBtn_Click(object sender, EventArgs e)
+        {
+            RequestRingSynchronization();
+        }
+
+        private void onPriorityTrackBarValueChange(object sender, EventArgs e)
+        {
+            textPriority.Text = (priorityTrackBar.Value).ToString();
+        }
+
+        private void onPriorityTextBoxValueChange(object sender, EventArgs e)
+        {
+            if (int.TryParse(textPriority.Text, out int result))
+            {
+                if (result >= 1 && result <= 100)
+                    priorityTrackBar.Value = result;
+            }
+        }
+
+        private void processConfigChanged(object sender, EventArgs e)
+        {
+            if (!isConnectionEstablished)
+            {
+                connectToTargetBtn.Enabled = CheckIfConfigFieldsAreNotEmpty() ? true : false;
+            }
+        }
+
+        private void callPriorityUpdateBtn_Click(object sender, EventArgs e)
+        {
+            MakeNewLineInLog();
+            LogEvent($"PRIO: Send PRIORITY UPDATE request.");
+            SendPriorityUpdatePackage();
+        }
+
+        // **************************************************
+        //
+        //               PART FUNCTIONS
+        //
+        // **************************************************
 
         private string GetLocalAddress()
         {
@@ -148,94 +308,6 @@ namespace lsa_Tanenbaum_app
             return "127.0.0.1";
         }
 
-        private void MessageCallBack(IAsyncResult result)
-        {
-            if (sck.Connected)
-            {
-                try
-                {
-                    byte[] receivedData = new byte[1500];
-                    receivedData = (byte[])result.AsyncState;
-
-                    // Convert byte[] to string
-                    string receivedMessage = UnpackMessage(encoding, receivedData);
-
-                    if (receivedMessage.Contains("CONF:"))
-                    {
-                        // Add message to the console
-                        LogEvent($"Received synchronization request.");
-                        MakeNewLineInLog();
-
-                        processesTmpContainer = receivedMessage;
-
-                        // callback again
-                        buffer = new byte[1500];
-                        sck.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref epReceiveFrom, new AsyncCallback(MessageCallBack), buffer);
-
-                        if (processesTmpContainer.Contains($"{textProcessIp.Text}:{textProcessPort.Text}"))
-                        {
-                            isRingObtained = true;
-                            LogEvent("Ring structure completed!");
-                            (List<IPEndPoint>, List<int>) x = TranslateDataFromProcessesTmpContainer(processesTmpContainer);
-                            UpdateList(addressesListBox, x.Item1);
-                            UpdateList(prioritiesListBox, x.Item2);
-
-                            SendRingList();
-                        } else
-                        {
-                            RequestRingSynchronization();
-                        }
-                    } else if (receivedMessage.Contains("LIST:") && !isRingObtained)
-                    {
-                        isRingObtained = true;
-                        (List<IPEndPoint>, List<int>) x = TranslateDataFromProcessesTmpContainer(processesTmpContainer);
-                        UpdateList(addressesListBox, x.Item1);
-                        UpdateList(prioritiesListBox, x.Item2);
-
-
-                        processesTmpContainer = receivedMessage;
-
-                        LogEvent($"Ring structure obtained [{processesTmpContainer}]. ");
-                        MakeNewLineInLog();
-
-                        SendRingList();
-                    } else if (receivedMessage.Contains("LIST:") && isRingObtained)
-                    {
-                        MakeNewLineInLog();
-                        LogEvent("Ring structure obtained.");
-                        if (processesTmpContainer != receivedMessage)
-                        {
-                            processesTmpContainer = receivedMessage;
-                            LogEvent("Changes found! Overwriting ring structure.");
-                        } else
-                        {
-                            LogEvent("No changes found. Package ignored.");
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show(e.ToString());
-                }
-            }
-        }
-
-        private void UpdateList<T>(ListBox listBox, List<T> list)
-        {
-            MethodInvoker inv = delegate
-            {
-                listBox.DataSource = list;
-            };
-
-            Invoke(inv);
-        }
-
-
-        private void ringSynchronizationBtn_Click(object sender, EventArgs e)
-        {
-            RequestRingSynchronization();
-        }
-
         private void RequestRingSynchronization()
         {
             if (processesTmpContainer == "CONF:") {
@@ -247,8 +319,7 @@ namespace lsa_Tanenbaum_app
 
             processesTmpContainer = RemoveZeroCharactersFromString(processesTmpContainer);
 
-            LogEvent($"Request network synchronization [{processesTmpContainer}].");
-            MakeNewLineInLog();
+            LogEvent($"CONF: Request network synchronization \n[{processesTmpContainer}].");
 
             sck.SendTo(PackMessage(encoding, processesTmpContainer), epTarget);
         }
@@ -257,34 +328,31 @@ namespace lsa_Tanenbaum_app
         {
             processesTmpContainer = processesTmpContainer.Replace("CONF:", "LIST:");
             sck.SendTo(PackMessage(encoding, processesTmpContainer), epTarget);
-            LogEvent($"Forward ring to the target.");
+            LogEvent($"LIST: Pass ring to [{textTargetIp.Text}:{textTargetPort.Text}].");
         }
 
-        private void processConfigChanged(object sender, EventArgs e)
+
+        private void SendPriorityUpdatePackage()
         {
-            if (!isConnectionEstablished)
+            message = $"PRIO:{textProcessIp.Text}:{textProcessPort.Text}:{textPriority.Text}";
+            sck.SendTo(PackMessage(encoding, message), epTarget);
+        }
+
+        private void UpdatePriorityInListBox(string message)
+        {
+            if (message.Length > 6)
             {
-                connectToTargetBtn.Enabled = CheckIfConfigFieldsAreNotEmpty() ? true : false;
-            }
-        }
-        private void onPriorityTrackBarValueChange(object sender, EventArgs e)
-        {
-            textPriority.Text = (priorityTrackBar.Value).ToString();
+                // pattern: PRIO:192....:80:10
+                string[] splitMessage = message.Remove(0, 5).Split(':');
+                IPEndPoint address = BuildIPEndPoint(splitMessage[0], splitMessage[1]);
+                int index = listOfAddresses.IndexOf(address);
+
+                listOfPriorities[index] = Convert.ToInt32(splitMessage[2]);
+    
+                UpdateList(prioritiesListBox, listOfPriorities);
+            }       
         }
 
-        private void onPriorityTextBoxValueChange(object sender, EventArgs e)
-        {
-            if (int.TryParse(textPriority.Text, out int result))
-            {
-                if (result >= 1 && result <= 100)
-                    priorityTrackBar.Value = result;
-            }
-        }
-
-        private void callPriorityUpdateBtn(object sender, EventArgs e)
-        {
-
-        }
 
         private void SwapEnabledForConnectAndDisconnectBtns()
         {
