@@ -17,6 +17,14 @@ namespace lsa_Tanenbaum_app
             return text.Replace("\0", "");
         }
 
+        public static void ChangeTextBoxCollectionReadOnlyStatus(TextBox[] textBoxes)
+        {
+            foreach (TextBox textBox in textBoxes)
+            {
+                textBox.ReadOnly = !textBox.ReadOnly;
+            }
+        }
+
         // pattern: LIST:|IP:Port:Priority|IP:Port:Priority|
         // The string split method will have the first element as String.Empty
         // if your delimiter appears at the beginning of the string. 

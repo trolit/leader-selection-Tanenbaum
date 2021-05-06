@@ -62,12 +62,13 @@
             this.addressesListBox = new System.Windows.Forms.ListBox();
             this.prioritiesListBox = new System.Windows.Forms.ListBox();
             this.label17 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
+            this.knowledgeGroupBox = new System.Windows.Forms.GroupBox();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxConnectionStatus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPriority)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
+            this.knowledgeGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -397,18 +398,20 @@
             // 
             // addressesListBox
             // 
+            this.addressesListBox.BackColor = System.Drawing.SystemColors.Control;
             this.addressesListBox.FormattingEnabled = true;
             this.addressesListBox.ItemHeight = 16;
-            this.addressesListBox.Location = new System.Drawing.Point(434, 428);
+            this.addressesListBox.Location = new System.Drawing.Point(21, 62);
             this.addressesListBox.Name = "addressesListBox";
             this.addressesListBox.Size = new System.Drawing.Size(191, 148);
             this.addressesListBox.TabIndex = 30;
             // 
             // prioritiesListBox
             // 
+            this.prioritiesListBox.BackColor = System.Drawing.SystemColors.Control;
             this.prioritiesListBox.FormattingEnabled = true;
             this.prioritiesListBox.ItemHeight = 16;
-            this.prioritiesListBox.Location = new System.Drawing.Point(631, 428);
+            this.prioritiesListBox.Location = new System.Drawing.Point(218, 62);
             this.prioritiesListBox.Name = "prioritiesListBox";
             this.prioritiesListBox.Size = new System.Drawing.Size(41, 148);
             this.prioritiesListBox.TabIndex = 31;
@@ -416,40 +419,40 @@
             // label17
             // 
             this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(431, 408);
+            this.label17.Location = new System.Drawing.Point(18, 42);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(75, 17);
             this.label17.TabIndex = 32;
             this.label17.Text = "Addresses";
             // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(19, 424);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(75, 17);
-            this.label12.TabIndex = 33;
-            this.label12.Text = "Addresses";
-            // 
             // label18
             // 
             this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(620, 408);
+            this.label18.Location = new System.Drawing.Point(207, 42);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(63, 17);
             this.label18.TabIndex = 34;
             this.label18.Text = "Priorities";
+            // 
+            // knowledgeGroupBox
+            // 
+            this.knowledgeGroupBox.Controls.Add(this.label18);
+            this.knowledgeGroupBox.Controls.Add(this.label17);
+            this.knowledgeGroupBox.Controls.Add(this.addressesListBox);
+            this.knowledgeGroupBox.Controls.Add(this.prioritiesListBox);
+            this.knowledgeGroupBox.Location = new System.Drawing.Point(399, 334);
+            this.knowledgeGroupBox.Name = "knowledgeGroupBox";
+            this.knowledgeGroupBox.Size = new System.Drawing.Size(289, 242);
+            this.knowledgeGroupBox.TabIndex = 35;
+            this.knowledgeGroupBox.TabStop = false;
+            this.knowledgeGroupBox.Text = "My knowledge";
+            this.knowledgeGroupBox.Visible = false;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1204, 635);
-            this.Controls.Add(this.label18);
-            this.Controls.Add(this.label12);
-            this.Controls.Add(this.label17);
-            this.Controls.Add(this.prioritiesListBox);
-            this.Controls.Add(this.addressesListBox);
             this.Controls.Add(this.logBox);
             this.Controls.Add(this.label16);
             this.Controls.Add(this.label1);
@@ -467,6 +470,7 @@
             this.Controls.Add(this.disconnectFromTargetBtn);
             this.Controls.Add(this.connectToTargetBtn);
             this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.knowledgeGroupBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -477,6 +481,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxConnectionStatus)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPriority)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
+            this.knowledgeGroupBox.ResumeLayout(false);
+            this.knowledgeGroupBox.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -518,8 +524,8 @@
         private System.Windows.Forms.ListBox addressesListBox;
         private System.Windows.Forms.ListBox prioritiesListBox;
         private System.Windows.Forms.Label label17;
-        private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.GroupBox knowledgeGroupBox;
     }
 }
 

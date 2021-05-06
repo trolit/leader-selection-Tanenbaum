@@ -27,7 +27,9 @@ namespace lsa_Tanenbaum_app
         List<int> listOfProcessesPriorities;
         
         string processesTmpContainer;
-        
+
+        TextBox[] configurationTextBoxes;
+
         public Form1()
         {
             InitializeComponent();
@@ -35,6 +37,16 @@ namespace lsa_Tanenbaum_app
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            configurationTextBoxes = new TextBox[] {
+                textProcessName,
+                textProcessIp,
+                textProcessPort,
+                textTargetIp,
+                textTargetPort,
+                textReceiveFromIp,
+                textReceiveFromPort
+            };
+
             randomizer = new Random();
             encoding = new ASCIIEncoding();
             RandomizeProcessIdentity(textProcessName, randomizer);
@@ -75,8 +87,13 @@ namespace lsa_Tanenbaum_app
             
             if (sck.Connected)
             {
+                ChangeTextBoxCollectionReadOnlyStatus(configurationTextBoxes);
+
                 LogEvent($"{textProcessName.Text} connection established.");
                 MakeNewLineInLog();
+
+                knowledgeGroupBox.Visible = true;
+                knowledgeGroupBox.Text = $"{textProcessName.Text} knowledge";
 
                 listOfAllProcesses.Add(textProcessName.Text);
                 pictureBoxConnectionStatus.Image = Resources.status_connected;
@@ -108,6 +125,11 @@ namespace lsa_Tanenbaum_app
             SwapEnabledForConnectAndDisconnectBtns();
             isConnectionEstablished = false;
             processConfigChanged(sender, e);
+
+            ChangeTextBoxCollectionReadOnlyStatus(configurationTextBoxes);
+
+            LogEvent($"{textProcessName.Text} connection closed.");
+            MakeNewLineInLog();
         }
 
 
@@ -258,23 +280,20 @@ namespace lsa_Tanenbaum_app
         {
             bool result = true;
 
-            string[] configFieldsValues = new string[] {
-                textProcessName.Text,
-                textProcessIp.Text,
-                textProcessPort.Text,
-                textTargetIp.Text,
-                textTargetPort.Text,
-                textReceiveFromIp.Text,
-                textReceiveFromPort.Text
-            };
-
-            foreach (string fieldValue in configFieldsValues)
+            if (configurationTextBoxes != null)
             {
-                if (string.IsNullOrWhiteSpace(fieldValue))
+                foreach (TextBox configField in configurationTextBoxes)
                 {
-                    result = false;
-                    break;
+                    if (string.IsNullOrWhiteSpace(configField.Text))
+                    {
+                        result = false;
+                        break;
+                    }
                 }
+            } 
+            else
+            {
+                result = false;
             }
 
             return result;
