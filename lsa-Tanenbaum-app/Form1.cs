@@ -238,10 +238,10 @@ namespace lsa_Tanenbaum_app
         private void RequestRingSynchronization()
         {
             if (processesTmpContainer == "CONF:") {
-                processesTmpContainer = $"CONF:|{textProcessIp.Text}:{textProcessPort.Text}:{numPriority.Value}";
+                processesTmpContainer = $"CONF:|{textProcessIp.Text}:{textProcessPort.Text}:{Convert.ToInt32(textPriority.Text)}";
             } 
             else if (processesTmpContainer.Contains($"{textProcessIp.Text}{textProcessPort.Text}") == false) {
-                processesTmpContainer = $"{processesTmpContainer}|{textProcessIp.Text}:{textProcessPort.Text}:{numPriority.Value}";
+                processesTmpContainer = $"{processesTmpContainer}|{textProcessIp.Text}:{textProcessPort.Text}:{Convert.ToInt32(textPriority.Text)}";
             }
 
             processesTmpContainer = RemoveZeroCharactersFromString(processesTmpContainer);
@@ -267,6 +267,19 @@ namespace lsa_Tanenbaum_app
             if (!isConnectionEstablished)
             {
                 connectToTargetBtn.Enabled = CheckIfConfigFieldsAreNotEmpty() ? true : false;
+            }
+        }
+        private void onPriorityTrackBarValueChange(object sender, EventArgs e)
+        {
+            textPriority.Text = (priorityTrackBar.Value).ToString();
+        }
+
+        private void onPriorityTextBoxValueChange(object sender, EventArgs e)
+        {
+            if (int.TryParse(textPriority.Text, out int result))
+            {
+                if (result >= 1 && result <= 100)
+                    priorityTrackBar.Value = result;
             }
         }
 

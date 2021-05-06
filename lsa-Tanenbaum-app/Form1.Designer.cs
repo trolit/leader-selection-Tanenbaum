@@ -52,7 +52,6 @@
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.numPriority = new System.Windows.Forms.NumericUpDown();
             this.label11 = new System.Windows.Forms.Label();
             this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
             this.ringSynchronizationBtn = new System.Windows.Forms.Button();
@@ -64,11 +63,16 @@
             this.label17 = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
             this.knowledgeGroupBox = new System.Windows.Forms.GroupBox();
+            this.button1 = new System.Windows.Forms.Button();
+            this.priorityTrackBar = new System.Windows.Forms.TrackBar();
+            this.textPriority = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label19 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxConnectionStatus)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numPriority)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
             this.knowledgeGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.priorityTrackBar)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -315,28 +319,17 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(336, 88);
+            this.label5.Location = new System.Drawing.Point(600, 86);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(52, 17);
             this.label5.TabIndex = 6;
             this.label5.Text = "Priority";
-            // 
-            // numPriority
-            // 
-            this.numPriority.Location = new System.Drawing.Point(339, 110);
-            this.numPriority.Name = "numPriority";
-            this.numPriority.Size = new System.Drawing.Size(167, 22);
-            this.numPriority.TabIndex = 14;
-            this.numPriority.Value = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
+            this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(336, 153);
+            this.label11.Location = new System.Drawing.Point(92, 559);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(124, 17);
             this.label11.TabIndex = 15;
@@ -344,7 +337,7 @@
             // 
             // numericUpDown2
             // 
-            this.numericUpDown2.Location = new System.Drawing.Point(339, 177);
+            this.numericUpDown2.Location = new System.Drawing.Point(95, 583);
             this.numericUpDown2.Name = "numericUpDown2";
             this.numericUpDown2.Size = new System.Drawing.Size(167, 22);
             this.numericUpDown2.TabIndex = 16;
@@ -448,18 +441,73 @@
             this.knowledgeGroupBox.Text = "My knowledge";
             this.knowledgeGroupBox.Visible = false;
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(555, 282);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(133, 33);
+            this.button1.TabIndex = 36;
+            this.button1.Text = "Call Update";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
+            // priorityTrackBar
+            // 
+            this.priorityTrackBar.Location = new System.Drawing.Point(305, 97);
+            this.priorityTrackBar.Maximum = 100;
+            this.priorityTrackBar.Minimum = 1;
+            this.priorityTrackBar.Name = "priorityTrackBar";
+            this.priorityTrackBar.Size = new System.Drawing.Size(289, 56);
+            this.priorityTrackBar.TabIndex = 37;
+            this.priorityTrackBar.Value = 5;
+            this.priorityTrackBar.ValueChanged += new System.EventHandler(this.onPriorityTrackBarValueChange);
+            // 
+            // textPriority
+            // 
+            this.textPriority.Location = new System.Drawing.Point(603, 108);
+            this.textPriority.MaxLength = 5;
+            this.textPriority.Name = "textPriority";
+            this.textPriority.Size = new System.Drawing.Size(49, 22);
+            this.textPriority.TabIndex = 25;
+            this.textPriority.Text = "5";
+            this.textPriority.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textPriority.TextChanged += new System.EventHandler(this.onPriorityTextBoxValueChange);
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(313, 85);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(16, 17);
+            this.label12.TabIndex = 38;
+            this.label12.Text = "1";
+            this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(552, 85);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(32, 17);
+            this.label19.TabIndex = 39;
+            this.label19.Text = "100";
+            this.label19.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1204, 635);
+            this.Controls.Add(this.label19);
+            this.Controls.Add(this.label12);
+            this.Controls.Add(this.textPriority);
+            this.Controls.Add(this.priorityTrackBar);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.logBox);
             this.Controls.Add(this.label16);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.ringSynchronizationBtn);
             this.Controls.Add(this.numericUpDown2);
             this.Controls.Add(this.label11);
-            this.Controls.Add(this.numPriority);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label9);
@@ -479,10 +527,10 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxConnectionStatus)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numPriority)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
             this.knowledgeGroupBox.ResumeLayout(false);
             this.knowledgeGroupBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.priorityTrackBar)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -506,7 +554,6 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.NumericUpDown numPriority;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.NumericUpDown numericUpDown2;
         private System.Windows.Forms.Button ringSynchronizationBtn;
@@ -526,6 +573,11 @@
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.GroupBox knowledgeGroupBox;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TrackBar priorityTrackBar;
+        private System.Windows.Forms.TextBox textPriority;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label19;
     }
 }
 
