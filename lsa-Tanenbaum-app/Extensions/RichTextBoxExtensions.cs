@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using static lsa_Tanenbaum_app.Helpers;
 
 namespace System.Windows.Forms
 {
@@ -30,11 +31,6 @@ namespace System.Windows.Forms
             box.AppendText(Environment.NewLine);
             box.ScrollToCaret();
             return true;
-        }
-
-        private static string GetCurrentTimeStamp(DateTime date)
-        {
-            return date.ToString("HH:mm:ss");
         }
     }
 }

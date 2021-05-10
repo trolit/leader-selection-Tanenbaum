@@ -40,6 +40,11 @@ namespace lsa_Tanenbaum_app
             );
         }
 
+        public static string GetCurrentTimeStamp(DateTime date)
+        {
+            return date.ToString("HH:mm:ss");
+        }
+
         public static IPEndPoint BuildIPEndPoint(string address, string port)
         {
             return new IPEndPoint(IPAddress.Parse(address), Convert.ToInt32(port));
