@@ -324,7 +324,8 @@ namespace lsa_Tanenbaum_app
         {
             int highestPriorityId = listOfPriorities.IndexOf(listOfPriorities.Max());
             ringCoordinator = listOfAddresses[highestPriorityId];
-            UpdateLabel(ringCoordinatorText, ringCoordinator.ToString());
+            UpdateLabel(ringCoordinatorAddressText, ringCoordinator.ToString());
+            UpdateLabel(ringCoordinatorPriorityText, $"with priority {listOfPriorities[highestPriorityId]} ({GetCurrentTimeStamp(DateTime.Now)})");
             LogEvent("LIST: Initial coordinator chosen.");
         }
 

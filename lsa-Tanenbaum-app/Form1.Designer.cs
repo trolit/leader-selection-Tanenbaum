@@ -62,7 +62,8 @@
             this.label17 = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
             this.knowledgeGroupBox = new System.Windows.Forms.GroupBox();
-            this.ringCoordinatorText = new System.Windows.Forms.Label();
+            this.ringCoordinatorPriorityText = new System.Windows.Forms.Label();
+            this.ringCoordinatorAddressText = new System.Windows.Forms.Label();
             this.label33 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.priorityTrackBar = new System.Windows.Forms.TrackBar();
@@ -485,7 +486,8 @@
             // 
             // knowledgeGroupBox
             // 
-            this.knowledgeGroupBox.Controls.Add(this.ringCoordinatorText);
+            this.knowledgeGroupBox.Controls.Add(this.ringCoordinatorPriorityText);
+            this.knowledgeGroupBox.Controls.Add(this.ringCoordinatorAddressText);
             this.knowledgeGroupBox.Controls.Add(this.label33);
             this.knowledgeGroupBox.Controls.Add(this.label18);
             this.knowledgeGroupBox.Controls.Add(this.label17);
@@ -499,20 +501,29 @@
             this.knowledgeGroupBox.Text = "My knowledge";
             this.knowledgeGroupBox.Visible = false;
             // 
-            // ringCoordinatorText
+            // ringCoordinatorPriorityText
             // 
-            this.ringCoordinatorText.AutoSize = true;
-            this.ringCoordinatorText.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.ringCoordinatorText.Location = new System.Drawing.Point(188, 176);
-            this.ringCoordinatorText.Name = "ringCoordinatorText";
-            this.ringCoordinatorText.Size = new System.Drawing.Size(109, 17);
-            this.ringCoordinatorText.TabIndex = 36;
-            this.ringCoordinatorText.Text = "0.0.0.0:00000";
+            this.ringCoordinatorPriorityText.AutoSize = true;
+            this.ringCoordinatorPriorityText.Location = new System.Drawing.Point(100, 188);
+            this.ringCoordinatorPriorityText.Name = "ringCoordinatorPriorityText";
+            this.ringCoordinatorPriorityText.Size = new System.Drawing.Size(169, 17);
+            this.ringCoordinatorPriorityText.TabIndex = 37;
+            this.ringCoordinatorPriorityText.Text = "with priority 50 (12:02:22)";
+            // 
+            // ringCoordinatorAddressText
+            // 
+            this.ringCoordinatorAddressText.AutoSize = true;
+            this.ringCoordinatorAddressText.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.ringCoordinatorAddressText.Location = new System.Drawing.Point(201, 171);
+            this.ringCoordinatorAddressText.Name = "ringCoordinatorAddressText";
+            this.ringCoordinatorAddressText.Size = new System.Drawing.Size(109, 17);
+            this.ringCoordinatorAddressText.TabIndex = 36;
+            this.ringCoordinatorAddressText.Text = "0.0.0.0:00000";
             // 
             // label33
             // 
             this.label33.AutoSize = true;
-            this.label33.Location = new System.Drawing.Point(42, 176);
+            this.label33.Location = new System.Drawing.Point(58, 171);
             this.label33.Name = "label33";
             this.label33.Size = new System.Drawing.Size(145, 17);
             this.label33.TabIndex = 35;
@@ -628,9 +639,9 @@
             this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button2.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.button2.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button2.Location = new System.Drawing.Point(189, 75);
+            this.button2.Location = new System.Drawing.Point(178, 75);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(81, 31);
+            this.button2.Size = new System.Drawing.Size(92, 31);
             this.button2.TabIndex = 40;
             this.button2.TabStop = false;
             this.button2.Text = "enable";
@@ -748,7 +759,8 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.Label label33;
-        private System.Windows.Forms.Label ringCoordinatorText;
+        private System.Windows.Forms.Label ringCoordinatorAddressText;
+        private System.Windows.Forms.Label ringCoordinatorPriorityText;
     }
 }
 
