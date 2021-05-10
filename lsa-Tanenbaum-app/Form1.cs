@@ -176,7 +176,7 @@ namespace lsa_Tanenbaum_app
             MethodInvoker inv = delegate
             {
                 if (listBox.DataSource != null)
-                    listBox.DataSource = null;
+                    listBox.DataSource = new List<T>();
 
                 listBox.DataSource = list;
             };
