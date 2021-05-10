@@ -92,12 +92,14 @@ namespace lsa_Tanenbaum_app
                         if (processesTmpContainer.Contains($"{textProcessIp.Text}:{textProcessPort.Text}"))
                         {
                             LogEvent("CONF: Synchronization request returned, ring collected.");
+                            DisableRingSyncButton();
                             isRingObtained = true;                       
                             MakeNewLineInLog();
                             UpdateKnowledgeSection();
                             SendRingList();
                         } else
                         {
+                            DisableRingSyncButton();
                             LogEvent($"CONF: Received synchronization request.");
                             RequestRingSynchronization();
                         }
@@ -160,6 +162,16 @@ namespace lsa_Tanenbaum_app
         //            THREAD UI UPDATE FUNCTIONS
         //
         // **************************************************
+
+        private void DisableRingSyncButton()
+        {
+            MethodInvoker inv = delegate
+            {
+                ringSynchronizationBtn.Enabled = false;
+            };
+
+            Invoke(inv);
+        }
 
         private void UpdateLabel(Label label, string text)
         {

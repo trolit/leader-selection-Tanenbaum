@@ -440,7 +440,6 @@
             // 
             this.addressesListBox.BackColor = System.Drawing.SystemColors.Control;
             this.addressesListBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.addressesListBox.CausesValidation = false;
             this.addressesListBox.FormattingEnabled = true;
             this.addressesListBox.ItemHeight = 16;
             this.addressesListBox.Location = new System.Drawing.Point(67, 45);
@@ -449,12 +448,13 @@
             this.addressesListBox.Size = new System.Drawing.Size(191, 114);
             this.addressesListBox.TabIndex = 30;
             this.addressesListBox.TabStop = false;
+            this.addressesListBox.UseTabStops = false;
             // 
             // prioritiesListBox
             // 
             this.prioritiesListBox.BackColor = System.Drawing.SystemColors.Control;
             this.prioritiesListBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.prioritiesListBox.CausesValidation = false;
+            this.prioritiesListBox.DisplayMember = "5";
             this.prioritiesListBox.FormattingEnabled = true;
             this.prioritiesListBox.ItemHeight = 16;
             this.prioritiesListBox.Location = new System.Drawing.Point(264, 45);
@@ -463,6 +463,7 @@
             this.prioritiesListBox.Size = new System.Drawing.Size(41, 114);
             this.prioritiesListBox.TabIndex = 31;
             this.prioritiesListBox.TabStop = false;
+            this.prioritiesListBox.UseTabStops = false;
             // 
             // label17
             // 
@@ -606,6 +607,7 @@
             // 
             this.button3.BackColor = System.Drawing.Color.Tan;
             this.button3.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button3.Enabled = false;
             this.button3.FlatAppearance.BorderSize = 0;
             this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button3.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
