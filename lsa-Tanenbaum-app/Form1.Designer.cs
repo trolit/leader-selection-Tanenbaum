@@ -65,13 +65,13 @@
             this.ringCoordinatorPriorityText = new System.Windows.Forms.Label();
             this.ringCoordinatorAddressText = new System.Windows.Forms.Label();
             this.label33 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
+            this.updatePriorityBtn = new System.Windows.Forms.Button();
             this.priorityTrackBar = new System.Windows.Forms.TrackBar();
             this.textPriority = new System.Windows.Forms.TextBox();
             this.label12 = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.diagnosticPingGroupBox = new System.Windows.Forms.GroupBox();
             this.button3 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.label10 = new System.Windows.Forms.Label();
@@ -82,7 +82,7 @@
             this.knowledgeGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.priorityTrackBar)).BeginInit();
             this.groupBox2.SuspendLayout();
-            this.groupBox3.SuspendLayout();
+            this.diagnosticPingGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -529,18 +529,19 @@
             this.label33.TabIndex = 35;
             this.label33.Text = "Current ring leader is:";
             // 
-            // button1
+            // updatePriorityBtn
             // 
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.button1.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.button1.Location = new System.Drawing.Point(11, 93);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(336, 29);
-            this.button1.TabIndex = 36;
-            this.button1.TabStop = false;
-            this.button1.Text = "call priority update";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.callPriorityUpdateBtn_Click);
+            this.updatePriorityBtn.Enabled = false;
+            this.updatePriorityBtn.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.updatePriorityBtn.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.updatePriorityBtn.Location = new System.Drawing.Point(11, 93);
+            this.updatePriorityBtn.Name = "updatePriorityBtn";
+            this.updatePriorityBtn.Size = new System.Drawing.Size(336, 29);
+            this.updatePriorityBtn.TabIndex = 36;
+            this.updatePriorityBtn.TabStop = false;
+            this.updatePriorityBtn.Text = "call priority update";
+            this.updatePriorityBtn.UseVisualStyleBackColor = true;
+            this.updatePriorityBtn.Click += new System.EventHandler(this.callPriorityUpdateBtn_Click);
             // 
             // priorityTrackBar
             // 
@@ -588,7 +589,7 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.button1);
+            this.groupBox2.Controls.Add(this.updatePriorityBtn);
             this.groupBox2.Controls.Add(this.priorityTrackBar);
             this.groupBox2.Controls.Add(this.label5);
             this.groupBox2.Controls.Add(this.label19);
@@ -601,18 +602,19 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Priority";
             // 
-            // groupBox3
+            // diagnosticPingGroupBox
             // 
-            this.groupBox3.Controls.Add(this.button3);
-            this.groupBox3.Controls.Add(this.button2);
-            this.groupBox3.Controls.Add(this.label11);
-            this.groupBox3.Controls.Add(this.numericUpDown2);
-            this.groupBox3.Location = new System.Drawing.Point(305, 257);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(370, 115);
-            this.groupBox3.TabIndex = 41;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Diagnostic ping";
+            this.diagnosticPingGroupBox.Controls.Add(this.button3);
+            this.diagnosticPingGroupBox.Controls.Add(this.button2);
+            this.diagnosticPingGroupBox.Controls.Add(this.label11);
+            this.diagnosticPingGroupBox.Controls.Add(this.numericUpDown2);
+            this.diagnosticPingGroupBox.Location = new System.Drawing.Point(305, 257);
+            this.diagnosticPingGroupBox.Name = "diagnosticPingGroupBox";
+            this.diagnosticPingGroupBox.Size = new System.Drawing.Size(370, 115);
+            this.diagnosticPingGroupBox.TabIndex = 41;
+            this.diagnosticPingGroupBox.TabStop = false;
+            this.diagnosticPingGroupBox.Text = "Diagnostic ping";
+            this.diagnosticPingGroupBox.Visible = false;
             // 
             // button3
             // 
@@ -674,7 +676,7 @@
             this.ClientSize = new System.Drawing.Size(1204, 635);
             this.Controls.Add(this.label20);
             this.Controls.Add(this.label10);
-            this.Controls.Add(this.groupBox3);
+            this.Controls.Add(this.diagnosticPingGroupBox);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.logBox);
             this.Controls.Add(this.label16);
@@ -704,8 +706,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.priorityTrackBar)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
+            this.diagnosticPingGroupBox.ResumeLayout(false);
+            this.diagnosticPingGroupBox.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -747,13 +749,13 @@
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.GroupBox knowledgeGroupBox;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button updatePriorityBtn;
         private System.Windows.Forms.TrackBar priorityTrackBar;
         private System.Windows.Forms.TextBox textPriority;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.GroupBox diagnosticPingGroupBox;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Label label10;

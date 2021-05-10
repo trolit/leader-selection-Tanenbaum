@@ -107,20 +107,12 @@ namespace lsa_Tanenbaum_app
                     {
                         isRingObtained = true;
                         UpdateKnowledgeSection();
-                        SelectCoordinatorOnRingSynchronization();
-                        DisplayProcessKnowledgeSection();
                         processesTmpContainer = receivedMessage;
-
-                        MakeNewLineInLog();
-                        LogEvent($"LIST: Ring structure obtained \n[{processesTmpContainer}]. ");
+                        SetupRemainingElementsOfApp($"LIST: Ring structure obtained \n[{processesTmpContainer}]. ");
                         SendRingList();
                     } else if (receivedMessage.Contains("LIST:") && isRingObtained)
                     {
-                        SelectCoordinatorOnRingSynchronization();
-                        MakeNewLineInLog();
-                        LogEvent("LIST: Ring structure returned.");
-
-                        DisplayProcessKnowledgeSection();
+                        SetupRemainingElementsOfApp("LIST: Ring structure returned.");
 
                         if (processesTmpContainer != receivedMessage)
                         {
@@ -167,10 +159,11 @@ namespace lsa_Tanenbaum_app
         //
         // **************************************************
 
-        private void DisplayProcessKnowledgeSection() {
+        private void DisplayRemainingGroupBoxes() {
             Invoke(new MethodInvoker(() => {
-                knowledgeGroupBox.Visible = true;
                 knowledgeGroupBox.Text = $"{textProcessName.Text} network knowledge";
+                knowledgeGroupBox.Visible = true;
+                diagnosticPingGroupBox.Visible = true;
             }));   
         }
 
@@ -231,6 +224,15 @@ namespace lsa_Tanenbaum_app
         //                 GUI FUNCTIONS
         //
         // **************************************************
+
+        private void SetupRemainingElementsOfUI(string logMessage)
+        {
+            SelectCoordinatorOnRingSynchronization();
+            DisplayRemainingGroupBoxes();
+            MakeNewLineInLog();
+            LogEvent(logMessage);
+            Invoke(new MethodInvoker(() => updatePriorityBtn.Enabled = true));
+        }
 
         private void connectToTargetBtn_Click(object sender, EventArgs e)
         {
