@@ -52,7 +52,7 @@
             this.label9 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
-            this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
+            this.diagnosticPingFrequency = new System.Windows.Forms.NumericUpDown();
             this.ringSynchronizationBtn = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
@@ -72,13 +72,13 @@
             this.label19 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.diagnosticPingGroupBox = new System.Windows.Forms.GroupBox();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.disableDiagnosticPingBtn = new System.Windows.Forms.Button();
+            this.enableDiagnosticPingBtn = new System.Windows.Forms.Button();
             this.label10 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxConnectionStatus)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.diagnosticPingFrequency)).BeginInit();
             this.knowledgeGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.priorityTrackBar)).BeginInit();
             this.groupBox2.SuspendLayout();
@@ -354,30 +354,30 @@
             this.label11.TabIndex = 15;
             this.label11.Text = "Ping frequency (s)";
             // 
-            // numericUpDown2
+            // diagnosticPingFrequency
             // 
-            this.numericUpDown2.DecimalPlaces = 1;
-            this.numericUpDown2.Increment = new decimal(new int[] {
+            this.diagnosticPingFrequency.DecimalPlaces = 1;
+            this.diagnosticPingFrequency.Increment = new decimal(new int[] {
             5,
             0,
             0,
             65536});
-            this.numericUpDown2.Location = new System.Drawing.Point(16, 59);
-            this.numericUpDown2.Maximum = new decimal(new int[] {
+            this.diagnosticPingFrequency.Location = new System.Drawing.Point(16, 59);
+            this.diagnosticPingFrequency.Maximum = new decimal(new int[] {
             40,
             0,
             0,
             0});
-            this.numericUpDown2.Minimum = new decimal(new int[] {
+            this.diagnosticPingFrequency.Minimum = new decimal(new int[] {
             5,
             0,
             0,
             65536});
-            this.numericUpDown2.Name = "numericUpDown2";
-            this.numericUpDown2.Size = new System.Drawing.Size(121, 22);
-            this.numericUpDown2.TabIndex = 16;
-            this.numericUpDown2.TabStop = false;
-            this.numericUpDown2.Value = new decimal(new int[] {
+            this.diagnosticPingFrequency.Name = "diagnosticPingFrequency";
+            this.diagnosticPingFrequency.Size = new System.Drawing.Size(121, 22);
+            this.diagnosticPingFrequency.TabIndex = 16;
+            this.diagnosticPingFrequency.TabStop = false;
+            this.diagnosticPingFrequency.Value = new decimal(new int[] {
             5,
             0,
             0,
@@ -604,10 +604,10 @@
             // 
             // diagnosticPingGroupBox
             // 
-            this.diagnosticPingGroupBox.Controls.Add(this.button3);
-            this.diagnosticPingGroupBox.Controls.Add(this.button2);
+            this.diagnosticPingGroupBox.Controls.Add(this.disableDiagnosticPingBtn);
+            this.diagnosticPingGroupBox.Controls.Add(this.enableDiagnosticPingBtn);
             this.diagnosticPingGroupBox.Controls.Add(this.label11);
-            this.diagnosticPingGroupBox.Controls.Add(this.numericUpDown2);
+            this.diagnosticPingGroupBox.Controls.Add(this.diagnosticPingFrequency);
             this.diagnosticPingGroupBox.Location = new System.Drawing.Point(305, 257);
             this.diagnosticPingGroupBox.Name = "diagnosticPingGroupBox";
             this.diagnosticPingGroupBox.Size = new System.Drawing.Size(370, 115);
@@ -616,38 +616,40 @@
             this.diagnosticPingGroupBox.Text = "Diagnostic ping";
             this.diagnosticPingGroupBox.Visible = false;
             // 
-            // button3
+            // disableDiagnosticPingBtn
             // 
-            this.button3.BackColor = System.Drawing.Color.Tan;
-            this.button3.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.button3.Enabled = false;
-            this.button3.FlatAppearance.BorderSize = 0;
-            this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button3.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.button3.Location = new System.Drawing.Point(278, 74);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(85, 31);
-            this.button3.TabIndex = 41;
-            this.button3.TabStop = false;
-            this.button3.Text = "disable";
-            this.button3.UseVisualStyleBackColor = false;
+            this.disableDiagnosticPingBtn.BackColor = System.Drawing.Color.Tan;
+            this.disableDiagnosticPingBtn.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.disableDiagnosticPingBtn.Enabled = false;
+            this.disableDiagnosticPingBtn.FlatAppearance.BorderSize = 0;
+            this.disableDiagnosticPingBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.disableDiagnosticPingBtn.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.disableDiagnosticPingBtn.Location = new System.Drawing.Point(278, 74);
+            this.disableDiagnosticPingBtn.Name = "disableDiagnosticPingBtn";
+            this.disableDiagnosticPingBtn.Size = new System.Drawing.Size(85, 31);
+            this.disableDiagnosticPingBtn.TabIndex = 41;
+            this.disableDiagnosticPingBtn.TabStop = false;
+            this.disableDiagnosticPingBtn.Text = "disable";
+            this.disableDiagnosticPingBtn.UseVisualStyleBackColor = false;
+            this.disableDiagnosticPingBtn.Click += new System.EventHandler(this.deactivateDiagnosticPingBtn_Click);
             // 
-            // button2
+            // enableDiagnosticPingBtn
             // 
-            this.button2.BackColor = System.Drawing.Color.PaleGreen;
-            this.button2.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.button2.FlatAppearance.BorderColor = System.Drawing.Color.PaleGreen;
-            this.button2.FlatAppearance.BorderSize = 0;
-            this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button2.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.button2.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button2.Location = new System.Drawing.Point(178, 75);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(92, 31);
-            this.button2.TabIndex = 40;
-            this.button2.TabStop = false;
-            this.button2.Text = "enable";
-            this.button2.UseVisualStyleBackColor = false;
+            this.enableDiagnosticPingBtn.BackColor = System.Drawing.Color.PaleGreen;
+            this.enableDiagnosticPingBtn.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.enableDiagnosticPingBtn.FlatAppearance.BorderColor = System.Drawing.Color.PaleGreen;
+            this.enableDiagnosticPingBtn.FlatAppearance.BorderSize = 0;
+            this.enableDiagnosticPingBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.enableDiagnosticPingBtn.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.enableDiagnosticPingBtn.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.enableDiagnosticPingBtn.Location = new System.Drawing.Point(178, 75);
+            this.enableDiagnosticPingBtn.Name = "enableDiagnosticPingBtn";
+            this.enableDiagnosticPingBtn.Size = new System.Drawing.Size(92, 31);
+            this.enableDiagnosticPingBtn.TabIndex = 40;
+            this.enableDiagnosticPingBtn.TabStop = false;
+            this.enableDiagnosticPingBtn.Text = "enable";
+            this.enableDiagnosticPingBtn.UseVisualStyleBackColor = false;
+            this.enableDiagnosticPingBtn.Click += new System.EventHandler(this.activateDiagnosticPingBtn_Click);
             // 
             // label10
             // 
@@ -700,7 +702,7 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxConnectionStatus)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.diagnosticPingFrequency)).EndInit();
             this.knowledgeGroupBox.ResumeLayout(false);
             this.knowledgeGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.priorityTrackBar)).EndInit();
@@ -731,7 +733,7 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.NumericUpDown numericUpDown2;
+        private System.Windows.Forms.NumericUpDown diagnosticPingFrequency;
         private System.Windows.Forms.Button ringSynchronizationBtn;
         private System.Windows.Forms.TextBox textReceiveFromPort;
         private System.Windows.Forms.TextBox textReceiveFromIp;
@@ -756,8 +758,8 @@
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.GroupBox diagnosticPingGroupBox;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button enableDiagnosticPingBtn;
+        private System.Windows.Forms.Button disableDiagnosticPingBtn;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.Label label33;

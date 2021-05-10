@@ -140,6 +140,10 @@ namespace lsa_Tanenbaum_app
                             MakeNewLineInLog();
                             sck.SendTo(receivedData, epTarget);
                         }
+                    } else if (receivedMessage.Contains("PING:"))
+                    {
+                        LogEvent("PING: Received diagnostic ping from: kappa");
+                        // answer on ping ICMP Echo Reply
                     }
 
                     // callback again
@@ -224,6 +228,40 @@ namespace lsa_Tanenbaum_app
         //                 GUI FUNCTIONS
         //
         // **************************************************
+
+        private Timer diagnosticPingTimer;
+
+        private void diagnosticPingTimer_Tick(object sender, EventArgs e)
+        {
+            message = $"PING:{textProcessIp.Text}:{textProcessPort.Text}";
+            sck.SendTo(PackMessage(encoding, message), ringCoordinator);
+            LogEvent($"PING: Send ICMP Echo Request to coordinator.");
+        }
+
+        private void InitDiagnosticPingTimer()
+        {
+            diagnosticPingTimer = new Timer();
+            diagnosticPingTimer.Tick += new EventHandler(diagnosticPingTimer_Tick);
+            diagnosticPingTimer.Interval = diagnosticPingFrequency.Value < 1 ? 500 : (int) diagnosticPingFrequency.Value * 1000; // 5 * 1000 = 5000ms (5s)
+            diagnosticPingTimer.Start();
+        }
+
+        private void activateDiagnosticPingBtn_Click(object sender, EventArgs e)
+        {
+            InitDiagnosticPingTimer();
+            enableDiagnosticPingBtn.Enabled = false;
+            disableDiagnosticPingBtn.Enabled = true;
+        }
+
+        private void deactivateDiagnosticPingBtn_Click(object sender, EventArgs e)
+        {
+            if (diagnosticPingTimer != null)
+            {
+                diagnosticPingTimer.Stop();
+                disableDiagnosticPingBtn.Enabled = false;
+                enableDiagnosticPingBtn.Enabled = true;
+            }
+        }
 
         private void SetupRemainingElementsOfUI(string logMessage)
         {
@@ -401,7 +439,6 @@ namespace lsa_Tanenbaum_app
                 UpdateList(prioritiesListBox, listOfPriorities);
             }       
         }
-
 
         private void SwapEnabledForConnectAndDisconnectBtns()
         {
