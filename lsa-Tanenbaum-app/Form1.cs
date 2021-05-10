@@ -6,6 +6,7 @@ using System.Text;
 using lsa_Tanenbaum_app.Properties;
 using System.Collections.Generic;
 using static lsa_Tanenbaum_app.Helpers;
+using System.Linq;
 
 namespace lsa_Tanenbaum_app
 {
@@ -30,6 +31,8 @@ namespace lsa_Tanenbaum_app
 
         TextBox[] configurationTextBoxes;
 
+        IPEndPoint ringCoordinator;
+        
         public Form1()
         {
             InitializeComponent();
@@ -102,6 +105,7 @@ namespace lsa_Tanenbaum_app
                     {
                         isRingObtained = true;
                         UpdateKnowledgeSection();
+                        SelectCoordinatorOnRingSynchronization();
                         processesTmpContainer = receivedMessage;
 
                         MakeNewLineInLog();
@@ -109,6 +113,7 @@ namespace lsa_Tanenbaum_app
                         SendRingList();
                     } else if (receivedMessage.Contains("LIST:") && isRingObtained)
                     {
+                        SelectCoordinatorOnRingSynchronization();
                         MakeNewLineInLog();
                         LogEvent("LIST: Ring structure returned.");
                         if (processesTmpContainer != receivedMessage)
@@ -150,12 +155,21 @@ namespace lsa_Tanenbaum_app
             }
         }
 
-
         // **************************************************
         //
         //            THREAD UI UPDATE FUNCTIONS
         //
         // **************************************************
+
+        private void UpdateLabel(Label label, string text)
+        {
+            MethodInvoker inv = delegate
+            {
+                label.Text = text;
+            };
+
+            Invoke(inv);
+        }
 
         private void UpdateList<T>(ListBox listBox, List<T> list)
         {
@@ -181,12 +195,12 @@ namespace lsa_Tanenbaum_app
 
         private void LogEvent(string text)
         {
-            Invoke((Func<string, bool>)logBox.AppendText, text);
+            Invoke((Func<string, bool>) logBox.AppendText, text);
         }
 
         private void MakeNewLineInLog()
         {
-            Invoke((Func<bool>)logBox.AppendNewLine);
+            Invoke((Func<bool>) logBox.AppendNewLine);
         }
 
         // **************************************************
@@ -225,7 +239,7 @@ namespace lsa_Tanenbaum_app
                 MakeNewLineInLog();
 
                 knowledgeGroupBox.Visible = true;
-                knowledgeGroupBox.Text = $"{textProcessName.Text} knowledge";
+                knowledgeGroupBox.Text = $"{textProcessName.Text} network knowledge";
 
                 pictureBoxConnectionStatus.Image = Resources.status_connected;
                 labelConnectionStatus.Text = "Connected";
@@ -293,6 +307,14 @@ namespace lsa_Tanenbaum_app
         //               PART FUNCTIONS
         //
         // **************************************************
+
+        private void SelectCoordinatorOnRingSynchronization()
+        {
+            int highestPriorityId = listOfPriorities.IndexOf(listOfPriorities.Max());
+            ringCoordinator = listOfAddresses[highestPriorityId];
+            UpdateLabel(ringCoordinatorText, ringCoordinator.ToString());
+            LogEvent("LIST: Initial coordinator chosen.");
+        }
 
         private string GetLocalAddress()
         {
