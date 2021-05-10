@@ -330,7 +330,7 @@
             // label9
             // 
             this.label9.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label9.Location = new System.Drawing.Point(291, 94);
+            this.label9.Location = new System.Drawing.Point(284, 94);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(5, 500);
             this.label9.TabIndex = 12;
@@ -427,10 +427,10 @@
             this.logBox.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.logBox.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.logBox.HideSelection = false;
-            this.logBox.Location = new System.Drawing.Point(694, 100);
+            this.logBox.Location = new System.Drawing.Point(709, 100);
             this.logBox.Name = "logBox";
             this.logBox.ReadOnly = true;
-            this.logBox.Size = new System.Drawing.Size(498, 505);
+            this.logBox.Size = new System.Drawing.Size(487, 505);
             this.logBox.TabIndex = 27;
             this.logBox.TabStop = false;
             this.logBox.Text = "// *********************************************\n// LSA - Tanenbaum\n// **********" +
@@ -650,7 +650,7 @@
             // label10
             // 
             this.label10.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label10.Location = new System.Drawing.Point(683, 100);
+            this.label10.Location = new System.Drawing.Point(688, 94);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(5, 500);
             this.label10.TabIndex = 42;

@@ -32,7 +32,7 @@ namespace lsa_Tanenbaum_app
         TextBox[] configurationTextBoxes;
 
         IPEndPoint ringCoordinator;
-        
+
         public Form1()
         {
             InitializeComponent();
@@ -93,7 +93,7 @@ namespace lsa_Tanenbaum_app
                         {
                             LogEvent("CONF: Synchronization request returned, ring collected.");
                             DisableRingSyncButton();
-                            isRingObtained = true;                       
+                            isRingObtained = true;
                             MakeNewLineInLog();
                             UpdateKnowledgeSection();
                             SendRingList();
@@ -108,6 +108,7 @@ namespace lsa_Tanenbaum_app
                         isRingObtained = true;
                         UpdateKnowledgeSection();
                         SelectCoordinatorOnRingSynchronization();
+                        DisplayProcessKnowledgeSection();
                         processesTmpContainer = receivedMessage;
 
                         MakeNewLineInLog();
@@ -118,6 +119,9 @@ namespace lsa_Tanenbaum_app
                         SelectCoordinatorOnRingSynchronization();
                         MakeNewLineInLog();
                         LogEvent("LIST: Ring structure returned.");
+
+                        DisplayProcessKnowledgeSection();
+
                         if (processesTmpContainer != receivedMessage)
                         {
                             processesTmpContainer = receivedMessage;
@@ -137,12 +141,12 @@ namespace lsa_Tanenbaum_app
                             LogEvent($"PRIO: Request deleted.");
                             MakeNewLineInLog();
                         } else
-                        {                            
+                        {
                             LogEvent("PRIO: Updating knowledge..");
                             UpdatePriorityInListBox(receivedMessage);
                             LogEvent("PRIO: Sending PRIORITY UPDATE request further.");
                             MakeNewLineInLog();
-                            sck.SendTo(receivedData, epTarget);                   
+                            sck.SendTo(receivedData, epTarget);
                         }
                     }
 
@@ -162,6 +166,13 @@ namespace lsa_Tanenbaum_app
         //            THREAD UI UPDATE FUNCTIONS
         //
         // **************************************************
+
+        private void DisplayProcessKnowledgeSection() {
+            Invoke(new MethodInvoker(() => {
+                knowledgeGroupBox.Visible = true;
+                knowledgeGroupBox.Text = $"{textProcessName.Text} network knowledge";
+            }));   
+        }
 
         private void DisableRingSyncButton()
         {
@@ -249,9 +260,6 @@ namespace lsa_Tanenbaum_app
 
                 LogEvent($"INFO: {textProcessName.Text} connection established.");
                 MakeNewLineInLog();
-
-                knowledgeGroupBox.Visible = true;
-                knowledgeGroupBox.Text = $"{textProcessName.Text} network knowledge";
 
                 pictureBoxConnectionStatus.Image = Resources.status_connected;
                 labelConnectionStatus.Text = "Connected";
