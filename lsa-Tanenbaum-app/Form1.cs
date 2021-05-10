@@ -108,11 +108,11 @@ namespace lsa_Tanenbaum_app
                         isRingObtained = true;
                         UpdateKnowledgeSection();
                         processesTmpContainer = receivedMessage;
-                        SetupRemainingElementsOfApp($"LIST: Ring structure obtained \n[{processesTmpContainer}]. ");
+                        SetupRemainingElementsOfUI($"LIST: Ring structure obtained \n[{processesTmpContainer}]. ");
                         SendRingList();
                     } else if (receivedMessage.Contains("LIST:") && isRingObtained)
                     {
-                        SetupRemainingElementsOfApp("LIST: Ring structure returned.");
+                        SetupRemainingElementsOfUI("LIST: Ring structure returned.");
 
                         if (processesTmpContainer != receivedMessage)
                         {
@@ -266,7 +266,11 @@ namespace lsa_Tanenbaum_app
                 pictureBoxConnectionStatus.Image = Resources.status_connected;
                 labelConnectionStatus.Text = "Connected";
                 SwapEnabledForConnectAndDisconnectBtns();
-                ringSynchronizationBtn.Enabled = true;
+
+                if (listOfAddresses.Count == 0) {
+                    ringSynchronizationBtn.Enabled = true;
+                }
+                
                 isConnectionEstablished = true;
             }
             else
