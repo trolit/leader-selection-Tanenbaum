@@ -72,6 +72,8 @@
             this.label19 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.diagnosticPingGroupBox = new System.Windows.Forms.GroupBox();
+            this.label21 = new System.Windows.Forms.Label();
+            this.replyTimeout = new System.Windows.Forms.NumericUpDown();
             this.disableDiagnosticPingBtn = new System.Windows.Forms.Button();
             this.enableDiagnosticPingBtn = new System.Windows.Forms.Button();
             this.label10 = new System.Windows.Forms.Label();
@@ -83,6 +85,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.priorityTrackBar)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.diagnosticPingGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.replyTimeout)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -362,7 +365,7 @@
             0,
             0,
             65536});
-            this.diagnosticPingFrequency.Location = new System.Drawing.Point(16, 59);
+            this.diagnosticPingFrequency.Location = new System.Drawing.Point(16, 56);
             this.diagnosticPingFrequency.Maximum = new decimal(new int[] {
             40,
             0,
@@ -604,17 +607,52 @@
             // 
             // diagnosticPingGroupBox
             // 
+            this.diagnosticPingGroupBox.Controls.Add(this.label21);
+            this.diagnosticPingGroupBox.Controls.Add(this.replyTimeout);
             this.diagnosticPingGroupBox.Controls.Add(this.disableDiagnosticPingBtn);
             this.diagnosticPingGroupBox.Controls.Add(this.enableDiagnosticPingBtn);
             this.diagnosticPingGroupBox.Controls.Add(this.label11);
             this.diagnosticPingGroupBox.Controls.Add(this.diagnosticPingFrequency);
             this.diagnosticPingGroupBox.Location = new System.Drawing.Point(305, 257);
             this.diagnosticPingGroupBox.Name = "diagnosticPingGroupBox";
-            this.diagnosticPingGroupBox.Size = new System.Drawing.Size(370, 115);
+            this.diagnosticPingGroupBox.Size = new System.Drawing.Size(370, 130);
             this.diagnosticPingGroupBox.TabIndex = 41;
             this.diagnosticPingGroupBox.TabStop = false;
             this.diagnosticPingGroupBox.Text = "Diagnostic ping";
             this.diagnosticPingGroupBox.Visible = false;
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(165, 31);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(115, 17);
+            this.label21.TabIndex = 43;
+            this.label21.Text = "Reply timeout (s)";
+            // 
+            // replyTimeout
+            // 
+            this.replyTimeout.DecimalPlaces = 1;
+            this.replyTimeout.Location = new System.Drawing.Point(168, 56);
+            this.replyTimeout.Maximum = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
+            this.replyTimeout.Minimum = new decimal(new int[] {
+            3,
+            0,
+            0,
+            0});
+            this.replyTimeout.Name = "replyTimeout";
+            this.replyTimeout.Size = new System.Drawing.Size(137, 22);
+            this.replyTimeout.TabIndex = 42;
+            this.replyTimeout.TabStop = false;
+            this.replyTimeout.Value = new decimal(new int[] {
+            3,
+            0,
+            0,
+            0});
             // 
             // disableDiagnosticPingBtn
             // 
@@ -624,9 +662,9 @@
             this.disableDiagnosticPingBtn.FlatAppearance.BorderSize = 0;
             this.disableDiagnosticPingBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.disableDiagnosticPingBtn.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.disableDiagnosticPingBtn.Location = new System.Drawing.Point(278, 74);
+            this.disableDiagnosticPingBtn.Location = new System.Drawing.Point(194, 95);
             this.disableDiagnosticPingBtn.Name = "disableDiagnosticPingBtn";
-            this.disableDiagnosticPingBtn.Size = new System.Drawing.Size(85, 31);
+            this.disableDiagnosticPingBtn.Size = new System.Drawing.Size(85, 28);
             this.disableDiagnosticPingBtn.TabIndex = 41;
             this.disableDiagnosticPingBtn.TabStop = false;
             this.disableDiagnosticPingBtn.Text = "disable";
@@ -642,9 +680,9 @@
             this.enableDiagnosticPingBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.enableDiagnosticPingBtn.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.enableDiagnosticPingBtn.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.enableDiagnosticPingBtn.Location = new System.Drawing.Point(178, 75);
+            this.enableDiagnosticPingBtn.Location = new System.Drawing.Point(84, 95);
             this.enableDiagnosticPingBtn.Name = "enableDiagnosticPingBtn";
-            this.enableDiagnosticPingBtn.Size = new System.Drawing.Size(92, 31);
+            this.enableDiagnosticPingBtn.Size = new System.Drawing.Size(92, 29);
             this.enableDiagnosticPingBtn.TabIndex = 40;
             this.enableDiagnosticPingBtn.TabStop = false;
             this.enableDiagnosticPingBtn.Text = "enable";
@@ -710,6 +748,7 @@
             this.groupBox2.PerformLayout();
             this.diagnosticPingGroupBox.ResumeLayout(false);
             this.diagnosticPingGroupBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.replyTimeout)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -765,6 +804,8 @@
         private System.Windows.Forms.Label label33;
         private System.Windows.Forms.Label ringCoordinatorAddressText;
         private System.Windows.Forms.Label ringCoordinatorPriorityText;
+        private System.Windows.Forms.NumericUpDown replyTimeout;
+        private System.Windows.Forms.Label label21;
     }
 }
 

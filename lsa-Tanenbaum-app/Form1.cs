@@ -152,6 +152,7 @@ namespace lsa_Tanenbaum_app
                     else if (receivedMessage.Contains("ICMP_ECHO_REPLY:"))
                     {
                         LogEvent($"PING: Received ICMP Echo Reply from coordinator.");
+                        StopDiagnosticPingTimeoutTimer();
                     }
 
                     // callback again
@@ -238,12 +239,51 @@ namespace lsa_Tanenbaum_app
         // **************************************************
 
         private Timer diagnosticPingTimer;
+        private Timer diagnosticPingTimeoutTimer;
+        private int currentTimeoutTick = 0;
+
+        private void diagnosticPingTimeoutTimer_Tick(object sender, EventArgs e)
+        {
+            if (currentTimeoutTick == replyTimeout.Value && diagnosticPingTimeoutTimer != null)
+            {
+                StopDiagnosticPingTimeoutTimer();
+                LogEvent($"PING: ICMP Echo Request timed out. Start election.");
+                deactivateDiagnosticPingBtn_Click(sender, e);
+                // TODO: START ELECTION
+            } else
+            {
+                currentTimeoutTick += 1;
+                LogEvent($"PING: Waiting for ICMP Echo Reply {currentTimeoutTick}s / {replyTimeout.Value}s.");
+            }
+        }
+
+        private void InitDiagnosticPingTimeoutTimer()
+        {
+            diagnosticPingTimeoutTimer = new Timer();
+            diagnosticPingTimeoutTimer.Tick += new EventHandler(diagnosticPingTimeoutTimer_Tick);
+            diagnosticPingTimeoutTimer.Interval = 1000;
+            diagnosticPingTimeoutTimer.Start();
+        }
+
+        private void StopDiagnosticPingTimeoutTimer()
+        {
+            if (diagnosticPingTimeoutTimer != null)
+            {
+                diagnosticPingTimeoutTimer.Stop();
+                diagnosticPingTimeoutTimer = null;
+            }
+            currentTimeoutTick = 0;
+        }
 
         private void diagnosticPingTimer_Tick(object sender, EventArgs e)
         {
-            message = $"ICMP_ECHO_REQ:{textProcessIp.Text}:{textProcessPort.Text}";
-            sck.SendTo(PackMessage(encoding, message), ringCoordinator);
-            LogEvent($"PING: Send ICMP Echo Request to coordinator.");
+            if (diagnosticPingTimeoutTimer == null)
+            {
+                message = $"ICMP_ECHO_REQ:{textProcessIp.Text}:{textProcessPort.Text}";
+                sck.SendTo(PackMessage(encoding, message), ringCoordinator);
+                LogEvent($"PING: Send ICMP Echo Request to coordinator.");
+                InitDiagnosticPingTimeoutTimer();
+            }
         }
 
         private void InitDiagnosticPingTimer()
