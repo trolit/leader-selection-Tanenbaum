@@ -250,7 +250,7 @@ namespace lsa_Tanenbaum_app
         {
             diagnosticPingTimer = new Timer();
             diagnosticPingTimer.Tick += new EventHandler(diagnosticPingTimer_Tick);
-            diagnosticPingTimer.Interval = diagnosticPingFrequency.Value < 1 ? 500 : (int) diagnosticPingFrequency.Value * 1000; // 5 * 1000 = 5000ms (5s)
+            diagnosticPingTimer.Interval = diagnosticPingFrequency.Value < 1 ? 500 : (int) (diagnosticPingFrequency.Value * 1000); // 5 * 1000 = 5000ms (5s)
             diagnosticPingTimer.Start();
         }
 
