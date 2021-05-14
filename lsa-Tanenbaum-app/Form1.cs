@@ -279,8 +279,7 @@ namespace lsa_Tanenbaum_app
         {
             if (diagnosticPingTimeoutTimer == null)
             {
-                message = $"ICMP_ECHO_REQ:{textProcessIp.Text}:{textProcessPort.Text}";
-                sck.SendTo(PackMessage(encoding, message), ringCoordinator);
+                SendEchoRequest(ringCoordinator);
                 LogEvent($"PING: Send ICMP Echo Request to coordinator.");
                 InitDiagnosticPingTimeoutTimer();
             }
@@ -419,6 +418,12 @@ namespace lsa_Tanenbaum_app
         //               PART FUNCTIONS
         //
         // **************************************************
+
+        private void SendEchoRequest(IPEndPoint target)
+        {
+            message = $"ICMP_ECHO_REQ:{textProcessIp.Text}:{textProcessPort.Text}";
+            sck.SendTo(PackMessage(encoding, message), target);
+        }
 
         private void AnswerEchoRequest(string requesterAddress)
         {
