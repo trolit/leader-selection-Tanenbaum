@@ -140,10 +140,18 @@ namespace lsa_Tanenbaum_app
                             MakeNewLineInLog();
                             sck.SendTo(receivedData, epTarget);
                         }
-                    } else if (receivedMessage.Contains("PING:"))
+                    } else if (receivedMessage.Contains("ICMP_ECHO_REQ:"))
                     {
-                        LogEvent("PING: Received diagnostic ping from: kappa");
-                        // answer on ping ICMP Echo Reply
+                        if (receivedMessage.Length > 14)
+                        {
+                            string cutMessage = receivedMessage.Remove(0, 14);
+                            LogEvent($"PING: Received ICMP Echo Request from {cutMessage}");
+                            AnswerEchoRequest(cutMessage);
+                        }
+                    }
+                    else if (receivedMessage.Contains("ICMP_ECHO_REPLY:"))
+                    {
+                        LogEvent($"PING: Received ICMP Echo Reply from coordinator.");
                     }
 
                     // callback again
@@ -233,7 +241,7 @@ namespace lsa_Tanenbaum_app
 
         private void diagnosticPingTimer_Tick(object sender, EventArgs e)
         {
-            message = $"PING:{textProcessIp.Text}:{textProcessPort.Text}";
+            message = $"ICMP_ECHO_REQ:{textProcessIp.Text}:{textProcessPort.Text}";
             sck.SendTo(PackMessage(encoding, message), ringCoordinator);
             LogEvent($"PING: Send ICMP Echo Request to coordinator.");
         }
@@ -372,6 +380,18 @@ namespace lsa_Tanenbaum_app
         //
         // **************************************************
 
+        private void AnswerEchoRequest(string requesterAddress)
+        {
+            string[] splitRequesterAddress = requesterAddress.Split(':');
+            int index = listOfAddresses.IndexOf(BuildIPEndPoint(splitRequesterAddress[0], splitRequesterAddress[1]));
+            if (index != -1)
+            {
+                message = $"ICMP_ECHO_REPLY:{textProcessIp.Text}:{textProcessPort.Text}";
+                sck.SendTo(PackMessage(encoding, message), listOfAddresses[index]);
+                LogEvent($"PING: Send ICMP Echo Reply to requester({listOfAddresses[index]}).");
+            }
+        }
+
         private void SelectCoordinatorOnRingSynchronization()
         {
             int highestPriorityId = listOfPriorities.IndexOf(listOfPriorities.Max());
@@ -416,6 +436,7 @@ namespace lsa_Tanenbaum_app
             processesTmpContainer = processesTmpContainer.Replace("CONF:", "LIST:");
             sck.SendTo(PackMessage(encoding, processesTmpContainer), epTarget);
             LogEvent($"LIST: Pass ring to [{textTargetIp.Text}:{textTargetPort.Text}].");
+            MakeNewLineInLog();
         }
 
 
