@@ -151,8 +151,35 @@ namespace lsa_Tanenbaum_app
                     }
                     else if (receivedMessage.Contains("ICMP_ECHO_REPLY:"))
                     {
-                        LogEvent($"PING: Received ICMP Echo Reply from coordinator.");
-                        StopDiagnosticPingTimeoutTimer();
+                        if (receivedMessage.Length > 16)
+                        {
+                            string cutMessage = receivedMessage.Remove(0, 16);
+
+                            if (receivedMessage.Contains(ringCoordinator.ToString()))
+                            {
+                                LogEvent($"PING: Received ICMP Echo Reply from {cutMessage}.");
+                                StopDiagnosticPingTimeoutTimer();
+                            }
+                            
+                            // neighbour can get election message
+                            if (cutMessage.Contains(listOfAddresses[testedProcessId].ToString()))
+                            {
+                                StopDiagnosticPingElectionTimeoutTimer();
+                                isNextAvailableNeighbourFound = true;
+                            }
+                        }
+                    }
+                    else if (receivedMessage.Contains("ELEC:"))
+                    {
+                        if (receivedMessage.Contains($"{textProcessIp.Text}:{textProcessPort.Text}"))
+                        {
+                            // election message returned to the process that initialized it
+
+                        } else
+                        {
+                            // pass election message further
+                            SendElectionRequest(receivedMessage);
+                        }
                     }
 
                     // callback again
@@ -239,47 +266,110 @@ namespace lsa_Tanenbaum_app
         // **************************************************
 
         private Timer diagnosticPingTimer;
-        private Timer diagnosticPingTimeoutTimer;
-        private int currentTimeoutTick = 0;
-
-        private void diagnosticPingTimeoutTimer_Tick(object sender, EventArgs e)
+        private Timer diagnosticPingCoordinatorTimeoutTimer;
+        private Timer diagnosticPingElectionTimeoutTimer;
+        private int currentElectionTimeoutTick = 0;
+        private int currentCoordinatorTimeoutTick = 0;
+        private bool isNextAvailableNeighbourFound = false;
+        private int testedProcessId;
+        
+        private void SendElectionRequest(string previousMessage = "")
         {
-            if (currentTimeoutTick == replyTimeout.Value && diagnosticPingTimeoutTimer != null)
+            int testedProcessId = listOfAddresses.IndexOf(BuildIPEndPoint(textProcessIp.Text, textProcessPort.Text)) + 1;
+            if (testedProcessId >= listOfAddresses.Count)
+                testedProcessId = 0;
+
+            while (!isNextAvailableNeighbourFound)
+            {
+                if (diagnosticPingElectionTimeoutTimer == null)
+                {
+                    SendEchoRequest(listOfAddresses[testedProcessId]);
+                    InitDiagnosticPingElectionTimeoutTimer();
+                }
+            }
+
+            if (previousMessage == string.Empty)
+                message = $"ELEC:{textProcessIp.Text}:{textProcessPort.Text}:{textPriority.Text}";
+            else
+                message = $"{previousMessage}:{textProcessIp.Text}:{textProcessPort.Text}:{textPriority.Text}";
+
+            sck.SendTo(PackMessage(encoding, message), listOfAddresses[testedProcessId]);
+        }
+
+        private void diagnosticPingElectionTimeoutTimer_Tick(object sender, EventArgs e)
+        {
+            if (currentElectionTimeoutTick == replyTimeout.Value && diagnosticPingElectionTimeoutTimer != null)
+            {
+                testedProcessId += 1;
+                if (testedProcessId >= listOfAddresses.Count)
+                    testedProcessId = 0;
+                StopDiagnosticPingElectionTimeoutTimer();
+            }
+            else
+            {
+                currentCoordinatorTimeoutTick += 1;
+                LogEvent($"ELEC_PING: Waiting for ICMP Echo Reply {currentElectionTimeoutTick}s / {replyTimeout.Value}s.");
+            }
+        }
+
+        private void InitDiagnosticPingElectionTimeoutTimer()
+        {
+            diagnosticPingElectionTimeoutTimer = new Timer();
+            diagnosticPingElectionTimeoutTimer.Tick += new EventHandler(diagnosticPingElectionTimeoutTimer_Tick);
+            diagnosticPingElectionTimeoutTimer.Interval = 1000;
+            diagnosticPingElectionTimeoutTimer.Start();
+        }
+
+        private void StopDiagnosticPingElectionTimeoutTimer()
+        {
+            currentElectionTimeoutTick = 0;
+            if (diagnosticPingElectionTimeoutTimer != null)
+            {
+                diagnosticPingElectionTimeoutTimer.Stop();
+                diagnosticPingElectionTimeoutTimer = null;
+            }
+        }
+
+        private void diagnosticPingCoordinatorTimeoutTimer_Tick(object sender, EventArgs e)
+        {
+            if (currentCoordinatorTimeoutTick == replyTimeout.Value && diagnosticPingCoordinatorTimeoutTimer != null)
             {
                 StopDiagnosticPingTimeoutTimer();
                 LogEvent($"PING: ICMP Echo Request timed out. Start election.");
                 deactivateDiagnosticPingBtn_Click(sender, e);
-                // TODO: START ELECTION
+
+                SendElectionRequest();
             } else
             {
-                currentTimeoutTick += 1;
-                LogEvent($"PING: Waiting for ICMP Echo Reply {currentTimeoutTick}s / {replyTimeout.Value}s.");
+                currentCoordinatorTimeoutTick += 1;
+                LogEvent($"PING: Waiting for ICMP Echo Reply {currentCoordinatorTimeoutTick}s / {replyTimeout.Value}s.");
             }
         }
 
-        private void InitDiagnosticPingTimeoutTimer()
+        private void InitDiagnosticPingCoordinatorTimeoutTimer()
         {
-            diagnosticPingTimeoutTimer = new Timer();
-            diagnosticPingTimeoutTimer.Tick += new EventHandler(diagnosticPingTimeoutTimer_Tick);
-            diagnosticPingTimeoutTimer.Interval = 1000;
-            diagnosticPingTimeoutTimer.Start();
+            diagnosticPingCoordinatorTimeoutTimer = new Timer();
+            diagnosticPingCoordinatorTimeoutTimer.Tick += new EventHandler(diagnosticPingCoordinatorTimeoutTimer_Tick);
+            diagnosticPingCoordinatorTimeoutTimer.Interval = 1000;
+            diagnosticPingCoordinatorTimeoutTimer.Start();
         }
 
         private void StopDiagnosticPingTimeoutTimer()
         {
-            if (diagnosticPingTimeoutTimer != null)
+            currentCoordinatorTimeoutTick = 0;
+            if (diagnosticPingCoordinatorTimeoutTimer != null)
             {
-                diagnosticPingTimeoutTimer.Stop();
-                diagnosticPingTimeoutTimer = null;
+                diagnosticPingCoordinatorTimeoutTimer.Stop();
+                diagnosticPingCoordinatorTimeoutTimer = null;
             }
-            currentTimeoutTick = 0;
         }
 
         private void diagnosticPingTimer_Tick(object sender, EventArgs e)
         {
-            if (diagnosticPingTimeoutTimer == null)
+            if (diagnosticPingCoordinatorTimeoutTimer == null)
             {
                 SendEchoRequest(ringCoordinator);
+                InitDiagnosticPingCoordinatorTimeoutTimer();
                 LogEvent($"PING: Send ICMP Echo Request to coordinator.");
             }
         }
@@ -422,7 +512,6 @@ namespace lsa_Tanenbaum_app
         {
             message = $"ICMP_ECHO_REQ:{textProcessIp.Text}:{textProcessPort.Text}";
             sck.SendTo(PackMessage(encoding, message), target);
-            InitDiagnosticPingTimeoutTimer();
         }
 
         private void AnswerEchoRequest(string requesterAddress)
