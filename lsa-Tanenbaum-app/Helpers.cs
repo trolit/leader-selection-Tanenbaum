@@ -88,5 +88,11 @@ namespace lsa_Tanenbaum_app
 
             return (addresses, priorities);
         }
+
+        public static void SwitchTwoButtons(Button button1, Button button2)
+        {
+            button1.Enabled = !button1.Enabled;
+            button2.Enabled = !button2.Enabled;
+        }
     }
 }
