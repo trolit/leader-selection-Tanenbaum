@@ -31,7 +31,6 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
-            this.textTargetPort = new System.Windows.Forms.TextBox();
             this.label15 = new System.Windows.Forms.Label();
             this.textTargetIp = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -40,6 +39,7 @@
             this.textProcessPort = new System.Windows.Forms.TextBox();
             this.textProcessIp = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
+            this.textTargetPort = new System.Windows.Forms.TextBox();
             this.connectToTargetBtn = new System.Windows.Forms.Button();
             this.disconnectFromTargetBtn = new System.Windows.Forms.Button();
             this.pictureBoxConnectionStatus = new System.Windows.Forms.PictureBox();
@@ -98,7 +98,7 @@
             this.groupBox1.Controls.Add(this.textProcessIp);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.textTargetPort);
-            this.groupBox1.Location = new System.Drawing.Point(12, 100);
+            this.groupBox1.Location = new System.Drawing.Point(12, 118);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(259, 213);
             this.groupBox1.TabIndex = 0;
@@ -122,18 +122,6 @@
             this.label13.Size = new System.Drawing.Size(12, 17);
             this.label13.TabIndex = 23;
             this.label13.Text = ":";
-            // 
-            // textTargetPort
-            // 
-            this.textTargetPort.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textTargetPort.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.textTargetPort.Location = new System.Drawing.Point(187, 165);
-            this.textTargetPort.MaxLength = 6;
-            this.textTargetPort.Name = "textTargetPort";
-            this.textTargetPort.Size = new System.Drawing.Size(54, 24);
-            this.textTargetPort.TabIndex = 7;
-            this.textTargetPort.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textTargetPort.TextChanged += new System.EventHandler(this.processConfigChanged);
             // 
             // label15
             // 
@@ -161,9 +149,9 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(7, 145);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(57, 17);
+            this.label3.Size = new System.Drawing.Size(84, 17);
             this.label3.TabIndex = 3;
-            this.label3.Text = "Send to";
+            this.label3.Text = "Consequent";
             // 
             // textProcessName
             // 
@@ -219,13 +207,25 @@
             this.label2.TabIndex = 3;
             this.label2.Text = "Address";
             // 
+            // textTargetPort
+            // 
+            this.textTargetPort.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.textTargetPort.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.textTargetPort.Location = new System.Drawing.Point(187, 165);
+            this.textTargetPort.MaxLength = 6;
+            this.textTargetPort.Name = "textTargetPort";
+            this.textTargetPort.Size = new System.Drawing.Size(54, 24);
+            this.textTargetPort.TabIndex = 7;
+            this.textTargetPort.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textTargetPort.TextChanged += new System.EventHandler(this.processConfigChanged);
+            // 
             // connectToTargetBtn
             // 
             this.connectToTargetBtn.CausesValidation = false;
             this.connectToTargetBtn.Enabled = false;
             this.connectToTargetBtn.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.connectToTargetBtn.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.connectToTargetBtn.Location = new System.Drawing.Point(104, 416);
+            this.connectToTargetBtn.Location = new System.Drawing.Point(104, 357);
             this.connectToTargetBtn.Name = "connectToTargetBtn";
             this.connectToTargetBtn.Size = new System.Drawing.Size(127, 56);
             this.connectToTargetBtn.TabIndex = 2;
@@ -352,7 +352,7 @@
             this.ringSynchronizationBtn.CausesValidation = false;
             this.ringSynchronizationBtn.Enabled = false;
             this.ringSynchronizationBtn.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.ringSynchronizationBtn.Location = new System.Drawing.Point(104, 497);
+            this.ringSynchronizationBtn.Location = new System.Drawing.Point(104, 438);
             this.ringSynchronizationBtn.Name = "ringSynchronizationBtn";
             this.ringSynchronizationBtn.Size = new System.Drawing.Size(127, 56);
             this.ringSynchronizationBtn.TabIndex = 17;
@@ -366,7 +366,7 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Leelawadee", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.SystemColors.AppWorkspace;
-            this.label1.Location = new System.Drawing.Point(48, 426);
+            this.label1.Location = new System.Drawing.Point(48, 367);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(38, 36);
             this.label1.TabIndex = 25;
@@ -377,7 +377,7 @@
             this.label16.AutoSize = true;
             this.label16.Font = new System.Drawing.Font("Leelawadee", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label16.ForeColor = System.Drawing.SystemColors.AppWorkspace;
-            this.label16.Location = new System.Drawing.Point(48, 507);
+            this.label16.Location = new System.Drawing.Point(48, 448);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(38, 36);
             this.label16.TabIndex = 26;
@@ -388,17 +388,17 @@
             this.logBox.BackColor = System.Drawing.Color.Silver;
             this.logBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.logBox.Cursor = System.Windows.Forms.Cursors.Cross;
-            this.logBox.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.logBox.Font = new System.Drawing.Font("Berlin Sans FB", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.logBox.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.logBox.HideSelection = false;
-            this.logBox.Location = new System.Drawing.Point(709, 100);
+            this.logBox.Location = new System.Drawing.Point(699, 100);
             this.logBox.Name = "logBox";
             this.logBox.ReadOnly = true;
-            this.logBox.Size = new System.Drawing.Size(487, 505);
+            this.logBox.Size = new System.Drawing.Size(497, 505);
             this.logBox.TabIndex = 27;
             this.logBox.TabStop = false;
-            this.logBox.Text = "// *********************************************\n// LSA - Tanenbaum\n// **********" +
-    "***********************************\n";
+            this.logBox.Text = "// *********************************************\n// LSA - Tanenbaum log\n// ******" +
+    "***************************************\n";
             this.logBox.WordWrap = false;
             // 
             // addressesListBox
@@ -662,7 +662,7 @@
             // 
             this.label20.AutoSize = true;
             this.label20.Font = new System.Drawing.Font("Sitka Small", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label20.Location = new System.Drawing.Point(50, 575);
+            this.label20.Location = new System.Drawing.Point(50, 516);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(203, 40);
             this.label20.TabIndex = 35;

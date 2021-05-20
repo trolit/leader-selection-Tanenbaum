@@ -71,131 +71,138 @@ namespace lsa_Tanenbaum_app
 
         private void MessageCallBack(IAsyncResult result)
         {
-            try
+            if (true)
             {
-                byte[] receivedData = new byte[1500];
-                receivedData = (byte[])result.AsyncState;
-
-                // Convert byte[] to string
-                string receivedMessage = UnpackMessage(encoding, receivedData);
-
-                if (receivedMessage.Contains("CONF:"))
+                try
                 {
+                    byte[] receivedData = new byte[1500];
+                    receivedData = (byte[])result.AsyncState;
 
-                    processesTmpContainer = receivedMessage;
+                    // Convert byte[] to string
+                    string receivedMessage = UnpackMessage(encoding, receivedData);
 
-                    if (processesTmpContainer.Contains($"{textProcessIp.Text}:{textProcessPort.Text}"))
+                    // callback again
+                    buffer = new byte[1500];
+                    sck.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(MessageCallBack), buffer);
+
+                    if (receivedMessage.Contains("CONF:"))
                     {
-                        LogEvent("CONF: Synchronization request returned, ring collected.");
-                        DisableRingSyncButton();
+
+                        processesTmpContainer = receivedMessage;
+
+                        if (processesTmpContainer.Contains($"{textProcessIp.Text}:{textProcessPort.Text}"))
+                        {
+                            LogEvent("CONF: Synchronization request returned, ring collected.");
+                            DisableRingSyncButton();
+                            isRingObtained = true;
+                            MakeNewLineInLog();
+                            UpdateKnowledgeSection();
+                            SendRingList();
+                        }
+                        else
+                        {
+                            DisableRingSyncButton();
+                            LogEvent($"CONF: Received synchronization request.");
+                            RequestRingSynchronization();
+                        }
+                    }
+                    else if (receivedMessage.Contains("LIST:") && !isRingObtained)
+                    {
                         isRingObtained = true;
-                        MakeNewLineInLog();
+                        processesTmpContainer = receivedMessage;
                         UpdateKnowledgeSection();
+                        SetupRemainingElementsOfUI($"LIST: Ring structure obtained \n[{processesTmpContainer}]. ");
                         SendRingList();
                     }
-                    else
+                    else if (receivedMessage.Contains("LIST:") && isRingObtained)
                     {
-                        DisableRingSyncButton();
-                        LogEvent($"CONF: Received synchronization request.");
-                        RequestRingSynchronization();
-                    }
-                }
-                else if (receivedMessage.Contains("LIST:") && !isRingObtained)
-                {
-                    isRingObtained = true;
-                    processesTmpContainer = receivedMessage;
-                    UpdateKnowledgeSection();
-                    SetupRemainingElementsOfUI($"LIST: Ring structure obtained \n[{processesTmpContainer}]. ");
-                    SendRingList();
-                }
-                else if (receivedMessage.Contains("LIST:") && isRingObtained)
-                {
-                    SetupRemainingElementsOfUI("LIST: Ring structure returned.");
+                        SetupRemainingElementsOfUI("LIST: Ring structure returned.");
 
-                    if (processesTmpContainer != receivedMessage)
-                    {
-                        processesTmpContainer = receivedMessage;
-                        LogEvent("LIST: Changes found! Overwriting ring structure.");
-                    }
-                    else
-                    {
-                        LogEvent("LIST: No changes found. Package ignored.");
-                    }
-                }
-                else if (receivedMessage.Contains("PRIO:"))
-                {
-                    MakeNewLineInLog();
-                    LogEvent("PRIO request received.");
-                    if (receivedMessage.Contains($"{textProcessIp.Text}:{textProcessPort.Text}"))
-                    {
-                        LogEvent($"PRIO: Updating knowledge..");
-                        UpdatePriorityInListBox(receivedMessage);
-                        LogEvent($"PRIO: Request deleted.");
-                        MakeNewLineInLog();
-                    }
-                    else
-                    {
-                        LogEvent("PRIO: Updating knowledge..");
-                        UpdatePriorityInListBox(receivedMessage);
-                        LogEvent("PRIO: Sending PRIORITY UPDATE request further.");
-                        MakeNewLineInLog();
-                        sck.SendTo(receivedData, epTarget);
-                    }
-                }
-                else if (receivedMessage.Contains("ICMP_ECHO_REQ:"))
-                {
-                    if (receivedMessage.Length > 14)
-                    {
-                        string cutMessage = receivedMessage.Remove(0, 14);
-                        LogEvent($"PING: Received ICMP Echo Request from {cutMessage}");
-                        AnswerEchoRequest(cutMessage);
-                    }
-                }
-                else if (receivedMessage.Contains("ICMP_ECHO_REPLY:"))
-                {
-                    if (receivedMessage.Length > 16)
-                    {
-                        string cutMessage = receivedMessage.Remove(0, 16);
-
-                        if (receivedMessage.Contains(ringCoordinator.ToString()))
+                        if (processesTmpContainer != receivedMessage)
                         {
-                            LogEvent($"PING: Received ICMP Echo Reply from {cutMessage}.");
-                            StopDiagnosticPingCoordinatorTimeoutTimer();
+                            processesTmpContainer = receivedMessage;
+                            LogEvent("LIST: Changes found! Overwriting ring structure.");
+                        }
+                        else
+                        {
+                            LogEvent("LIST: No changes found. Package ignored.");
+                        }
+                    }
+                    else if (receivedMessage.Contains("PRIO:"))
+                    {
+                        MakeNewLineInLog();
+                        LogEvent("PRIO request received.");
+                        if (receivedMessage.Contains($"{textProcessIp.Text}:{textProcessPort.Text}"))
+                        {
+                            LogEvent($"PRIO: Updating knowledge..");
+                            UpdatePriorityInListBox(receivedMessage);
+                            LogEvent($"PRIO: Request deleted.");
+                            MakeNewLineInLog();
+                        }
+                        else
+                        {
+                            LogEvent("PRIO: Updating knowledge..");
+                            UpdatePriorityInListBox(receivedMessage);
+                            LogEvent("PRIO: Sending PRIORITY UPDATE request further.");
+                            MakeNewLineInLog();
+                            sck.SendTo(receivedData, epTarget);
+                        }
+                    }
+                    else if (receivedMessage.Contains("ICMP_ECHO_REQ:"))
+                    {
+                        if (receivedMessage.Length > 14)
+                        {
+                            string cutMessage = receivedMessage.Remove(0, 14);
+                            LogEvent($"PING: Received ICMP Echo Request from {cutMessage}");
+                            AnswerEchoRequest(cutMessage);
+                        }
+                    }
+                    else if (receivedMessage.Contains("ICMP_ECHO_REPLY:"))
+                    {
+                        if (receivedMessage.Length > 16)
+                        {
+                            if (receivedMessage.Contains(ringCoordinator.ToString()))
+                            {
+                                string cutMessage = receivedMessage.Remove(0, 16);
+                                LogEvent($"PING: Received ICMP Echo Reply from {cutMessage}.");
+                                StopDiagnosticPingCoordinatorTimeoutTimer();
+                            }
+                            else if (receivedMessage.Contains(listOfAddresses[testedNeighbourId].ToString()))
+                            {
+                                // LogEvent($"ELEC: Communication with {listOfAddresses[testedNeighbourId]} established");
+                                isNextAvailableNeighbourFound = true;
+                                StopDiagnosticPingElectionTimeoutTimer();
+                            }
+                        }
+                    }
+                    else if (receivedMessage.Contains("ELEC:"))
+                    {
+                        if (receivedMessage.Contains($"{textProcessIp.Text}:{textProcessPort.Text}"))
+                        {
+                            LogEvent($"ELEC: Received back election message with data: {receivedMessage}.");
+
+                            // election message returned to the process that initialized it
+
+                            // 1. translate data
+
+                            // 2. choose leader
+
+                            // 3. send COORDINATOR message and new ring structure
+
+
+                        }
+                        else
+                        {
+                            // pass election message further
+                            LogEvent($"ELEC: Pass election message further: {receivedMessage}.");
+                            ProcessElectionRequest(receivedMessage);
                         }
                     }
                 }
-                else if (receivedMessage.Contains("ELEC:"))
+                catch (Exception e)
                 {
-                    if (receivedMessage.Contains($"{textProcessIp.Text}:{textProcessPort.Text}"))
-                    {
-                        LogEvent($"ELEC: Received back election message with data: {receivedMessage}.");
-
-                        // election message returned to the process that initialized it
-
-                        // 1. translate data
-
-                        // 2. choose leader
-
-                        // 3. send COORDINATOR message and new ring structure
-
-
-                    }
-                    else
-                    {
-                        // pass election message further
-                        SendElectionRequest(receivedMessage);
-                    }
+                    MessageBox.Show(e.ToString());
                 }
-
-                // callback again
-                buffer = new byte[1500];
-                sck.MulticastLoopback = true;
-
-                sck.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(MessageCallBack), buffer);
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.ToString());
             }
         }
 
@@ -276,30 +283,95 @@ namespace lsa_Tanenbaum_app
         private Timer diagnosticPingCoordinatorTimeoutTimer;
         private Timer diagnosticPingElectionTimeoutTimer;
         private int currentCoordinatorTimeoutTick = 0;
+        private int currentElectionTimeoutTick = 0;
         private bool isNextAvailableNeighbourFound = false;
         private int testedNeighbourId;
 
-        private void SendElectionRequest(string previousMessage = "")
+        private IPEndPoint GetIPOfNextProcess()
         {
-            int testedProcessId = listOfAddresses.IndexOf(BuildIPEndPoint(textProcessIp.Text, textProcessPort.Text)) + 1;
-            if (testedProcessId >= listOfAddresses.Count)
-                testedProcessId = 0;
+            if (listOfAddresses.Count == 2)
+                return BuildIPEndPoint(textProcessIp.Text, textProcessPort.Text);
 
+            testedNeighbourId = listOfAddresses.IndexOf(BuildIPEndPoint(textProcessIp.Text, textProcessPort.Text)) + 1;
+
+            if (testedNeighbourId >= listOfAddresses.Count)
+                testedNeighbourId = 0;
+
+            if (listOfAddresses[testedNeighbourId] == ringCoordinator)
+            {
+                testedNeighbourId += 1;
+            }
+
+            if (testedNeighbourId >= listOfAddresses.Count)
+                testedNeighbourId = 0;
+
+            return listOfAddresses[testedNeighbourId];
+        }
+
+        private void ProcessElectionRequest(string previousMessage = "")
+        {
             while (!isNextAvailableNeighbourFound)
             {
                 if (diagnosticPingElectionTimeoutTimer == null)
                 {
-                    SendEchoRequest(listOfAddresses[testedProcessId]);
+                    IPEndPoint nextProcessIP = GetIPOfNextProcess();
+
+                    if (nextProcessIP.ToString() == $"{textProcessIp.Text}:{textProcessPort.Text}")
+                        break;
+
+                    LogEvent($"ELEC: Trying to communicate with {listOfAddresses[testedNeighbourId]}");
+                    SendEchoRequest(nextProcessIP);
+                    InitDiagnosticPingElectionTimeoutTimer();
                 }
             }
 
-            if (previousMessage == string.Empty)
-                message = $"ELEC:{textProcessIp.Text}:{textProcessPort.Text}:{textPriority.Text}";
-            else
-                message = $"{previousMessage}:{textProcessIp.Text}:{textProcessPort.Text}:{textPriority.Text}";
+            if (!isNextAvailableNeighbourFound)
+            {
+                LogEvent($"ELEC: No other available processes found. Can't resolve election :(");
+            } else
+            {
+                if (previousMessage == string.Empty)
+                    message = $"ELEC:{textProcessIp.Text}:{textProcessPort.Text}:{textPriority.Text}";
+                else
+                    message = $"{previousMessage}:{textProcessIp.Text}:{textProcessPort.Text}:{textPriority.Text}";
 
-            sck.SendTo(PackMessage(encoding, message), listOfAddresses[testedProcessId]);
-            LogEvent($"ELEC: Election message sent to {listOfAddresses[testedProcessId]}");
+                isNextAvailableNeighbourFound = false;
+
+                sck.SendTo(PackMessage(encoding, message), listOfAddresses[testedNeighbourId]);
+                LogEvent($"ELEC: Election message sent to {listOfAddresses[testedNeighbourId]}");
+            }
+        }
+
+        private void diagnosticPingElectionTimeoutTimer_Tick(object sender, EventArgs e)
+        {
+            if (currentElectionTimeoutTick == replyTimeout.Value && diagnosticPingElectionTimeoutTimer != null)
+            {
+                LogEvent($"ELEC: Connection with {listOfAddresses[testedNeighbourId]} failed.");
+                StopDiagnosticPingElectionTimeoutTimer();
+            }
+            else
+            {
+                currentElectionTimeoutTick += 1;
+                LogEvent($"ELEC_PING: Waiting for ICMP Echo Reply {currentElectionTimeoutTick}s / {replyTimeout.Value}s.");
+            }
+        }
+
+        private void InitDiagnosticPingElectionTimeoutTimer()
+        {
+            diagnosticPingElectionTimeoutTimer = new Timer();
+            diagnosticPingElectionTimeoutTimer.Tick += new EventHandler(diagnosticPingElectionTimeoutTimer_Tick);
+            diagnosticPingElectionTimeoutTimer.Interval = 1000;
+            diagnosticPingElectionTimeoutTimer.Start();
+        }
+
+        private void StopDiagnosticPingElectionTimeoutTimer()
+        {
+            currentElectionTimeoutTick = 0;
+            if (diagnosticPingElectionTimeoutTimer != null)
+            {
+                diagnosticPingElectionTimeoutTimer.Stop();
+                diagnosticPingElectionTimeoutTimer = null;
+            }
         }
 
         private void diagnosticPingCoordinatorTimeoutTimer_Tick(object sender, EventArgs e)
@@ -310,8 +382,7 @@ namespace lsa_Tanenbaum_app
 
                 LogEvent($"PING: ICMP Echo Request timed out. Start election.");
                 deactivateDiagnosticPingBtn_Click(sender, e);
-
-                // SendElectionRequest();
+                ProcessElectionRequest();
             }
             else
             {
@@ -340,9 +411,12 @@ namespace lsa_Tanenbaum_app
 
         private void diagnosticPingTimer_Tick(object sender, EventArgs e)
         {
-            SendEchoRequest(ringCoordinator);
-            InitDiagnosticPingCoordinatorTimeoutTimer();
-            LogEvent($"PING: Send ICMP Echo Request to coordinator.");
+            if (diagnosticPingCoordinatorTimeoutTimer == null)
+            {
+                SendEchoRequest(ringCoordinator);
+                InitDiagnosticPingCoordinatorTimeoutTimer();
+                LogEvent($"PING: Send ICMP Echo Request to coordinator.");
+            }
         }
 
         private void InitDiagnosticPingTimer()
@@ -413,6 +487,7 @@ namespace lsa_Tanenbaum_app
 
         private void disconnectFromTargetBtn_Click(object sender, EventArgs e)
         {
+            sck.Shutdown(SocketShutdown.Both);
             sck.Close();
             pictureBoxConnectionStatus.Image = Resources.status_notconnected;
             labelConnectionStatus.Text = "Not Connected";
