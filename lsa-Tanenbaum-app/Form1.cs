@@ -444,7 +444,7 @@ namespace lsa_Tanenbaum_app
 
         private void SetupRemainingElementsOfUI(string logMessage)
         {
-            SelectCoordinatorOnRingSynchronization();
+            SelectRingCoordinator();
             DisplayRemainingGroupBoxes();
             MakeNewLineInLog();
             LogEvent(logMessage);
@@ -560,13 +560,13 @@ namespace lsa_Tanenbaum_app
             }
         }
 
-        private void SelectCoordinatorOnRingSynchronization()
+        private void SelectRingCoordinator()
         {
             int highestPriorityId = listOfPriorities.IndexOf(listOfPriorities.Max());
             ringCoordinator = listOfAddresses[highestPriorityId];
             UpdateLabel(ringCoordinatorAddressText, ringCoordinator.ToString());
             UpdateLabel(ringCoordinatorPriorityText, $"with priority {listOfPriorities[highestPriorityId]} ({GetCurrentTimeStamp(DateTime.Now)})");
-            LogEvent("LIST: Initial coordinator chosen.");
+            LogEvent("LIST: Coordinator chosen.");
         }
 
         private string GetLocalAddress()
