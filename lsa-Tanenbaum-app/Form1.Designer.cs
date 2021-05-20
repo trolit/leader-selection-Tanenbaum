@@ -97,9 +97,10 @@
             this.groupBox1.Controls.Add(this.textProcessPort);
             this.groupBox1.Controls.Add(this.textProcessIp);
             this.groupBox1.Controls.Add(this.label2);
+            this.groupBox1.Controls.Add(this.textTargetPort);
             this.groupBox1.Location = new System.Drawing.Point(12, 100);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(259, 298);
+            this.groupBox1.Size = new System.Drawing.Size(259, 213);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Process";
@@ -116,7 +117,7 @@
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(172, 229);
+            this.label13.Location = new System.Drawing.Point(172, 168);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(12, 17);
             this.label13.TabIndex = 23;
@@ -126,7 +127,7 @@
             // 
             this.textTargetPort.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textTargetPort.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.textTargetPort.Location = new System.Drawing.Point(187, 226);
+            this.textTargetPort.Location = new System.Drawing.Point(187, 165);
             this.textTargetPort.MaxLength = 6;
             this.textTargetPort.Name = "textTargetPort";
             this.textTargetPort.Size = new System.Drawing.Size(54, 24);
@@ -147,7 +148,7 @@
             // 
             this.textTargetIp.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textTargetIp.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.textTargetIp.Location = new System.Drawing.Point(10, 226);
+            this.textTargetIp.Location = new System.Drawing.Point(10, 165);
             this.textTargetIp.MaxLength = 25;
             this.textTargetIp.Name = "textTargetIp";
             this.textTargetIp.Size = new System.Drawing.Size(158, 24);
@@ -158,7 +159,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(7, 206);
+            this.label3.Location = new System.Drawing.Point(7, 145);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(57, 17);
             this.label3.TabIndex = 3;
