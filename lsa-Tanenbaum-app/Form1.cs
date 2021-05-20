@@ -17,7 +17,7 @@ namespace lsa_Tanenbaum_app
 
         ASCIIEncoding encoding;
 
-        EndPoint epProcess, epTarget, epReceiveFrom;
+        EndPoint epProcess, epTarget;
         byte[] buffer;  // for sending messages
 
         bool isConnectionEstablished = false; // for handling simple fields checking with disconnect btn behaviour
@@ -45,9 +45,7 @@ namespace lsa_Tanenbaum_app
                 textProcessIp,
                 textProcessPort,
                 textTargetIp,
-                textTargetPort,
-                textReceiveFromIp,
-                textReceiveFromPort
+                textTargetPort
             };
 
             randomizer = new Random();
@@ -63,7 +61,6 @@ namespace lsa_Tanenbaum_app
             // get user IP
             textProcessIp.Text = GetLocalAddress();
             textTargetIp.Text = GetLocalAddress();
-            textReceiveFromIp.Text = GetLocalAddress();
         }
 
         // **************************************************
@@ -74,122 +71,131 @@ namespace lsa_Tanenbaum_app
 
         private void MessageCallBack(IAsyncResult result)
         {
-            if (sck.Connected)
+            try
             {
-                try
+                byte[] receivedData = new byte[1500];
+                receivedData = (byte[])result.AsyncState;
+
+                // Convert byte[] to string
+                string receivedMessage = UnpackMessage(encoding, receivedData);
+
+                if (receivedMessage.Contains("CONF:"))
                 {
-                    byte[] receivedData = new byte[1500];
-                    receivedData = (byte[])result.AsyncState;
 
-                    // Convert byte[] to string
-                    string receivedMessage = UnpackMessage(encoding, receivedData);
+                    processesTmpContainer = receivedMessage;
 
-                    if (receivedMessage.Contains("CONF:"))
+                    if (processesTmpContainer.Contains($"{textProcessIp.Text}:{textProcessPort.Text}"))
                     {
-
-                        processesTmpContainer = receivedMessage;
-
-                        if (processesTmpContainer.Contains($"{textProcessIp.Text}:{textProcessPort.Text}"))
-                        {
-                            LogEvent("CONF: Synchronization request returned, ring collected.");
-                            DisableRingSyncButton();
-                            isRingObtained = true;
-                            MakeNewLineInLog();
-                            UpdateKnowledgeSection();
-                            SendRingList();
-                        } else
-                        {
-                            DisableRingSyncButton();
-                            LogEvent($"CONF: Received synchronization request.");
-                            RequestRingSynchronization();
-                        }
-                    } else if (receivedMessage.Contains("LIST:") && !isRingObtained)
-                    {
+                        LogEvent("CONF: Synchronization request returned, ring collected.");
+                        DisableRingSyncButton();
                         isRingObtained = true;
-                        UpdateKnowledgeSection();
-                        processesTmpContainer = receivedMessage;
-                        SetupRemainingElementsOfUI($"LIST: Ring structure obtained \n[{processesTmpContainer}]. ");
-                        SendRingList();
-                    } else if (receivedMessage.Contains("LIST:") && isRingObtained)
-                    {
-                        SetupRemainingElementsOfUI("LIST: Ring structure returned.");
-
-                        if (processesTmpContainer != receivedMessage)
-                        {
-                            processesTmpContainer = receivedMessage;
-                            LogEvent("LIST: Changes found! Overwriting ring structure.");
-                        } else
-                        {
-                            LogEvent("LIST: No changes found. Package ignored.");
-                        }
-                    } else if (receivedMessage.Contains("PRIO:"))
-                    {
                         MakeNewLineInLog();
-                        LogEvent("PRIO request received.");
-                        if (receivedMessage.Contains($"{textProcessIp.Text}:{textProcessPort.Text}"))
-                        {
-                            LogEvent($"PRIO: Updating knowledge..");
-                            UpdatePriorityInListBox(receivedMessage);
-                            LogEvent($"PRIO: Request deleted.");
-                            MakeNewLineInLog();
-                        } else
-                        {
-                            LogEvent("PRIO: Updating knowledge..");
-                            UpdatePriorityInListBox(receivedMessage);
-                            LogEvent("PRIO: Sending PRIORITY UPDATE request further.");
-                            MakeNewLineInLog();
-                            sck.SendTo(receivedData, epTarget);
-                        }
-                    } else if (receivedMessage.Contains("ICMP_ECHO_REQ:"))
-                    {
-                        if (receivedMessage.Length > 14)
-                        {
-                            string cutMessage = receivedMessage.Remove(0, 14);
-                            LogEvent($"PING: Received ICMP Echo Request from {cutMessage}");
-                            AnswerEchoRequest(cutMessage);
-                        }
+                        UpdateKnowledgeSection();
+                        SendRingList();
                     }
-                    else if (receivedMessage.Contains("ICMP_ECHO_REPLY:"))
+                    else
                     {
-                        if (receivedMessage.Length > 16)
-                        {
-                            string cutMessage = receivedMessage.Remove(0, 16);
-
-                            if (receivedMessage.Contains(ringCoordinator.ToString()))
-                            {
-                                LogEvent($"PING: Received ICMP Echo Reply from {cutMessage}.");
-                                StopDiagnosticPingTimeoutTimer();
-                            }
-                            
-                            // neighbour can get election message
-                            if (cutMessage.Contains(listOfAddresses[testedProcessId].ToString()))
-                            {
-                                StopDiagnosticPingElectionTimeoutTimer();
-                                isNextAvailableNeighbourFound = true;
-                            }
-                        }
+                        DisableRingSyncButton();
+                        LogEvent($"CONF: Received synchronization request.");
+                        RequestRingSynchronization();
                     }
-                    else if (receivedMessage.Contains("ELEC:"))
-                    {
-                        if (receivedMessage.Contains($"{textProcessIp.Text}:{textProcessPort.Text}"))
-                        {
-                            // election message returned to the process that initialized it
-
-                        } else
-                        {
-                            // pass election message further
-                            SendElectionRequest(receivedMessage);
-                        }
-                    }
-
-                    // callback again
-                    buffer = new byte[1500];
-                    sck.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref epReceiveFrom, new AsyncCallback(MessageCallBack), buffer);
                 }
-                catch (Exception e)
+                else if (receivedMessage.Contains("LIST:") && !isRingObtained)
                 {
-                    MessageBox.Show(e.ToString());
+                    isRingObtained = true;
+                    processesTmpContainer = receivedMessage;
+                    UpdateKnowledgeSection();
+                    SetupRemainingElementsOfUI($"LIST: Ring structure obtained \n[{processesTmpContainer}]. ");
+                    SendRingList();
                 }
+                else if (receivedMessage.Contains("LIST:") && isRingObtained)
+                {
+                    SetupRemainingElementsOfUI("LIST: Ring structure returned.");
+
+                    if (processesTmpContainer != receivedMessage)
+                    {
+                        processesTmpContainer = receivedMessage;
+                        LogEvent("LIST: Changes found! Overwriting ring structure.");
+                    }
+                    else
+                    {
+                        LogEvent("LIST: No changes found. Package ignored.");
+                    }
+                }
+                else if (receivedMessage.Contains("PRIO:"))
+                {
+                    MakeNewLineInLog();
+                    LogEvent("PRIO request received.");
+                    if (receivedMessage.Contains($"{textProcessIp.Text}:{textProcessPort.Text}"))
+                    {
+                        LogEvent($"PRIO: Updating knowledge..");
+                        UpdatePriorityInListBox(receivedMessage);
+                        LogEvent($"PRIO: Request deleted.");
+                        MakeNewLineInLog();
+                    }
+                    else
+                    {
+                        LogEvent("PRIO: Updating knowledge..");
+                        UpdatePriorityInListBox(receivedMessage);
+                        LogEvent("PRIO: Sending PRIORITY UPDATE request further.");
+                        MakeNewLineInLog();
+                        sck.SendTo(receivedData, epTarget);
+                    }
+                }
+                else if (receivedMessage.Contains("ICMP_ECHO_REQ:"))
+                {
+                    if (receivedMessage.Length > 14)
+                    {
+                        string cutMessage = receivedMessage.Remove(0, 14);
+                        LogEvent($"PING: Received ICMP Echo Request from {cutMessage}");
+                        AnswerEchoRequest(cutMessage);
+                    }
+                }
+                else if (receivedMessage.Contains("ICMP_ECHO_REPLY:"))
+                {
+                    if (receivedMessage.Length > 16)
+                    {
+                        string cutMessage = receivedMessage.Remove(0, 16);
+
+                        if (receivedMessage.Contains(ringCoordinator.ToString()))
+                        {
+                            LogEvent($"PING: Received ICMP Echo Reply from {cutMessage}.");
+                            StopDiagnosticPingCoordinatorTimeoutTimer();
+                        }
+                    }
+                }
+                else if (receivedMessage.Contains("ELEC:"))
+                {
+                    if (receivedMessage.Contains($"{textProcessIp.Text}:{textProcessPort.Text}"))
+                    {
+                        LogEvent($"ELEC: Received back election message with data: {receivedMessage}.");
+
+                        // election message returned to the process that initialized it
+
+                        // 1. translate data
+
+                        // 2. choose leader
+
+                        // 3. send COORDINATOR message and new ring structure
+
+
+                    }
+                    else
+                    {
+                        // pass election message further
+                        SendElectionRequest(receivedMessage);
+                    }
+                }
+
+                // callback again
+                buffer = new byte[1500];
+                sck.MulticastLoopback = true;
+
+                sck.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(MessageCallBack), buffer);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
             }
         }
 
@@ -199,12 +205,13 @@ namespace lsa_Tanenbaum_app
         //
         // **************************************************
 
-        private void DisplayRemainingGroupBoxes() {
+        private void DisplayRemainingGroupBoxes()
+        {
             Invoke(new MethodInvoker(() => {
                 knowledgeGroupBox.Text = $"{textProcessName.Text} network knowledge";
                 knowledgeGroupBox.Visible = true;
                 diagnosticPingGroupBox.Visible = true;
-            }));   
+            }));
         }
 
         private void DisableRingSyncButton()
@@ -251,12 +258,12 @@ namespace lsa_Tanenbaum_app
 
         private void LogEvent(string text)
         {
-            Invoke((Func<string, bool>) logBox.AppendText, text);
+            Invoke((Func<string, bool>)logBox.AppendText, text);
         }
 
         private void MakeNewLineInLog()
         {
-            Invoke((Func<bool>) logBox.AppendNewLine);
+            Invoke((Func<bool>)logBox.AppendNewLine);
         }
 
         // **************************************************
@@ -268,11 +275,10 @@ namespace lsa_Tanenbaum_app
         private Timer diagnosticPingTimer;
         private Timer diagnosticPingCoordinatorTimeoutTimer;
         private Timer diagnosticPingElectionTimeoutTimer;
-        private int currentElectionTimeoutTick = 0;
         private int currentCoordinatorTimeoutTick = 0;
         private bool isNextAvailableNeighbourFound = false;
-        private int testedProcessId;
-        
+        private int testedNeighbourId;
+
         private void SendElectionRequest(string previousMessage = "")
         {
             int testedProcessId = listOfAddresses.IndexOf(BuildIPEndPoint(textProcessIp.Text, textProcessPort.Text)) + 1;
@@ -284,7 +290,6 @@ namespace lsa_Tanenbaum_app
                 if (diagnosticPingElectionTimeoutTimer == null)
                 {
                     SendEchoRequest(listOfAddresses[testedProcessId]);
-                    InitDiagnosticPingElectionTimeoutTimer();
                 }
             }
 
@@ -294,52 +299,21 @@ namespace lsa_Tanenbaum_app
                 message = $"{previousMessage}:{textProcessIp.Text}:{textProcessPort.Text}:{textPriority.Text}";
 
             sck.SendTo(PackMessage(encoding, message), listOfAddresses[testedProcessId]);
-        }
-
-        private void diagnosticPingElectionTimeoutTimer_Tick(object sender, EventArgs e)
-        {
-            if (currentElectionTimeoutTick == replyTimeout.Value && diagnosticPingElectionTimeoutTimer != null)
-            {
-                testedProcessId += 1;
-                if (testedProcessId >= listOfAddresses.Count)
-                    testedProcessId = 0;
-                StopDiagnosticPingElectionTimeoutTimer();
-            }
-            else
-            {
-                currentCoordinatorTimeoutTick += 1;
-                LogEvent($"ELEC_PING: Waiting for ICMP Echo Reply {currentElectionTimeoutTick}s / {replyTimeout.Value}s.");
-            }
-        }
-
-        private void InitDiagnosticPingElectionTimeoutTimer()
-        {
-            diagnosticPingElectionTimeoutTimer = new Timer();
-            diagnosticPingElectionTimeoutTimer.Tick += new EventHandler(diagnosticPingElectionTimeoutTimer_Tick);
-            diagnosticPingElectionTimeoutTimer.Interval = 1000;
-            diagnosticPingElectionTimeoutTimer.Start();
-        }
-
-        private void StopDiagnosticPingElectionTimeoutTimer()
-        {
-            currentElectionTimeoutTick = 0;
-            if (diagnosticPingElectionTimeoutTimer != null)
-            {
-                diagnosticPingElectionTimeoutTimer.Stop();
-                diagnosticPingElectionTimeoutTimer = null;
-            }
+            LogEvent($"ELEC: Election message sent to {listOfAddresses[testedProcessId]}");
         }
 
         private void diagnosticPingCoordinatorTimeoutTimer_Tick(object sender, EventArgs e)
         {
             if (currentCoordinatorTimeoutTick == replyTimeout.Value && diagnosticPingCoordinatorTimeoutTimer != null)
             {
-                StopDiagnosticPingTimeoutTimer();
+                StopDiagnosticPingCoordinatorTimeoutTimer();
+
                 LogEvent($"PING: ICMP Echo Request timed out. Start election.");
                 deactivateDiagnosticPingBtn_Click(sender, e);
 
-                SendElectionRequest();
-            } else
+                // SendElectionRequest();
+            }
+            else
             {
                 currentCoordinatorTimeoutTick += 1;
                 LogEvent($"PING: Waiting for ICMP Echo Reply {currentCoordinatorTimeoutTick}s / {replyTimeout.Value}s.");
@@ -354,7 +328,7 @@ namespace lsa_Tanenbaum_app
             diagnosticPingCoordinatorTimeoutTimer.Start();
         }
 
-        private void StopDiagnosticPingTimeoutTimer()
+        private void StopDiagnosticPingCoordinatorTimeoutTimer()
         {
             currentCoordinatorTimeoutTick = 0;
             if (diagnosticPingCoordinatorTimeoutTimer != null)
@@ -366,12 +340,9 @@ namespace lsa_Tanenbaum_app
 
         private void diagnosticPingTimer_Tick(object sender, EventArgs e)
         {
-            if (diagnosticPingCoordinatorTimeoutTimer == null)
-            {
-                SendEchoRequest(ringCoordinator);
-                InitDiagnosticPingCoordinatorTimeoutTimer();
-                LogEvent($"PING: Send ICMP Echo Request to coordinator.");
-            }
+            SendEchoRequest(ringCoordinator);
+            InitDiagnosticPingCoordinatorTimeoutTimer();
+            LogEvent($"PING: Send ICMP Echo Request to coordinator.");
         }
 
         private void InitDiagnosticPingTimer()
@@ -385,8 +356,7 @@ namespace lsa_Tanenbaum_app
         private void activateDiagnosticPingBtn_Click(object sender, EventArgs e)
         {
             InitDiagnosticPingTimer();
-            enableDiagnosticPingBtn.Enabled = false;
-            disableDiagnosticPingBtn.Enabled = true;
+            SwitchTwoButtons(enableDiagnosticPingBtn, disableDiagnosticPingBtn);
         }
 
         private void deactivateDiagnosticPingBtn_Click(object sender, EventArgs e)
@@ -394,8 +364,7 @@ namespace lsa_Tanenbaum_app
             if (diagnosticPingTimer != null)
             {
                 diagnosticPingTimer.Stop();
-                disableDiagnosticPingBtn.Enabled = false;
-                enableDiagnosticPingBtn.Enabled = true;
+                SwitchTwoButtons(enableDiagnosticPingBtn, disableDiagnosticPingBtn);
             }
         }
 
@@ -410,7 +379,6 @@ namespace lsa_Tanenbaum_app
 
         private void connectToTargetBtn_Click(object sender, EventArgs e)
         {
-            // init socket
             sck = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             sck.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
 
@@ -421,36 +389,26 @@ namespace lsa_Tanenbaum_app
             // init target
             epTarget = new IPEndPoint(IPAddress.Parse(textTargetIp.Text), Convert.ToInt32(textTargetPort.Text));
 
-            // connect 
-            epReceiveFrom = new IPEndPoint(IPAddress.Parse(textReceiveFromIp.Text), Convert.ToInt32(textReceiveFromPort.Text));
-
-            sck.Connect(epReceiveFrom);
-
             // configure listening
             buffer = new byte[1500];
-            sck.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref epReceiveFrom, new AsyncCallback(MessageCallBack), buffer);
+            sck.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(MessageCallBack), buffer);
 
-            if (sck.Connected)
+
+            ChangeTextBoxCollectionReadOnlyStatus(configurationTextBoxes);
+
+            LogEvent($"INFO: {textProcessName.Text} connection established.");
+            MakeNewLineInLog();
+
+            pictureBoxConnectionStatus.Image = Resources.status_connected;
+            labelConnectionStatus.Text = "Connected";
+            SwapEnabledForConnectAndDisconnectBtns();
+
+            if (listOfAddresses.Count == 0)
             {
-                ChangeTextBoxCollectionReadOnlyStatus(configurationTextBoxes);
-
-                LogEvent($"INFO: {textProcessName.Text} connection established.");
-                MakeNewLineInLog();
-
-                pictureBoxConnectionStatus.Image = Resources.status_connected;
-                labelConnectionStatus.Text = "Connected";
-                SwapEnabledForConnectAndDisconnectBtns();
-
-                if (listOfAddresses.Count == 0) {
-                    ringSynchronizationBtn.Enabled = true;
-                }
-                
-                isConnectionEstablished = true;
+                ringSynchronizationBtn.Enabled = true;
             }
-            else
-            {
-                MessageBox.Show("Connection request failed!!");
-            }
+
+            isConnectionEstablished = true;
         }
 
         private void disconnectFromTargetBtn_Click(object sender, EventArgs e)
@@ -510,6 +468,7 @@ namespace lsa_Tanenbaum_app
 
         private void SendEchoRequest(IPEndPoint target)
         {
+            // ICMP_ECHO_REQ:FROM
             message = $"ICMP_ECHO_REQ:{textProcessIp.Text}:{textProcessPort.Text}";
             sck.SendTo(PackMessage(encoding, message), target);
         }
@@ -551,10 +510,12 @@ namespace lsa_Tanenbaum_app
 
         private void RequestRingSynchronization()
         {
-            if (processesTmpContainer == "CONF:") {
+            if (processesTmpContainer == "CONF:")
+            {
                 processesTmpContainer = $"CONF:|{textProcessIp.Text}:{textProcessPort.Text}:{Convert.ToInt32(textPriority.Text)}";
-            } 
-            else if (processesTmpContainer.Contains($"{textProcessIp.Text}{textProcessPort.Text}") == false) {
+            }
+            else if (processesTmpContainer.Contains($"{textProcessIp.Text}{textProcessPort.Text}") == false)
+            {
                 processesTmpContainer = $"{processesTmpContainer}|{textProcessIp.Text}:{textProcessPort.Text}:{Convert.ToInt32(textPriority.Text)}";
             }
 
@@ -590,9 +551,9 @@ namespace lsa_Tanenbaum_app
                 int index = listOfAddresses.IndexOf(address);
 
                 listOfPriorities[index] = Convert.ToInt32(splitMessage[2]);
-    
+
                 UpdateList(prioritiesListBox, listOfPriorities);
-            }       
+            }
         }
 
         private void SwapEnabledForConnectAndDisconnectBtns()
@@ -615,7 +576,7 @@ namespace lsa_Tanenbaum_app
                         break;
                     }
                 }
-            } 
+            }
             else
             {
                 result = false;

@@ -32,13 +32,10 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.textTargetPort = new System.Windows.Forms.TextBox();
-            this.textReceiveFromIp = new System.Windows.Forms.TextBox();
             this.label15 = new System.Windows.Forms.Label();
             this.textTargetIp = new System.Windows.Forms.TextBox();
-            this.label14 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.textProcessName = new System.Windows.Forms.TextBox();
-            this.textReceiveFromPort = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.textProcessPort = new System.Windows.Forms.TextBox();
             this.textProcessIp = new System.Windows.Forms.TextBox();
@@ -92,14 +89,10 @@
             // 
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.label13);
-            this.groupBox1.Controls.Add(this.textTargetPort);
-            this.groupBox1.Controls.Add(this.textReceiveFromIp);
             this.groupBox1.Controls.Add(this.label15);
             this.groupBox1.Controls.Add(this.textTargetIp);
-            this.groupBox1.Controls.Add(this.label14);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.textProcessName);
-            this.groupBox1.Controls.Add(this.textReceiveFromPort);
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.textProcessPort);
             this.groupBox1.Controls.Add(this.textProcessIp);
@@ -141,18 +134,6 @@
             this.textTargetPort.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.textTargetPort.TextChanged += new System.EventHandler(this.processConfigChanged);
             // 
-            // textReceiveFromIp
-            // 
-            this.textReceiveFromIp.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textReceiveFromIp.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.textReceiveFromIp.Location = new System.Drawing.Point(10, 167);
-            this.textReceiveFromIp.MaxLength = 25;
-            this.textReceiveFromIp.Name = "textReceiveFromIp";
-            this.textReceiveFromIp.Size = new System.Drawing.Size(158, 24);
-            this.textReceiveFromIp.TabIndex = 4;
-            this.textReceiveFromIp.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textReceiveFromIp.TextChanged += new System.EventHandler(this.processConfigChanged);
-            // 
             // label15
             // 
             this.label15.AutoSize = true;
@@ -174,15 +155,6 @@
             this.textTargetIp.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.textTargetIp.TextChanged += new System.EventHandler(this.processConfigChanged);
             // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(7, 147);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(91, 17);
-            this.label14.TabIndex = 20;
-            this.label14.Text = "Receive from";
-            // 
             // label3
             // 
             this.label3.AutoSize = true;
@@ -203,18 +175,6 @@
             this.textProcessName.TabIndex = 1;
             this.textProcessName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.textProcessName.TextChanged += new System.EventHandler(this.processConfigChanged);
-            // 
-            // textReceiveFromPort
-            // 
-            this.textReceiveFromPort.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textReceiveFromPort.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.textReceiveFromPort.Location = new System.Drawing.Point(187, 167);
-            this.textReceiveFromPort.MaxLength = 6;
-            this.textReceiveFromPort.Name = "textReceiveFromPort";
-            this.textReceiveFromPort.Size = new System.Drawing.Size(54, 24);
-            this.textReceiveFromPort.TabIndex = 5;
-            this.textReceiveFromPort.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textReceiveFromPort.TextChanged += new System.EventHandler(this.processConfigChanged);
             // 
             // label7
             // 
@@ -774,9 +734,6 @@
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.NumericUpDown diagnosticPingFrequency;
         private System.Windows.Forms.Button ringSynchronizationBtn;
-        private System.Windows.Forms.TextBox textReceiveFromPort;
-        private System.Windows.Forms.TextBox textReceiveFromIp;
-        private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.Label label4;
