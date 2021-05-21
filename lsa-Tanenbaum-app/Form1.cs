@@ -34,8 +34,14 @@ namespace lsa_Tanenbaum_app
 
         IPEndPoint ringCoordinator;
 
+        private const string CONFIGURATION_HEADER = "CONFIGURATION:";
         private const string ELECTION_HEADER = "ELECTION:";
         private const string COORDINATOR_HEADER = "COORDINATOR:";
+        private const string PRIORITY_HEADER = "PRIORITY:";
+        private const string LIST_HEADER = "LIST:";
+        private const string ICMP_ECHO_REQUEST_HEADER = "ICMP_ECHO_REQUEST:";
+        private const string ICMP_ECHO_REPLY_HEADER = "ICMP_ECHO_REPLY:";
+
         public Form1()
         {
             InitializeComponent();
@@ -57,7 +63,7 @@ namespace lsa_Tanenbaum_app
 
             listOfAddresses = new List<IPEndPoint>();
             listOfPriorities = new List<int>();
-            processesTmpContainer = "CONF:";
+            processesTmpContainer = CONFIGURATION_HEADER;
 
             disconnectFromTargetBtn.Enabled = false;
 
@@ -88,7 +94,7 @@ namespace lsa_Tanenbaum_app
                     buffer = new byte[1500];
                     sck.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(MessageCallBack), buffer);
 
-                    if (receivedMessage.Contains("CONF:"))
+                    if (receivedMessage.Contains(CONFIGURATION_HEADER))
                     {
 
                         processesTmpContainer = receivedMessage;
@@ -99,7 +105,7 @@ namespace lsa_Tanenbaum_app
                             DisableRingSyncButton();
                             isRingObtained = true;
                             MakeNewLineInLog();
-                            UpdateKnowledgeSection();
+                            UpdateKnowledgeSection(CONFIGURATION_HEADER, processesTmpContainer);
                             SendRingList();
                         }
                         else
@@ -109,15 +115,15 @@ namespace lsa_Tanenbaum_app
                             RequestRingSynchronization();
                         }
                     }
-                    else if (receivedMessage.Contains("LIST:") && !isRingObtained)
+                    else if (receivedMessage.Contains(LIST_HEADER) && !isRingObtained)
                     {
                         isRingObtained = true;
                         processesTmpContainer = receivedMessage;
-                        UpdateKnowledgeSection();
+                        UpdateKnowledgeSection(LIST_HEADER, processesTmpContainer);
                         SetupRemainingElementsOfUI($"LIST: Ring structure obtained \n[{processesTmpContainer}]. ");
                         SendRingList();
                     }
-                    else if (receivedMessage.Contains("LIST:") && isRingObtained)
+                    else if (receivedMessage.Contains(LIST_HEADER) && isRingObtained)
                     {
                         SetupRemainingElementsOfUI("LIST: Ring structure returned.");
 
@@ -131,7 +137,7 @@ namespace lsa_Tanenbaum_app
                             LogEvent("LIST: No changes found. Package ignored.");
                         }
                     }
-                    else if (receivedMessage.Contains("PRIO:"))
+                    else if (receivedMessage.Contains(PRIORITY_HEADER))
                     {
                         MakeNewLineInLog();
                         LogEvent("PRIO request received.");
@@ -151,22 +157,22 @@ namespace lsa_Tanenbaum_app
                             sck.SendTo(receivedData, epTarget);
                         }
                     }
-                    else if (receivedMessage.Contains("ICMP_ECHO_REQ:"))
+                    else if (receivedMessage.Contains(ICMP_ECHO_REQUEST_HEADER))
                     {
                         if (receivedMessage.Length > 14)
                         {
-                            string cutMessage = receivedMessage.Remove(0, 14);
+                            string cutMessage = receivedMessage.Replace(ICMP_ECHO_REQUEST_HEADER, "");
                             LogEvent($"PING: Received ICMP Echo Request from {cutMessage}");
                             AnswerEchoRequest(cutMessage);
                         }
                     }
-                    else if (receivedMessage.Contains("ICMP_ECHO_REPLY:"))
+                    else if (receivedMessage.Contains(ICMP_ECHO_REPLY_HEADER))
                     {
                         if (receivedMessage.Length > 16)
                         {
                             if (receivedMessage.Contains(ringCoordinator.ToString()))
                             {
-                                string cutMessage = receivedMessage.Remove(0, 16);
+                                string cutMessage = receivedMessage.Replace(ICMP_ECHO_REPLY_HEADER, "");
                                 LogEvent($"PING: Received ICMP Echo Reply from {cutMessage}.");
                                 StopDiagnosticPingCoordinatorTimeoutTimer();
                             }
@@ -178,7 +184,7 @@ namespace lsa_Tanenbaum_app
                             }
                         }
                     }
-                    else if (receivedMessage.Contains("ELEC:"))
+                    else if (receivedMessage.Contains(ELECTION_HEADER))
                     {
                         if (receivedMessage.Contains($"{textProcessIp.Text}:{textProcessPort.Text}"))
                         {
@@ -289,9 +295,9 @@ namespace lsa_Tanenbaum_app
             Invoke(inv);
         }
 
-        private void UpdateKnowledgeSection()
+        private void UpdateKnowledgeSection(string header, string source)
         {
-            (List<IPEndPoint>, List<int>) data = TranslateDataFromProcessesTmpContainer(processesTmpContainer);
+            (List<IPEndPoint>, List<int>) data = TranslateDataFromMessage(header, source);
             listOfAddresses = data.Item1;
             listOfPriorities = data.Item2;
             UpdateList(addressesListBox, listOfAddresses);
@@ -366,9 +372,9 @@ namespace lsa_Tanenbaum_app
             } else
             {
                 if (previousMessage == string.Empty)
-                    message = $"ELEC:{textProcessIp.Text}:{textProcessPort.Text}:{textPriority.Text}";
+                    message = $"{ELECTION_HEADER}|{textProcessIp.Text}:{textProcessPort.Text}:{textPriority.Text}";
                 else
-                    message = $"{previousMessage}:{textProcessIp.Text}:{textProcessPort.Text}:{textPriority.Text}";
+                    message = $"{previousMessage}|{textProcessIp.Text}:{textProcessPort.Text}:{textPriority.Text}";
 
                 isNextAvailableNeighbourFound = false;
 
@@ -578,8 +584,8 @@ namespace lsa_Tanenbaum_app
 
         private void SendEchoRequest(IPEndPoint target)
         {
-            // ICMP_ECHO_REQ:FROM
-            message = $"ICMP_ECHO_REQ:{textProcessIp.Text}:{textProcessPort.Text}";
+            // ICMP_ECHO_REQUEST:FROM
+            message = $"{ICMP_ECHO_REQUEST_HEADER}{textProcessIp.Text}:{textProcessPort.Text}";
             sck.SendTo(PackMessage(encoding, message), target);
         }
 
@@ -589,7 +595,7 @@ namespace lsa_Tanenbaum_app
             int index = listOfAddresses.IndexOf(BuildIPEndPoint(splitRequesterAddress[0], splitRequesterAddress[1]));
             if (index != -1)
             {
-                message = $"ICMP_ECHO_REPLY:{textProcessIp.Text}:{textProcessPort.Text}";
+                message = $"{ICMP_ECHO_REPLY_HEADER}{textProcessIp.Text}:{textProcessPort.Text}";
                 sck.SendTo(PackMessage(encoding, message), listOfAddresses[index]);
                 LogEvent($"PING: Send ICMP Echo Reply to requester({listOfAddresses[index]}).");
             }
@@ -620,9 +626,9 @@ namespace lsa_Tanenbaum_app
 
         private void RequestRingSynchronization()
         {
-            if (processesTmpContainer == "CONF:")
+            if (processesTmpContainer == CONFIGURATION_HEADER)
             {
-                processesTmpContainer = $"CONF:|{textProcessIp.Text}:{textProcessPort.Text}:{Convert.ToInt32(textPriority.Text)}";
+                processesTmpContainer = $"{CONFIGURATION_HEADER}|{textProcessIp.Text}:{textProcessPort.Text}:{Convert.ToInt32(textPriority.Text)}";
             }
             else if (processesTmpContainer.Contains($"{textProcessIp.Text}{textProcessPort.Text}") == false)
             {
@@ -638,7 +644,7 @@ namespace lsa_Tanenbaum_app
 
         private void SendRingList()
         {
-            processesTmpContainer = processesTmpContainer.Replace("CONF:", "LIST:");
+            processesTmpContainer = processesTmpContainer.Replace(CONFIGURATION_HEADER, LIST_HEADER);
             sck.SendTo(PackMessage(encoding, processesTmpContainer), epTarget);
             LogEvent($"LIST: Pass ring to [{textTargetIp.Text}:{textTargetPort.Text}].");
             MakeNewLineInLog();
@@ -647,7 +653,7 @@ namespace lsa_Tanenbaum_app
 
         private void SendPriorityUpdatePackage()
         {
-            message = $"PRIO:{textProcessIp.Text}:{textProcessPort.Text}:{textPriority.Text}";
+            message = $"{PRIORITY_HEADER}{textProcessIp.Text}:{textProcessPort.Text}:{textPriority.Text}";
             sck.SendTo(PackMessage(encoding, message), epTarget);
         }
 
@@ -656,7 +662,7 @@ namespace lsa_Tanenbaum_app
             if (message.Length > 6)
             {
                 // pattern: PRIO:192....:80:10
-                string[] splitMessage = message.Remove(0, 5).Split(':');
+                string[] splitMessage = message.Replace(PRIORITY_HEADER, "").Split(':');
                 IPEndPoint address = BuildIPEndPoint(splitMessage[0], splitMessage[1]);
                 int index = listOfAddresses.IndexOf(address);
 
