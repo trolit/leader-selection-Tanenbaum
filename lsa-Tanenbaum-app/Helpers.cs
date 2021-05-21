@@ -50,13 +50,13 @@ namespace lsa_Tanenbaum_app
             return new IPEndPoint(IPAddress.Parse(address), Convert.ToInt32(port));
         }
 
-        // pattern: LIST:|IP:Port:Priority|IP:Port:Priority|
+        // pattern: HEADER:|IP:Port:Priority|IP:Port:Priority|
         // The string split method will have the first element as String.Empty
         // if your delimiter appears at the beginning of the string. 
         // source: https://stackoverflow.com/questions/28901249/why-split-function-doesnt-return-a-null-at-the-first-of-this-string
-        public static (List<IPEndPoint>, List<int>) TranslateDataFromProcessesTmpContainer(string processesTmpContainer)
+        public static (List<IPEndPoint>, List<int>) TranslateDataFromMessage(string header, string message)
         {
-            if (processesTmpContainer.Length <= 5)
+            if (String.IsNullOrWhiteSpace(header) || String.IsNullOrWhiteSpace(message))
             {
                 return (null, null);
             }
@@ -64,7 +64,7 @@ namespace lsa_Tanenbaum_app
             List<IPEndPoint> addresses = new List<IPEndPoint>();
             List<int> priorities = new List<int>();
 
-            string text = processesTmpContainer.Remove(0, 5);
+            string text = message.Replace(header, "");
             string[] splitText = text.Split('|', ':');
 
             int addrPtr = 1;
