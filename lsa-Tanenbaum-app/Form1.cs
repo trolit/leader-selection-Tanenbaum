@@ -22,6 +22,7 @@ namespace lsa_Tanenbaum_app
 
         bool isConnectionEstablished = false; // for handling simple fields checking with disconnect btn behaviour
         bool isRingObtained = false;
+        bool isCoordinatorMessageSend = false;
 
         List<IPEndPoint> listOfAddresses;
         List<int> listOfPriorities;
@@ -33,6 +34,8 @@ namespace lsa_Tanenbaum_app
 
         IPEndPoint ringCoordinator;
 
+        private const string ELECTION_HEADER = "ELECTION:";
+        private const string COORDINATOR_HEADER = "COORDINATOR:";
         public Form1()
         {
             InitializeComponent();
@@ -182,20 +185,33 @@ namespace lsa_Tanenbaum_app
                             LogEvent($"ELEC: Received back election message with data: {receivedMessage}.");
 
                             // election message returned to the process that initialized it
-
                             // 1. translate data
-
+                            UpdateKnowledgeSection(ELECTION_HEADER, receivedMessage);
                             // 2. choose leader
-
+                            SelectRingCoordinator();
                             // 3. send COORDINATOR message and new ring structure
-
-
+                            isCoordinatorMessageSend = true;
+                            SendCoordinatorMessage(receivedMessage);
                         }
                         else
                         {
                             // pass election message further
-                            LogEvent($"ELEC: Pass election message further: {receivedMessage}.");
+                            LogEvent($"Pass election message further: {receivedMessage}.");
                             ProcessElectionRequest(receivedMessage);
+                        }
+                    }
+                    else if (receivedMessage.Contains(COORDINATOR_HEADER))
+                    {
+                        if (isCoordinatorMessageSend)
+                        {
+                            LogEvent($"Coordinator message returned. Removing it.");
+                            isCoordinatorMessageSend = false;
+                        } else
+                        {
+                            LogEvent($"Coordinator message received. Updating knowledge and passing it further.");
+                            UpdateKnowledgeSection(COORDINATOR_HEADER, receivedMessage);
+                            SelectRingCoordinator();
+                            SendCoordinatorMessage(receivedMessage);
                         }
                     }
                 }
@@ -204,6 +220,25 @@ namespace lsa_Tanenbaum_app
                     MessageBox.Show(e.ToString());
                 }
             }
+        }
+
+        private void SendCoordinatorMessage(string electionMessage)
+        {
+            string coordinatorMessage = electionMessage.Replace(ELECTION_HEADER, COORDINATOR_HEADER);
+            IPEndPoint nextProcessIPEndPoint = GetNextProcessIPEndPoint();
+            sck.SendTo(PackMessage(encoding, coordinatorMessage), nextProcessIPEndPoint);
+
+        }
+
+        private IPEndPoint GetNextProcessIPEndPoint()
+        {
+            int currentProcessId = listOfAddresses.IndexOf((IPEndPoint) epProcess);
+            int nextProcessId = currentProcessId + 1;
+
+            if (nextProcessId >= listOfAddresses.Count)
+                nextProcessId = 0;
+
+            return listOfAddresses[nextProcessId];
         }
 
         // **************************************************
