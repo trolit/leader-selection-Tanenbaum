@@ -7,6 +7,7 @@ using lsa_Tanenbaum_app.Properties;
 using System.Collections.Generic;
 using static lsa_Tanenbaum_app.Helpers;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace lsa_Tanenbaum_app
 {
@@ -178,9 +179,8 @@ namespace lsa_Tanenbaum_app
                             }
                             else if (receivedMessage.Contains(listOfAddresses[testedNeighbourId].ToString()))
                             {
-                                // LogEvent($"ELEC: Communication with {listOfAddresses[testedNeighbourId]} established");
+                                LogEvent($"ELEC: Communication established");
                                 isNextAvailableNeighbourFound = true;
-                                StopDiagnosticPingElectionTimeoutTimer();
                             }
                         }
                     }
@@ -198,6 +198,7 @@ namespace lsa_Tanenbaum_app
                             // 3. send COORDINATOR message and new ring structure
                             isCoordinatorMessageSend = true;
                             SendCoordinatorMessage(receivedMessage);
+                            LogEvent($"Send coordinator message to other.");
                         }
                         else
                         {
@@ -327,13 +328,14 @@ namespace lsa_Tanenbaum_app
         private int currentElectionTimeoutTick = 0;
         private bool isNextAvailableNeighbourFound = false;
         private int testedNeighbourId;
+        private int incrementer = 1;
 
         private IPEndPoint GetIPOfNextProcess()
         {
             if (listOfAddresses.Count == 2)
                 return BuildIPEndPoint(textProcessIp.Text, textProcessPort.Text);
 
-            testedNeighbourId = listOfAddresses.IndexOf(BuildIPEndPoint(textProcessIp.Text, textProcessPort.Text)) + 1;
+            testedNeighbourId = listOfAddresses.IndexOf(BuildIPEndPoint(textProcessIp.Text, textProcessPort.Text)) + incrementer;
 
             if (testedNeighbourId >= listOfAddresses.Count)
                 testedNeighbourId = 0;
@@ -348,8 +350,8 @@ namespace lsa_Tanenbaum_app
 
             return listOfAddresses[testedNeighbourId];
         }
-
-        private void ProcessElectionRequest(string previousMessage = "")
+        
+        private async void ProcessElectionRequest(string previousMessage = "")
         {
             while (!isNextAvailableNeighbourFound)
             {
@@ -361,10 +363,14 @@ namespace lsa_Tanenbaum_app
                         break;
 
                     LogEvent($"ELEC: Trying to communicate with {listOfAddresses[testedNeighbourId]}");
-                    SendEchoRequest(nextProcessIP);
                     InitDiagnosticPingElectionTimeoutTimer();
+                    SendEchoRequest(nextProcessIP);
                 }
+                Application.DoEvents();
             }
+
+            StopDiagnosticPingElectionTimeoutTimer();
+            await Task.Delay(1000);
 
             if (!isNextAvailableNeighbourFound)
             {
@@ -385,9 +391,10 @@ namespace lsa_Tanenbaum_app
 
         private void diagnosticPingElectionTimeoutTimer_Tick(object sender, EventArgs e)
         {
-            if (currentElectionTimeoutTick == replyTimeout.Value && diagnosticPingElectionTimeoutTimer != null)
+            if (currentElectionTimeoutTick == replyTimeout.Value)
             {
                 LogEvent($"ELEC: Connection with {listOfAddresses[testedNeighbourId]} failed.");
+                incrementer += 1;
                 StopDiagnosticPingElectionTimeoutTimer();
             }
             else
@@ -399,6 +406,7 @@ namespace lsa_Tanenbaum_app
 
         private void InitDiagnosticPingElectionTimeoutTimer()
         {
+            LogEvent($"Initialize election ping timeout.");
             diagnosticPingElectionTimeoutTimer = new Timer();
             diagnosticPingElectionTimeoutTimer.Tick += new EventHandler(diagnosticPingElectionTimeoutTimer_Tick);
             diagnosticPingElectionTimeoutTimer.Interval = 1000;
@@ -407,22 +415,23 @@ namespace lsa_Tanenbaum_app
 
         private void StopDiagnosticPingElectionTimeoutTimer()
         {
-            currentElectionTimeoutTick = 0;
             if (diagnosticPingElectionTimeoutTimer != null)
             {
                 diagnosticPingElectionTimeoutTimer.Stop();
                 diagnosticPingElectionTimeoutTimer = null;
             }
+            currentElectionTimeoutTick = 0;
         }
 
         private void diagnosticPingCoordinatorTimeoutTimer_Tick(object sender, EventArgs e)
         {
-            if (currentCoordinatorTimeoutTick == replyTimeout.Value && diagnosticPingCoordinatorTimeoutTimer != null)
+            if (currentCoordinatorTimeoutTick == replyTimeout.Value)
             {
+                // disable coordinator timeout timer
                 StopDiagnosticPingCoordinatorTimeoutTimer();
-
-                LogEvent($"PING: ICMP Echo Request timed out. Start election.");
+                // disable diagnostic ping
                 deactivateDiagnosticPingBtn_Click(sender, e);
+                LogEvent($"PING: ICMP Echo Request timed out. Start election.");
                 ProcessElectionRequest();
             }
             else
@@ -607,7 +616,7 @@ namespace lsa_Tanenbaum_app
             ringCoordinator = listOfAddresses[highestPriorityId];
             UpdateLabel(ringCoordinatorAddressText, ringCoordinator.ToString());
             UpdateLabel(ringCoordinatorPriorityText, $"with priority {listOfPriorities[highestPriorityId]} ({GetCurrentTimeStamp(DateTime.Now)})");
-            LogEvent("LIST: Coordinator chosen.");
+            LogEvent("Coordinator chosen.");
         }
 
         private string GetLocalAddress()

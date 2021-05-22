@@ -86,5 +86,8 @@
     <Content Include="Resources\status_connected.png" />
     <Content Include="Resources\status_notconnected.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="CallBackHandlers\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
