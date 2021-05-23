@@ -505,6 +505,7 @@ namespace lsa_Tanenbaum_app
         {
             SelectRingCoordinator();
             DisplayRemainingGroupBoxes();
+            HideDiagnosticPingGroupBouxForCoordinator();
             MakeNewLineInLog();
             LogEvent(logMessage);
             Invoke(new MethodInvoker(() => updatePriorityBtn.Enabled = true));
@@ -638,6 +639,18 @@ namespace lsa_Tanenbaum_app
             UpdateLabel(ringCoordinatorAddressText, ringCoordinator.ToString());
             UpdateLabel(ringCoordinatorPriorityText, $"with priority {listOfPriorities[highestPriorityId]} ({GetCurrentTimeStamp(DateTime.Now)})");
             LogEvent("Coordinator chosen.");
+        }
+
+        private void HideDiagnosticPingGroupBouxForCoordinator()
+        {
+            var test = _helperMethods.BuildIPEndPoint(textProcessIp.Text, textProcessPort.Text);
+            if (ringCoordinator.ToString().Contains(test.ToString()))
+            {
+                Invoke(new MethodInvoker(() => {
+                    diagnosticPingGroupBox.Visible = false;
+                    knowledgeGroupBox.Location = new Point(knowledgeGroupBox.Location.X, 200);
+                }));
+            }
         }
 
         private string GetLocalAddress()
