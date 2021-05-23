@@ -335,18 +335,24 @@ namespace lsa_Tanenbaum_app
             if (listOfAddresses.Count == 2)
                 return BuildIPEndPoint(textProcessIp.Text, textProcessPort.Text);
 
-            testedNeighbourId = listOfAddresses.IndexOf(BuildIPEndPoint(textProcessIp.Text, textProcessPort.Text)) + incrementer;
+            int electionCallerIndex = listOfAddresses.IndexOf(BuildIPEndPoint(textProcessIp.Text, textProcessPort.Text));
+            testedNeighbourId = electionCallerIndex + incrementer;
 
             if (testedNeighbourId >= listOfAddresses.Count)
-                testedNeighbourId = 0;
+            {
+                testedNeighbourId -= listOfAddresses.Count;
+            }
 
             if (listOfAddresses[testedNeighbourId] == ringCoordinator)
             {
                 testedNeighbourId += 1;
+                incrementer += 1;
             }
 
             if (testedNeighbourId >= listOfAddresses.Count)
-                testedNeighbourId = 0;
+            {
+                testedNeighbourId -= listOfAddresses.Count;
+            }
 
             return listOfAddresses[testedNeighbourId];
         }
@@ -370,7 +376,6 @@ namespace lsa_Tanenbaum_app
             }
 
             StopDiagnosticPingElectionTimeoutTimer();
-            await Task.Delay(1000);
 
             if (!isNextAvailableNeighbourFound)
             {
