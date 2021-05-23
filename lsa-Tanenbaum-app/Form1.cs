@@ -203,6 +203,7 @@ namespace lsa_Tanenbaum_app
                     {
                         if (isCoordinatorMessageSend)
                         {
+                            UpdateTargetIntel();
                             LogEvent($"Coordinator message returned. Removing it.");
                             isCoordinatorMessageSend = false;
                         } else
@@ -210,6 +211,7 @@ namespace lsa_Tanenbaum_app
                             LogEvent($"Coordinator message received. Updating knowledge and passing it further.");
                             UpdateKnowledgeSection(COORDINATOR_HEADER, receivedMessage);
                             SelectRingCoordinator();
+                            UpdateTargetIntel();
                             SendCoordinatorMessage(receivedMessage);
                         }
                     }
@@ -270,6 +272,16 @@ namespace lsa_Tanenbaum_app
             MethodInvoker inv = delegate
             {
                 label.Text = text;
+            };
+
+            Invoke(inv);
+        }
+
+        private void UpdateTextBox(TextBox textBox, string text)
+        {
+            MethodInvoker inv = delegate
+            {
+                textBox.Text = text;
             };
 
             Invoke(inv);
@@ -496,6 +508,18 @@ namespace lsa_Tanenbaum_app
             MakeNewLineInLog();
             LogEvent(logMessage);
             Invoke(new MethodInvoker(() => updatePriorityBtn.Enabled = true));
+        }
+
+        private void UpdateTargetIntel()
+        {
+            int consequentIndex = listOfAddresses.IndexOf((IPEndPoint) epProcess) + 1;
+
+            if (consequentIndex >= listOfAddresses.Count)
+                consequentIndex = 0;
+
+            UpdateTextBox(textTargetIp, listOfAddresses[consequentIndex].Address.ToString());
+            UpdateTextBox(textTargetPort, listOfAddresses[consequentIndex].Port.ToString());
+            epTarget = new IPEndPoint(listOfAddresses[consequentIndex].Address, listOfAddresses[consequentIndex].Port);
         }
 
         private void connectToTargetBtn_Click(object sender, EventArgs e)
