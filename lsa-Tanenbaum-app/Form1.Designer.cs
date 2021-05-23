@@ -73,7 +73,6 @@
             this.replyTimeout = new System.Windows.Forms.NumericUpDown();
             this.disableDiagnosticPingBtn = new System.Windows.Forms.Button();
             this.enableDiagnosticPingBtn = new System.Windows.Forms.Button();
-            this.label10 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxConnectionStatus)).BeginInit();
@@ -388,13 +387,13 @@
             this.logBox.BackColor = System.Drawing.Color.Silver;
             this.logBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.logBox.Cursor = System.Windows.Forms.Cursors.Cross;
-            this.logBox.Font = new System.Drawing.Font("Berlin Sans FB", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.logBox.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.logBox.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.logBox.HideSelection = false;
-            this.logBox.Location = new System.Drawing.Point(699, 100);
+            this.logBox.Location = new System.Drawing.Point(681, 100);
             this.logBox.Name = "logBox";
             this.logBox.ReadOnly = true;
-            this.logBox.Size = new System.Drawing.Size(497, 505);
+            this.logBox.Size = new System.Drawing.Size(562, 505);
             this.logBox.TabIndex = 27;
             this.logBox.TabStop = false;
             this.logBox.Text = "// *********************************************\n// LSA - Tanenbaum log\n// ******" +
@@ -468,7 +467,7 @@
             // ringCoordinatorPriorityText
             // 
             this.ringCoordinatorPriorityText.AutoSize = true;
-            this.ringCoordinatorPriorityText.Location = new System.Drawing.Point(100, 188);
+            this.ringCoordinatorPriorityText.Location = new System.Drawing.Point(103, 188);
             this.ringCoordinatorPriorityText.Name = "ringCoordinatorPriorityText";
             this.ringCoordinatorPriorityText.Size = new System.Drawing.Size(169, 17);
             this.ringCoordinatorPriorityText.TabIndex = 37;
@@ -478,7 +477,7 @@
             // 
             this.ringCoordinatorAddressText.AutoSize = true;
             this.ringCoordinatorAddressText.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.ringCoordinatorAddressText.Location = new System.Drawing.Point(201, 171);
+            this.ringCoordinatorAddressText.Location = new System.Drawing.Point(191, 171);
             this.ringCoordinatorAddressText.Name = "ringCoordinatorAddressText";
             this.ringCoordinatorAddressText.Size = new System.Drawing.Size(109, 17);
             this.ringCoordinatorAddressText.TabIndex = 36;
@@ -487,7 +486,7 @@
             // label33
             // 
             this.label33.AutoSize = true;
-            this.label33.Location = new System.Drawing.Point(58, 171);
+            this.label33.Location = new System.Drawing.Point(48, 171);
             this.label33.Name = "label33";
             this.label33.Size = new System.Drawing.Size(145, 17);
             this.label33.TabIndex = 35;
@@ -574,7 +573,7 @@
             this.diagnosticPingGroupBox.Controls.Add(this.enableDiagnosticPingBtn);
             this.diagnosticPingGroupBox.Controls.Add(this.label11);
             this.diagnosticPingGroupBox.Controls.Add(this.diagnosticPingFrequency);
-            this.diagnosticPingGroupBox.Location = new System.Drawing.Point(305, 257);
+            this.diagnosticPingGroupBox.Location = new System.Drawing.Point(305, 250);
             this.diagnosticPingGroupBox.Name = "diagnosticPingGroupBox";
             this.diagnosticPingGroupBox.Size = new System.Drawing.Size(370, 130);
             this.diagnosticPingGroupBox.TabIndex = 41;
@@ -650,14 +649,6 @@
             this.enableDiagnosticPingBtn.UseVisualStyleBackColor = false;
             this.enableDiagnosticPingBtn.Click += new System.EventHandler(this.activateDiagnosticPingBtn_Click);
             // 
-            // label10
-            // 
-            this.label10.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label10.Location = new System.Drawing.Point(688, 94);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(5, 500);
-            this.label10.TabIndex = 42;
-            // 
             // label20
             // 
             this.label20.AutoSize = true;
@@ -674,9 +665,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.ClientSize = new System.Drawing.Size(1204, 635);
+            this.ClientSize = new System.Drawing.Size(1255, 635);
             this.Controls.Add(this.label20);
-            this.Controls.Add(this.label10);
             this.Controls.Add(this.diagnosticPingGroupBox);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.logBox);
@@ -757,7 +747,6 @@
         private System.Windows.Forms.GroupBox diagnosticPingGroupBox;
         private System.Windows.Forms.Button enableDiagnosticPingBtn;
         private System.Windows.Forms.Button disableDiagnosticPingBtn;
-        private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.Label label33;
         private System.Windows.Forms.Label ringCoordinatorAddressText;
