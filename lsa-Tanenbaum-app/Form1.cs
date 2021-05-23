@@ -380,6 +380,7 @@ namespace lsa_Tanenbaum_app
             }
 
             StopDiagnosticPingElectionTimeoutTimer();
+            incrementer = 1;
 
             if (!isNextAvailableNeighbourFound)
             {
