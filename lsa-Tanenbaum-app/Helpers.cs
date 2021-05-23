@@ -8,6 +8,14 @@ namespace lsa_Tanenbaum_app
 {
     public static class Helpers
     {
+        public const string CONFIGURATION_HEADER = "CONFIGURATION:";
+        public const string ELECTION_HEADER = "ELECTION:";
+        public const string COORDINATOR_HEADER = "COORDINATOR:";
+        public const string PRIORITY_HEADER = "PRIORITY:";
+        public const string LIST_HEADER = "LIST:";
+        public const string ICMP_ECHO_REQUEST_HEADER = "ICMP_ECHO_REQUEST:";
+        public const string ICMP_ECHO_REPLY_HEADER = "ICMP_ECHO_REPLY:";
+
         public static void RandomizeProcessIdentity(TextBox textBox, Random randomizer)
         {
             textBox.Text = "P-" + randomizer.Next(1000, 9999);

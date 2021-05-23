@@ -35,14 +35,6 @@ namespace lsa_Tanenbaum_app
 
         IPEndPoint ringCoordinator;
 
-        private const string CONFIGURATION_HEADER = "CONFIGURATION:";
-        private const string ELECTION_HEADER = "ELECTION:";
-        private const string COORDINATOR_HEADER = "COORDINATOR:";
-        private const string PRIORITY_HEADER = "PRIORITY:";
-        private const string LIST_HEADER = "LIST:";
-        private const string ICMP_ECHO_REQUEST_HEADER = "ICMP_ECHO_REQUEST:";
-        private const string ICMP_ECHO_REPLY_HEADER = "ICMP_ECHO_REPLY:";
-
         public Form1()
         {
             InitializeComponent();
