@@ -2,38 +2,48 @@
 using System.Windows.Forms;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using lsa_Tanenbaum_app.Properties;
 using System.Collections.Generic;
-using static lsa_Tanenbaum_app.Helpers;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Drawing;
+using System.Diagnostics;
+using lsa_Tanenbaum_app.Structures;
 
 namespace lsa_Tanenbaum_app
 {
     public partial class Form1 : Form
     {
-        Socket sck;
-        Random randomizer;
+        private const int BUFFER_SIZE = 1500;
 
-        ASCIIEncoding encoding;
+        /* Allowed packages headers */
+        private const string CONFIGURATION_HEADER = "CONFIGURATION:";
+        private const string ELECTION_HEADER = "ELECTION:";
+        private const string COORDINATOR_HEADER = "COORDINATOR:";
+        private const string PRIORITY_HEADER = "PRIORITY:";
+        private const string LIST_HEADER = "LIST:";
+        private const string ICMP_ECHO_REQUEST_HEADER = "ICMP_ECHO_REQUEST:";
+        private const string ICMP_ECHO_REPLY_HEADER = "ICMP_ECHO_REPLY:";
+
+        private Socket socket;
+        private List<IPEndPoint> listOfAddresses;
+        private List<int> listOfPriorities;
+        private TextBox[] configurationTextBoxes;
+        private IPEndPoint ringCoordinatorIP;
+        public bool isSocketInitialized = false;
+
+        private HelperMethods helperMethods;
+
+        /* Handlers */
 
         EndPoint epProcess, epTarget;
-        byte[] buffer;  // for sending messages
+        byte[] buffer;
 
-        bool isConnectionEstablished = false; // for handling simple fields checking with disconnect btn behaviour
-        bool isRingObtained = false;
-        bool isCoordinatorMessageSend = false;
+        bool isRingObtained = false; // for callback of the ring synchiornization caller
+        bool isCoordinatorMessageSend = false; // for coordinator message initializer 
 
-        List<IPEndPoint> listOfAddresses;
-        List<int> listOfPriorities;
 
         string processesTmpContainer; // variable for particular target - obtaining network structure data
-        string message; // other messages (priority update, ping)
-
-        TextBox[] configurationTextBoxes;
-
-        IPEndPoint ringCoordinator;
+        string message; // container for messages (priority update, ping)
 
         public Form1()
         {
@@ -42,6 +52,8 @@ namespace lsa_Tanenbaum_app
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            helperMethods = new HelperMethods();
+
             configurationTextBoxes = new TextBox[] {
                 textProcessName,
                 textProcessIp,
@@ -50,19 +62,20 @@ namespace lsa_Tanenbaum_app
                 textTargetPort
             };
 
-            randomizer = new Random();
-            encoding = new ASCIIEncoding();
-            RandomizeProcessIdentity(textProcessName, randomizer);
+            helperMethods.RandomizeProcessIdentity(textProcessName);
 
             listOfAddresses = new List<IPEndPoint>();
             listOfPriorities = new List<int>();
             processesTmpContainer = CONFIGURATION_HEADER;
 
-            disconnectFromTargetBtn.Enabled = false;
+            stopSocketBtn.Enabled = false;
 
             // get user IP
-            textProcessIp.Text = GetLocalAddress();
-            textTargetIp.Text = GetLocalAddress();
+            textProcessIp.Text = helperMethods.GetLocalAddress();
+            textTargetIp.Text = helperMethods.GetLocalAddress();
+
+
+            logBox.WriteEvent($"Process {Process.GetCurrentProcess().Id}({textProcessName.Text}) initialized.");
         }
 
         // **************************************************
@@ -73,147 +86,167 @@ namespace lsa_Tanenbaum_app
 
         private void MessageCallBack(IAsyncResult result)
         {
-            if (true)
+            if (isSocketInitialized)
             {
                 try
                 {
-                    byte[] receivedData = new byte[1500];
+                    byte[] receivedData = new byte[BUFFER_SIZE];
                     receivedData = (byte[])result.AsyncState;
 
                     // Convert byte[] to string
-                    string receivedMessage = UnpackMessage(encoding, receivedData);
+                    string receivedMessage = helperMethods.UnpackMessage(receivedData);
 
-                    // callback again
-                    buffer = new byte[1500];
-                    sck.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(MessageCallBack), buffer);
+                    // setup callback again
+                    buffer = new byte[BUFFER_SIZE];
+                    socket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(MessageCallBack), buffer);
 
-                    if (receivedMessage.Contains(CONFIGURATION_HEADER))
+                    switch (receivedMessage)
                     {
-
-                        processesTmpContainer = receivedMessage;
-
-                        if (processesTmpContainer.Contains($"{textProcessIp.Text}:{textProcessPort.Text}"))
-                        {
-                            LogEvent("CONF: Synchronization request returned, ring collected.");
-                            DisableRingSyncButton();
-                            isRingObtained = true;
-                            MakeNewLineInLog();
-                            UpdateKnowledgeSection(CONFIGURATION_HEADER, processesTmpContainer);
-                            SendRingList();
-                        }
-                        else
-                        {
-                            DisableRingSyncButton();
-                            LogEvent($"CONF: Received synchronization request.");
-                            RequestRingSynchronization();
-                        }
-                    }
-                    else if (receivedMessage.Contains(LIST_HEADER) && !isRingObtained)
-                    {
-                        isRingObtained = true;
-                        processesTmpContainer = receivedMessage;
-                        UpdateKnowledgeSection(LIST_HEADER, processesTmpContainer);
-                        SetupRemainingElementsOfUI($"LIST: Ring structure obtained \n[{processesTmpContainer}]. ");
-                        SendRingList();
-                    }
-                    else if (receivedMessage.Contains(LIST_HEADER) && isRingObtained)
-                    {
-                        SetupRemainingElementsOfUI("LIST: Ring structure returned.");
-
-                        if (processesTmpContainer != receivedMessage)
-                        {
-                            processesTmpContainer = receivedMessage;
-                            LogEvent("LIST: Changes found! Overwriting ring structure.");
-                        }
-                        else
-                        {
-                            LogEvent("LIST: No changes found. Package ignored.");
-                        }
-                    }
-                    else if (receivedMessage.Contains(PRIORITY_HEADER))
-                    {
-                        MakeNewLineInLog();
-                        LogEvent("PRIO request received.");
-                        if (receivedMessage.Contains($"{textProcessIp.Text}:{textProcessPort.Text}"))
-                        {
-                            LogEvent($"PRIO: Updating knowledge..");
-                            UpdatePriorityInListBox(receivedMessage);
-                            LogEvent($"PRIO: Request deleted.");
-                            MakeNewLineInLog();
-                        }
-                        else
-                        {
-                            LogEvent("PRIO: Updating knowledge..");
-                            UpdatePriorityInListBox(receivedMessage);
-                            LogEvent("PRIO: Sending PRIORITY UPDATE request further.");
-                            MakeNewLineInLog();
-                            sck.SendTo(receivedData, epTarget);
-                        }
-                    }
-                    else if (receivedMessage.Contains(ICMP_ECHO_REQUEST_HEADER))
-                    {
-                        if (receivedMessage.Length > 14)
-                        {
-                            string cutMessage = receivedMessage.Replace(ICMP_ECHO_REQUEST_HEADER, "");
-                            LogEvent($"PING: Received ICMP Echo Request from {cutMessage}");
-                            AnswerEchoRequest(cutMessage);
-                        }
-                    }
-                    else if (receivedMessage.Contains(ICMP_ECHO_REPLY_HEADER))
-                    {
-                        if (receivedMessage.Length > 16)
-                        {
-                            if (receivedMessage.Contains(ringCoordinator.ToString()))
+                        case string configurationMessage when receivedMessage.Contains(CONFIGURATION_HEADER):
                             {
-                                string cutMessage = receivedMessage.Replace(ICMP_ECHO_REPLY_HEADER, "");
-                                LogEvent($"PING: Received ICMP Echo Reply from {cutMessage}.");
-                                StopDiagnosticPingCoordinatorTimeoutTimer();
-                            }
-                            else if (receivedMessage.Contains(listOfAddresses[testedNeighbourId].ToString()))
-                            {
-                                LogEvent($"ELEC: Communication established");
-                                isNextAvailableNeighbourFound = true;
-                            }
-                        }
-                    }
-                    else if (receivedMessage.Contains(ELECTION_HEADER))
-                    {
-                        if (receivedMessage.Contains($"{textProcessIp.Text}:{textProcessPort.Text}"))
-                        {
-                            LogEvent($"ELEC: Received back election message with data: {receivedMessage}.");
+                                processesTmpContainer = configurationMessage;
 
-                            // election message returned to the process that initialized it
-                            // 1. translate data
-                            UpdateKnowledgeSection(ELECTION_HEADER, receivedMessage);
-                            // 2. choose leader
-                            SelectRingCoordinator();
-                            // 3. send COORDINATOR message and new ring structure
-                            isCoordinatorMessageSend = true;
-                            SendCoordinatorMessage(receivedMessage);
-                            LogEvent($"Send coordinator message to other.");
-                        }
-                        else
-                        {
-                            // pass election message further
-                            LogEvent($"Pass election message further: {receivedMessage}.");
-                            ProcessElectionRequest(receivedMessage);
-                        }
-                    }
-                    else if (receivedMessage.Contains(COORDINATOR_HEADER))
-                    {
-                        if (isCoordinatorMessageSend)
-                        {
-                            UpdateTargetIntel();
-                            LogEvent($"Coordinator message returned. Removing it.");
-                            isCoordinatorMessageSend = false;
-                        } else
-                        {
-                            LogEvent($"Coordinator message received. Updating knowledge and passing it further.");
-                            UpdateKnowledgeSection(COORDINATOR_HEADER, receivedMessage);
-                            SelectRingCoordinator();
-                            UpdateTargetIntel();
-                            SendCoordinatorMessage(receivedMessage);
-                        }
+                                if (processesTmpContainer.Contains($"{textProcessIp.Text}:{textProcessPort.Text}"))
+                                {
+                                    logBox.WriteEvent("Synchronization request returned, ring collected.");
+                                    ringSynchronizationBtn.Disable();
+                                    isRingObtained = true;
+                                    UpdateKnowledgeSection(CONFIGURATION_HEADER, processesTmpContainer);
+                                    SendRingList();
+                                }
+                                else
+                                {
+                                    ringSynchronizationBtn.Disable();
+                                    logBox.WriteEvent($"CONF: Received synchronization request.");
+                                    RequestRingSynchronization();
+                                }
+                            }
+                            break;
+
+                        case string listMessage when receivedMessage.Contains(LIST_HEADER) && !isRingObtained:
+                            {
+                                isRingObtained = true;
+                                processesTmpContainer = listMessage;
+                                UpdateKnowledgeSection(LIST_HEADER, listMessage);
+                                SelectRingCoordinator();
+                                UpdateInterfaceOnCompletedRingSynchronization();
+                                logBox.WriteEvent($"LIST: Ring structure obtained \n[{processesTmpContainer}]. ");
+                                SendRingList();
+                            }
+                            break;
+
+                        case string listMessage when receivedMessage.Contains(LIST_HEADER) && isRingObtained:
+                            {
+                                SelectRingCoordinator();
+                                UpdateInterfaceOnCompletedRingSynchronization();
+                                logBox.BreakLine();
+                                logBox.WriteEvent("LIST: Ring structure returned.");
+
+                                if (processesTmpContainer != listMessage)
+                                {
+                                    processesTmpContainer = listMessage;
+                                    logBox.WriteEvent("LIST: Changes found! Overwriting ring structure.");
+                                }
+                                else
+                                {
+                                    logBox.WriteEvent("LIST: No changes found. Package ignored.");
+                                }
+                            }
+                            break;
+
+                        case string priorityMessage when receivedMessage.Contains(PRIORITY_HEADER):
+                            {
+                                logBox.BreakLine();
+                                logBox.WriteEvent("PRIO request received.");
+                                if (priorityMessage.Contains($"{textProcessIp.Text}:{textProcessPort.Text}"))
+                                {
+                                    logBox.WriteEvent($"PRIO: Updating knowledge..");
+                                    UpdatePriorityInListBox(priorityMessage);
+                                    logBox.WriteEvent($"PRIO: Request deleted.");
+                                    logBox.BreakLine();
+                                }
+                                else
+                                {
+                                    logBox.WriteEvent("PRIO: Updating knowledge..");
+                                    UpdatePriorityInListBox(priorityMessage);
+                                    logBox.WriteEvent("PRIO: Sending PRIORITY UPDATE request further.");
+                                    logBox.BreakLine();
+                                    socket.SendTo(receivedData, epTarget);
+                                }
+                            }
+                            break;
+
+                        case string echoRequestMessage when receivedMessage.Contains(ICMP_ECHO_REQUEST_HEADER):
+                            {
+                                string cutMessage = echoRequestMessage.Replace(ICMP_ECHO_REQUEST_HEADER, "");
+                                logBox.WriteEvent($"PING: Received ICMP Echo Request from {cutMessage}");
+                                AnswerEchoRequest(cutMessage);
+                            }
+                            break;
+
+                        case string echopReplyMessage when receivedMessage.Contains(ICMP_ECHO_REPLY_HEADER):
+                            {
+                                if (echopReplyMessage.Contains(ringCoordinatorIP.ToString()))
+                                {
+                                    string cutMessage = echopReplyMessage.Replace(ICMP_ECHO_REPLY_HEADER, "");
+                                    logBox.WriteEvent($"PING: Received ICMP Echo Reply from {cutMessage}.");
+                                    StopDiagnosticPingCoordinatorTimeoutTimer();
+                                }
+                                else if (echopReplyMessage.Contains(listOfAddresses[testedNeighbourId].ToString()))
+                                {
+                                    logBox.WriteEvent($"ELEC: Communication established");
+                                    isNextAvailableNeighbourFound = true;
+                                }
+                            }
+                            break;
+
+                        case string electionMessage when receivedMessage.Contains(ELECTION_HEADER):
+                            {
+                                if (electionMessage.Contains($"{textProcessIp.Text}:{textProcessPort.Text}"))
+                                {
+                                    logBox.WriteEvent($"ELEC: Received back election message with data: {electionMessage}.");
+
+                                    // election message returned to the process that initialized it
+                                    // 1. translate data
+                                    UpdateKnowledgeSection(ELECTION_HEADER, electionMessage);
+                                    // 2. choose leader
+                                    SelectRingCoordinator();
+                                    // 3. send COORDINATOR message and new ring structure
+                                    isCoordinatorMessageSend = true;
+                                    SendCoordinatorMessage(electionMessage);
+                                    logBox.WriteEvent($"Send coordinator message to other.");
+                                }
+                                else
+                                {
+                                    // pass election message further
+                                    logBox.WriteEvent($"Pass election message further: {electionMessage}.");
+                                    ProcessElectionRequest(electionMessage);
+                                }
+                            }
+                            break;
+
+                        case string coordinatorMessage when receivedMessage.Contains(COORDINATOR_HEADER):
+                            {
+                                if (isCoordinatorMessageSend)
+                                {
+                                    UpdateTargetIntel();
+                                    logBox.WriteEvent($"Coordinator message returned. Removing it.");
+                                    isCoordinatorMessageSend = false;
+                                }
+                                else
+                                {
+                                    logBox.WriteEvent($"Coordinator message received. Updating knowledge and passing it further.");
+                                    UpdateKnowledgeSection(COORDINATOR_HEADER, coordinatorMessage);
+                                    SelectRingCoordinator();
+                                    UpdateTargetIntel();
+                                    SendCoordinatorMessage(coordinatorMessage);
+                                }
+                            }
+                            break;
+
+                        default:
+                            logBox.WriteEvent($"Received message contained header that isn't supported.");
+                            break;
                     }
                 }
                 catch (Exception e)
@@ -227,7 +260,7 @@ namespace lsa_Tanenbaum_app
         {
             string coordinatorMessage = electionMessage.Replace(ELECTION_HEADER, COORDINATOR_HEADER);
             IPEndPoint nextProcessIPEndPoint = GetNextProcessIPEndPoint();
-            sck.SendTo(PackMessage(encoding, coordinatorMessage), nextProcessIPEndPoint);
+            socket.SendTo(helperMethods.PackMessage(coordinatorMessage), nextProcessIPEndPoint);
 
         }
 
@@ -248,84 +281,22 @@ namespace lsa_Tanenbaum_app
         //
         // **************************************************
 
-        private void DisplayRemainingGroupBoxes()
-        {
-            Invoke(new MethodInvoker(() => {
-                knowledgeGroupBox.Text = $"{textProcessName.Text} network knowledge";
-                knowledgeGroupBox.Visible = true;
-                diagnosticPingGroupBox.Visible = true;
-            }));
-        }
-
-        private void DisableRingSyncButton()
-        {
-            MethodInvoker inv = delegate
-            {
-                ringSynchronizationBtn.Enabled = false;
-            };
-
-            Invoke(inv);
-        }
-
-        private void UpdateLabel(Label label, string text)
-        {
-            MethodInvoker inv = delegate
-            {
-                label.Text = text;
-            };
-
-            Invoke(inv);
-        }
-
-        private void UpdateTextBox(TextBox textBox, string text)
-        {
-            MethodInvoker inv = delegate
-            {
-                textBox.Text = text;
-            };
-
-            Invoke(inv);
-        }
-
-        private void UpdateList<T>(ListBox listBox, List<T> list)
-        {
-            MethodInvoker inv = delegate
-            {
-                if (listBox.DataSource != null)
-                    listBox.DataSource = new List<T>();
-
-                listBox.DataSource = list;
-            };
-
-            Invoke(inv);
-        }
-
         private void UpdateKnowledgeSection(string header, string source)
         {
-            (List<IPEndPoint>, List<int>) data = TranslateDataFromMessage(header, source);
+            (List<IPEndPoint>, List<int>) data = helperMethods.TranslateDataFromMessage(header, source);
             listOfAddresses = data.Item1;
             listOfPriorities = data.Item2;
-            UpdateList(addressesListBox, listOfAddresses);
-            UpdateList(prioritiesListBox, listOfPriorities);
-        }
-
-        private void LogEvent(string text)
-        {
-            Invoke((Func<string, bool>)logBox.AppendText, text);
-        }
-
-        private void MakeNewLineInLog()
-        {
-            Invoke((Func<bool>)logBox.AppendNewLine);
+            addressesListBox.UpdateCollection(listOfAddresses);
+            prioritiesListBox.UpdateCollection(listOfPriorities);
         }
 
         // **************************************************
         //
-        //                 GUI FUNCTIONS
+        //                    TIMERS
         //
         // **************************************************
 
-        private Timer diagnosticPingTimer;
+
         private Timer diagnosticPingCoordinatorTimeoutTimer;
         private Timer diagnosticPingElectionTimeoutTimer;
         private int currentCoordinatorTimeoutTick = 0;
@@ -334,104 +305,31 @@ namespace lsa_Tanenbaum_app
         private int testedNeighbourId;
         private int incrementer = 1;
 
-        private IPEndPoint GetIPOfNextProcess()
+        #region Diagnostic ping repetition timer
+
+        private Timer diagnosticPingTimer;
+
+        private void diagnosticPingTimer_Tick(object sender, EventArgs e)
         {
-            if (listOfAddresses.Count == 2)
-                return BuildIPEndPoint(textProcessIp.Text, textProcessPort.Text);
-
-            int electionCallerIndex = listOfAddresses.IndexOf(BuildIPEndPoint(textProcessIp.Text, textProcessPort.Text));
-            testedNeighbourId = electionCallerIndex + incrementer;
-
-            if (testedNeighbourId >= listOfAddresses.Count)
+            if (diagnosticPingCoordinatorTimeoutTimer == null)
             {
-                testedNeighbourId -= listOfAddresses.Count;
-            }
-
-            if (listOfAddresses[testedNeighbourId] == ringCoordinator)
-            {
-                testedNeighbourId += 1;
-                incrementer += 1;
-            }
-
-            if (testedNeighbourId >= listOfAddresses.Count)
-            {
-                testedNeighbourId -= listOfAddresses.Count;
-            }
-
-            return listOfAddresses[testedNeighbourId];
-        }
-        
-        private async void ProcessElectionRequest(string previousMessage = "")
-        {
-            while (!isNextAvailableNeighbourFound)
-            {
-                if (diagnosticPingElectionTimeoutTimer == null)
-                {
-                    IPEndPoint nextProcessIP = GetIPOfNextProcess();
-
-                    if (nextProcessIP.ToString() == $"{textProcessIp.Text}:{textProcessPort.Text}")
-                        break;
-
-                    LogEvent($"ELEC: Trying to communicate with {listOfAddresses[testedNeighbourId]}");
-                    InitDiagnosticPingElectionTimeoutTimer();
-                    SendEchoRequest(nextProcessIP);
-                }
-                Application.DoEvents();
-            }
-
-            StopDiagnosticPingElectionTimeoutTimer();
-            incrementer = 1;
-
-            if (!isNextAvailableNeighbourFound)
-            {
-                LogEvent($"ELEC: No other available processes found. Can't resolve election :(");
-            } else
-            {
-                if (previousMessage == string.Empty)
-                    message = $"{ELECTION_HEADER}|{textProcessIp.Text}:{textProcessPort.Text}:{textPriority.Text}";
-                else
-                    message = $"{previousMessage}|{textProcessIp.Text}:{textProcessPort.Text}:{textPriority.Text}";
-
-                isNextAvailableNeighbourFound = false;
-
-                sck.SendTo(PackMessage(encoding, message), listOfAddresses[testedNeighbourId]);
-                LogEvent($"ELEC: Election message sent to {listOfAddresses[testedNeighbourId]}");
+                SendEchoRequest(ringCoordinatorIP);
+                InitDiagnosticPingCoordinatorTimeoutTimer();
+                logBox.WriteEvent($"PING: Send ICMP Echo Request to coordinator.");
             }
         }
 
-        private void diagnosticPingElectionTimeoutTimer_Tick(object sender, EventArgs e)
+        private void InitDiagnosticPingTimer()
         {
-            if (currentElectionTimeoutTick == replyTimeout.Value)
-            {
-                LogEvent($"ELEC: Connection with {listOfAddresses[testedNeighbourId]} failed.");
-                incrementer += 1;
-                StopDiagnosticPingElectionTimeoutTimer();
-            }
-            else
-            {
-                currentElectionTimeoutTick += 1;
-                LogEvent($"ELEC_PING: Waiting for ICMP Echo Reply {currentElectionTimeoutTick}s / {replyTimeout.Value}s.");
-            }
+            diagnosticPingTimer = new Timer();
+            diagnosticPingTimer.Tick += new EventHandler(diagnosticPingTimer_Tick);
+            diagnosticPingTimer.Interval = diagnosticPingFrequency.Value < 1 ? 500 : (int)(diagnosticPingFrequency.Value * 1000); // 5 * 1000 = 5000ms (5s)
+            diagnosticPingTimer.Start();
         }
 
-        private void InitDiagnosticPingElectionTimeoutTimer()
-        {
-            LogEvent($"Initialize election ping timeout.");
-            diagnosticPingElectionTimeoutTimer = new Timer();
-            diagnosticPingElectionTimeoutTimer.Tick += new EventHandler(diagnosticPingElectionTimeoutTimer_Tick);
-            diagnosticPingElectionTimeoutTimer.Interval = 1000;
-            diagnosticPingElectionTimeoutTimer.Start();
-        }
+        #endregion
 
-        private void StopDiagnosticPingElectionTimeoutTimer()
-        {
-            if (diagnosticPingElectionTimeoutTimer != null)
-            {
-                diagnosticPingElectionTimeoutTimer.Stop();
-                diagnosticPingElectionTimeoutTimer = null;
-            }
-            currentElectionTimeoutTick = 0;
-        }
+        #region Diagnostic ping coordinator timeout timer
 
         private void diagnosticPingCoordinatorTimeoutTimer_Tick(object sender, EventArgs e)
         {
@@ -441,13 +339,13 @@ namespace lsa_Tanenbaum_app
                 StopDiagnosticPingCoordinatorTimeoutTimer();
                 // disable diagnostic ping
                 deactivateDiagnosticPingBtn_Click(sender, e);
-                LogEvent($"PING: ICMP Echo Request timed out. Start election.");
+                logBox.WriteEvent($"PING: ICMP Echo Request timed out. Start election.");
                 ProcessElectionRequest();
             }
             else
             {
                 currentCoordinatorTimeoutTick += 1;
-                LogEvent($"PING: Waiting for ICMP Echo Reply {currentCoordinatorTimeoutTick}s / {replyTimeout.Value}s.");
+                logBox.WriteEvent($"PING: Waiting for ICMP Echo Reply {currentCoordinatorTimeoutTick}s / {replyTimeout.Value}s.");
             }
         }
 
@@ -469,28 +367,115 @@ namespace lsa_Tanenbaum_app
             }
         }
 
-        private void diagnosticPingTimer_Tick(object sender, EventArgs e)
+        #endregion
+
+        #region Diagnostic ping election timeout timer
+
+        private void diagnosticPingElectionTimeoutTimer_Tick(object sender, EventArgs e)
         {
-            if (diagnosticPingCoordinatorTimeoutTimer == null)
+            if (currentElectionTimeoutTick == replyTimeout.Value)
             {
-                SendEchoRequest(ringCoordinator);
-                InitDiagnosticPingCoordinatorTimeoutTimer();
-                LogEvent($"PING: Send ICMP Echo Request to coordinator.");
+                logBox.WriteEvent($"ELEC: Connection with {listOfAddresses[testedNeighbourId]} failed.");
+                incrementer += 1;
+                StopDiagnosticPingElectionTimeoutTimer();
+            }
+            else
+            {
+                currentElectionTimeoutTick += 1;
+                logBox.WriteEvent($"ELEC_PING: Waiting for ICMP Echo Reply {currentElectionTimeoutTick}s / {replyTimeout.Value}s.");
             }
         }
 
-        private void InitDiagnosticPingTimer()
+        private void InitDiagnosticPingElectionTimeoutTimer()
         {
-            diagnosticPingTimer = new Timer();
-            diagnosticPingTimer.Tick += new EventHandler(diagnosticPingTimer_Tick);
-            diagnosticPingTimer.Interval = diagnosticPingFrequency.Value < 1 ? 500 : (int) (diagnosticPingFrequency.Value * 1000); // 5 * 1000 = 5000ms (5s)
-            diagnosticPingTimer.Start();
+            diagnosticPingElectionTimeoutTimer = new Timer();
+            diagnosticPingElectionTimeoutTimer.Tick += new EventHandler(diagnosticPingElectionTimeoutTimer_Tick);
+            diagnosticPingElectionTimeoutTimer.Interval = 1000;
+            diagnosticPingElectionTimeoutTimer.Start();
         }
+
+        private void StopDiagnosticPingElectionTimeoutTimer()
+        {
+            if (diagnosticPingElectionTimeoutTimer != null)
+            {
+                diagnosticPingElectionTimeoutTimer.Stop();
+                diagnosticPingElectionTimeoutTimer = null;
+            }
+            currentElectionTimeoutTick = 0;
+        }
+
+        #endregion
+
+        private IPEndPoint GetIPOfNextProcessOnElectionRequest()
+        {
+            if (listOfAddresses.Count == 2)
+                return helperMethods.BuildIPEndPoint(textProcessIp.Text, textProcessPort.Text);
+
+            testedNeighbourId = listOfAddresses.IndexOf(helperMethods.BuildIPEndPoint(textProcessIp.Text, textProcessPort.Text)) + incrementer;
+
+            if (testedNeighbourId >= listOfAddresses.Count)
+            {
+                testedNeighbourId -= listOfAddresses.Count;
+            }
+
+            if (listOfAddresses[testedNeighbourId] == ringCoordinatorIP)
+            {
+                logBox.WriteEvent($"{listOfAddresses[testedNeighbourId]} was coordinator so skipping it.");
+                testedNeighbourId += 1;
+                incrementer += 1;
+            }
+
+            if (testedNeighbourId >= listOfAddresses.Count)
+            {
+                testedNeighbourId -= listOfAddresses.Count;
+            }
+
+            return listOfAddresses[testedNeighbourId];
+        }
+        
+        private void ProcessElectionRequest(string previousMessage = "")
+        {
+            while (!isNextAvailableNeighbourFound)
+            {
+                if (diagnosticPingElectionTimeoutTimer == null)
+                {
+                    IPEndPoint nextProcessIP = GetIPOfNextProcessOnElectionRequest();
+
+                    if (nextProcessIP.ToString() == $"{textProcessIp.Text}:{textProcessPort.Text}")
+                        break;
+
+                    logBox.WriteEvent($"ELEC: Trying to communicate with {listOfAddresses[testedNeighbourId]}");
+                    InitDiagnosticPingElectionTimeoutTimer();
+                    SendEchoRequest(nextProcessIP);
+                }
+                Application.DoEvents();
+            }
+
+            StopDiagnosticPingElectionTimeoutTimer();
+            incrementer = 1;
+
+            if (!isNextAvailableNeighbourFound)
+            {
+                logBox.WriteEvent($"ELEC: No other available processes found. Can't resolve election :(");
+            } else
+            {
+                if (previousMessage == string.Empty)
+                    message = $"{ELECTION_HEADER}|{textProcessIp.Text}:{textProcessPort.Text}:{textPriority.Text}";
+                else
+                    message = $"{previousMessage}|{textProcessIp.Text}:{textProcessPort.Text}:{textPriority.Text}";
+
+                isNextAvailableNeighbourFound = false;
+
+                socket.SendTo(helperMethods.PackMessage(message), listOfAddresses[testedNeighbourId]);
+                logBox.WriteEvent($"ELEC: Election message sent to {listOfAddresses[testedNeighbourId]}");
+            }
+        }
+
 
         private void activateDiagnosticPingBtn_Click(object sender, EventArgs e)
         {
             InitDiagnosticPingTimer();
-            SwitchTwoButtons(enableDiagnosticPingBtn, disableDiagnosticPingBtn);
+            helperMethods.SwitchTwoButtonsEnabledStatus(enableDiagnosticPingBtn, disableDiagnosticPingBtn);
         }
 
         private void deactivateDiagnosticPingBtn_Click(object sender, EventArgs e)
@@ -498,18 +483,19 @@ namespace lsa_Tanenbaum_app
             if (diagnosticPingTimer != null)
             {
                 diagnosticPingTimer.Stop();
-                SwitchTwoButtons(enableDiagnosticPingBtn, disableDiagnosticPingBtn);
+                helperMethods.SwitchTwoButtonsEnabledStatus(enableDiagnosticPingBtn, disableDiagnosticPingBtn);
             }
         }
 
-        private void SetupRemainingElementsOfUI(string logMessage)
+        private void UpdateInterfaceOnCompletedRingSynchronization()
         {
-            SelectRingCoordinator();
-            DisplayRemainingGroupBoxes();
-            HideDiagnosticPingGroupBouxForCoordinator();
-            MakeNewLineInLog();
-            LogEvent(logMessage);
-            Invoke(new MethodInvoker(() => updatePriorityBtn.Enabled = true));
+            int highestPriorityId = listOfPriorities.IndexOf(listOfPriorities.Max());
+            UpdateRingCoordinatorIntel(highestPriorityId);
+            knowledgeGroupBox.SetText($"{textProcessName.Text} network knowledge");
+            knowledgeGroupBox.Display();
+            diagnosticPingGroupBox.Display();
+            HideDiagnosticPingGroupBoxForCoordinator();
+            updatePriorityBtn.ReverseEnabledStatus();
         }
 
         private void UpdateTargetIntel()
@@ -519,59 +505,9 @@ namespace lsa_Tanenbaum_app
             if (consequentIndex >= listOfAddresses.Count)
                 consequentIndex = 0;
 
-            UpdateTextBox(textTargetIp, listOfAddresses[consequentIndex].Address.ToString());
-            UpdateTextBox(textTargetPort, listOfAddresses[consequentIndex].Port.ToString());
+            textTargetIp.SetText(listOfAddresses[consequentIndex].Address.ToString());
+            textTargetPort.SetText(listOfAddresses[consequentIndex].Port.ToString());
             epTarget = new IPEndPoint(listOfAddresses[consequentIndex].Address, listOfAddresses[consequentIndex].Port);
-        }
-
-        private void connectToTargetBtn_Click(object sender, EventArgs e)
-        {
-            sck = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-            sck.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-
-            // bind socket
-            epProcess = new IPEndPoint(IPAddress.Parse(textProcessIp.Text), Convert.ToInt32(textProcessPort.Text));
-            sck.Bind(epProcess);
-
-            // init target
-            epTarget = new IPEndPoint(IPAddress.Parse(textTargetIp.Text), Convert.ToInt32(textTargetPort.Text));
-
-            // configure listening
-            buffer = new byte[1500];
-            sck.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(MessageCallBack), buffer);
-
-
-            ChangeTextBoxCollectionReadOnlyStatus(configurationTextBoxes);
-
-            LogEvent($"INFO: {textProcessName.Text} connection established.");
-            MakeNewLineInLog();
-
-            pictureBoxConnectionStatus.Image = Resources.status_connected;
-            labelConnectionStatus.Text = "Connected";
-            SwapEnabledForConnectAndDisconnectBtns();
-
-            if (listOfAddresses.Count == 0)
-            {
-                ringSynchronizationBtn.Enabled = true;
-            }
-
-            isConnectionEstablished = true;
-        }
-
-        private void disconnectFromTargetBtn_Click(object sender, EventArgs e)
-        {
-            sck.Shutdown(SocketShutdown.Both);
-            sck.Close();
-            pictureBoxConnectionStatus.Image = Resources.status_notconnected;
-            labelConnectionStatus.Text = "Not Connected";
-            SwapEnabledForConnectAndDisconnectBtns();
-            isConnectionEstablished = false;
-            processConfigChanged(sender, e);
-
-            ChangeTextBoxCollectionReadOnlyStatus(configurationTextBoxes);
-
-            LogEvent($"INFO: {textProcessName.Text} connection closed.");
-            MakeNewLineInLog();
         }
 
         private void ringSynchronizationBtn_Click(object sender, EventArgs e)
@@ -593,18 +529,10 @@ namespace lsa_Tanenbaum_app
             }
         }
 
-        private void processConfigChanged(object sender, EventArgs e)
-        {
-            if (!isConnectionEstablished)
-            {
-                connectToTargetBtn.Enabled = CheckIfConfigFieldsAreNotEmpty() ? true : false;
-            }
-        }
-
         private void callPriorityUpdateBtn_Click(object sender, EventArgs e)
         {
-            MakeNewLineInLog();
-            LogEvent($"PRIO: Send PRIORITY UPDATE request.");
+            logBox.BreakLine();
+            logBox.WriteEvent($"PRIO: Send PRIORITY UPDATE request.");
             SendPriorityUpdatePackage();
         }
 
@@ -618,54 +546,44 @@ namespace lsa_Tanenbaum_app
         {
             // ICMP_ECHO_REQUEST:FROM
             message = $"{ICMP_ECHO_REQUEST_HEADER}{textProcessIp.Text}:{textProcessPort.Text}";
-            sck.SendTo(PackMessage(encoding, message), target);
+            socket.SendTo(helperMethods.PackMessage(message), target);
         }
 
         private void AnswerEchoRequest(string requesterAddress)
         {
             string[] splitRequesterAddress = requesterAddress.Split(':');
-            int index = listOfAddresses.IndexOf(BuildIPEndPoint(splitRequesterAddress[0], splitRequesterAddress[1]));
+            int index = listOfAddresses.IndexOf(helperMethods.BuildIPEndPoint(splitRequesterAddress[0], splitRequesterAddress[1]));
             if (index != -1)
             {
                 message = $"{ICMP_ECHO_REPLY_HEADER}{textProcessIp.Text}:{textProcessPort.Text}";
-                sck.SendTo(PackMessage(encoding, message), listOfAddresses[index]);
-                LogEvent($"PING: Send ICMP Echo Reply to requester({listOfAddresses[index]}).");
+                socket.SendTo(helperMethods.PackMessage(message), listOfAddresses[index]);
+                logBox.WriteEvent($"PING: Send ICMP Echo Reply to requester({listOfAddresses[index]}).");
             }
         }
 
         private void SelectRingCoordinator()
         {
             int highestPriorityId = listOfPriorities.IndexOf(listOfPriorities.Max());
-            ringCoordinator = listOfAddresses[highestPriorityId];
-            UpdateLabel(ringCoordinatorAddressText, ringCoordinator.ToString());
-            UpdateLabel(ringCoordinatorPriorityText, $"with priority {listOfPriorities[highestPriorityId]} ({GetCurrentTimeStamp(DateTime.Now)})");
-            LogEvent("Coordinator chosen.");
+            ringCoordinatorIP = listOfAddresses[highestPriorityId];
+            logBox.WriteEvent("Coordinator chosen.");
         }
 
-        private void HideDiagnosticPingGroupBouxForCoordinator()
+        private void UpdateRingCoordinatorIntel(int highestPriorityId)
         {
-            var test = _helperMethods.BuildIPEndPoint(textProcessIp.Text, textProcessPort.Text);
-            if (ringCoordinator.ToString().Contains(test.ToString()))
+            ringCoordinatorAddressText.SetText(ringCoordinatorIP.ToString());
+            ringCoordinatorPriorityText.SetText($"with priority {listOfPriorities[highestPriorityId]} ({helperMethods.GetCurrentTimeStamp(DateTime.Now)})");
+        }
+
+        private void HideDiagnosticPingGroupBoxForCoordinator()
+        {
+            var test = helperMethods.BuildIPEndPoint(textProcessIp.Text, textProcessPort.Text);
+            if (ringCoordinatorIP.ToString().Contains(test.ToString()))
             {
                 Invoke(new MethodInvoker(() => {
                     diagnosticPingGroupBox.Visible = false;
                     knowledgeGroupBox.Location = new Point(knowledgeGroupBox.Location.X, 200);
                 }));
             }
-        }
-
-        private string GetLocalAddress()
-        {
-            IPHostEntry host;
-            host = Dns.GetHostEntry(Dns.GetHostName());
-            foreach (IPAddress ip in host.AddressList)
-            {
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
-                {
-                    return ip.ToString();
-                }
-            }
-            return "127.0.0.1";
         }
 
         private void RequestRingSynchronization()
@@ -679,70 +597,99 @@ namespace lsa_Tanenbaum_app
                 processesTmpContainer = $"{processesTmpContainer}|{textProcessIp.Text}:{textProcessPort.Text}:{Convert.ToInt32(textPriority.Text)}";
             }
 
-            processesTmpContainer = RemoveZeroCharactersFromString(processesTmpContainer);
+            processesTmpContainer = helperMethods.RemoveZeroCharactersFromString(processesTmpContainer);
 
-            LogEvent($"CONF: Request network synchronization \n[{processesTmpContainer}].");
+            logBox.WriteEvent($"CONF: Request network synchronization \n[{processesTmpContainer}].");
 
-            sck.SendTo(PackMessage(encoding, processesTmpContainer), epTarget);
+            socket.SendTo(helperMethods.PackMessage(processesTmpContainer), epTarget);
         }
 
         private void SendRingList()
         {
             processesTmpContainer = processesTmpContainer.Replace(CONFIGURATION_HEADER, LIST_HEADER);
-            sck.SendTo(PackMessage(encoding, processesTmpContainer), epTarget);
-            LogEvent($"LIST: Pass ring to [{textTargetIp.Text}:{textTargetPort.Text}].");
-            MakeNewLineInLog();
+            socket.SendTo(helperMethods.PackMessage(processesTmpContainer), epTarget);
+            logBox.WriteEvent($"LIST: Pass ring to [{textTargetIp.Text}:{textTargetPort.Text}].");
+            logBox.BreakLine();
         }
 
 
         private void SendPriorityUpdatePackage()
         {
             message = $"{PRIORITY_HEADER}{textProcessIp.Text}:{textProcessPort.Text}:{textPriority.Text}";
-            sck.SendTo(PackMessage(encoding, message), epTarget);
+            socket.SendTo(helperMethods.PackMessage(message), epTarget);
         }
 
         private void UpdatePriorityInListBox(string message)
         {
-            if (message.Length > 6)
-            {
-                // pattern: PRIO:192....:80:10
-                string[] splitMessage = message.Replace(PRIORITY_HEADER, "").Split(':');
-                IPEndPoint address = BuildIPEndPoint(splitMessage[0], splitMessage[1]);
-                int index = listOfAddresses.IndexOf(address);
+            // pattern: PRIO:192....:80:10
+            string[] splitMessage = message.Replace(PRIORITY_HEADER, "").Split(':');
+            IPEndPoint address = helperMethods.BuildIPEndPoint(splitMessage[0], splitMessage[1]);
+            int index = listOfAddresses.IndexOf(address);
 
-                listOfPriorities[index] = Convert.ToInt32(splitMessage[2]);
+            listOfPriorities[index] = Convert.ToInt32(splitMessage[2]);
 
-                UpdateList(prioritiesListBox, listOfPriorities);
-            }
+            prioritiesListBox.UpdateCollection(listOfPriorities);
         }
 
-        private void SwapEnabledForConnectAndDisconnectBtns()
+        private void initializeSocketBtn_Click(object sender, EventArgs e)
         {
-            connectToTargetBtn.Enabled = !connectToTargetBtn.Enabled;
-            disconnectFromTargetBtn.Enabled = !disconnectFromTargetBtn.Enabled;
+            RawAddress targetRawAddress = new RawAddress(textTargetIp.Text, textTargetPort.Text);
+
+            InitializedSocketResult result = socket.Initialize(
+                new EndPoints(epProcess, epTarget),
+                new RawAddress(textProcessIp.Text, textProcessPort.Text),
+                targetRawAddress);
+
+            socket = result.socket;
+            epProcess = result.endPoints.epProcess;
+            epTarget = result.endPoints.epTarget;
+
+            // configure listening
+            buffer = new byte[BUFFER_SIZE];
+            socket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(MessageCallBack), buffer);
+
+            isSocketInitialized = true;
+
+            helperMethods.ChangeTextBoxCollectionReadOnlyStatus(configurationTextBoxes);
+
+            logBox.WriteEvent($"{textProcessName.Text} connection initialization finished.");
+
+            pictureBoxConnectionStatus.Image = Resources.status_connected;
+
+            labelConnectionStatus.SetText("Connected");
+
+            helperMethods.SwitchTwoButtonsEnabledStatus(initializeSocketBtn, stopSocketBtn);
+
+            if (listOfAddresses.Count == 0)
+                ringSynchronizationBtn.Enabled = true;
         }
 
-        private bool CheckIfConfigFieldsAreNotEmpty()
+        private void stopSocketBtn_Click(object sender, EventArgs e)
         {
-            bool result = true;
+            socket.Stop(ref isSocketInitialized);
 
-            if (configurationTextBoxes != null)
-            {
-                foreach (TextBox configField in configurationTextBoxes)
-                {
-                    if (string.IsNullOrWhiteSpace(configField.Text))
-                    {
-                        result = false;
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                result = false;
-            }
+            pictureBoxConnectionStatus.SetImage(Resources.status_notconnected);
 
-            return result;
+            labelConnectionStatus.SetText("Not Connected");
+
+            helperMethods.SwitchTwoButtonsEnabledStatus(initializeSocketBtn, stopSocketBtn);
+
+            configTextBoxChanged(sender, e);
+
+            helperMethods.ChangeTextBoxCollectionReadOnlyStatus(configurationTextBoxes);
+
+            logBox.WriteEvent($"{textProcessName.Text} socket closed.");
+        }
+
+        /// <summary>Manages button interaction availability by validating if all configuration 
+        /// fields are filled in (provided that socket has not been initialized).
+        /// </summary>
+        private void configTextBoxChanged(object sender, EventArgs e)
+        {
+            if (!isSocketInitialized)
+            {
+                initializeSocketBtn.Enabled = helperMethods.CheckIfConfigFieldsAreNotEmpty(configurationTextBoxes);
+            }
         }
     }
 }

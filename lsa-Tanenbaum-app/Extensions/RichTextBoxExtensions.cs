@@ -1,36 +1,43 @@
 ﻿using System.Drawing;
-using static lsa_Tanenbaum_app.Helpers;
+using lsa_Tanenbaum_app;
 
 namespace System.Windows.Forms
 {
     // idea from: https://stackoverflow.com/a/1926822
     public static class RichTextBoxExtensions
     {
-        public static bool AppendText(this RichTextBox box, string text)
+        public static void WriteEvent(this RichTextBox box, string text)
         {
-            box.SelectionStart = box.TextLength;
-            box.SelectionLength = 0;
+            box.Invoke(new MethodInvoker(() =>
+            {
+                box.SelectionStart = box.TextLength;
+                box.SelectionLength = 0;
+                box.SelectionColor = Color.Blue;
+                box.AppendText($"[{GetTimeStamp(DateTime.Now)}]");
+                box.SelectionColor = box.ForeColor;
 
-            box.SelectionColor = Color.Blue;
-            box.AppendText($"[{GetCurrentTimeStamp(DateTime.Now)}]");
-            box.SelectionColor = box.ForeColor;
+                box.SelectionColor = Color.Black;
+                box.AppendText($" {text}");
 
-            box.SelectionColor = Color.Black;
-            box.AppendText($" {text}");
-
-            box.AppendText(Environment.NewLine);
-            box.ScrollToCaret();
-
-            return true;
+                box.AppendText(Environment.NewLine);
+                box.ScrollToCaret();
+            }));
         }
 
-        public static bool AppendNewLine(this RichTextBox box)
+        public static void BreakLine(this RichTextBox box)
         {
-            box.SelectionStart = box.TextLength;
-            box.SelectionLength = 0;
-            box.AppendText(Environment.NewLine);
-            box.ScrollToCaret();
-            return true;
+            box.Invoke(new MethodInvoker(() => 
+            {
+                box.SelectionStart = box.TextLength;
+                box.SelectionLength = 0;
+                box.AppendText(Environment.NewLine);
+                box.ScrollToCaret();
+            }));
+        }
+
+        private static string GetTimeStamp(DateTime date)
+        {
+            return date.ToString("HH:mm:ss");
         }
     }
 }

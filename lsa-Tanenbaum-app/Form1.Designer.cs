@@ -40,8 +40,8 @@
             this.textProcessIp = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.textTargetPort = new System.Windows.Forms.TextBox();
-            this.connectToTargetBtn = new System.Windows.Forms.Button();
-            this.disconnectFromTargetBtn = new System.Windows.Forms.Button();
+            this.initializeSocketBtn = new System.Windows.Forms.Button();
+            this.stopSocketBtn = new System.Windows.Forms.Button();
             this.pictureBoxConnectionStatus = new System.Windows.Forms.PictureBox();
             this.labelConnectionStatus = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
@@ -141,7 +141,7 @@
             this.textTargetIp.Size = new System.Drawing.Size(158, 24);
             this.textTargetIp.TabIndex = 6;
             this.textTargetIp.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textTargetIp.TextChanged += new System.EventHandler(this.processConfigChanged);
+            this.textTargetIp.TextChanged += new System.EventHandler(this.configTextBoxChanged);
             // 
             // label3
             // 
@@ -162,7 +162,7 @@
             this.textProcessName.Size = new System.Drawing.Size(158, 24);
             this.textProcessName.TabIndex = 1;
             this.textProcessName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textProcessName.TextChanged += new System.EventHandler(this.processConfigChanged);
+            this.textProcessName.TextChanged += new System.EventHandler(this.configTextBoxChanged);
             // 
             // label7
             // 
@@ -183,7 +183,7 @@
             this.textProcessPort.Size = new System.Drawing.Size(54, 24);
             this.textProcessPort.TabIndex = 3;
             this.textProcessPort.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textProcessPort.TextChanged += new System.EventHandler(this.processConfigChanged);
+            this.textProcessPort.TextChanged += new System.EventHandler(this.configTextBoxChanged);
             // 
             // textProcessIp
             // 
@@ -195,7 +195,7 @@
             this.textProcessIp.Size = new System.Drawing.Size(158, 24);
             this.textProcessIp.TabIndex = 2;
             this.textProcessIp.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textProcessIp.TextChanged += new System.EventHandler(this.processConfigChanged);
+            this.textProcessIp.TextChanged += new System.EventHandler(this.configTextBoxChanged);
             // 
             // label2
             // 
@@ -216,38 +216,38 @@
             this.textTargetPort.Size = new System.Drawing.Size(54, 24);
             this.textTargetPort.TabIndex = 7;
             this.textTargetPort.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textTargetPort.TextChanged += new System.EventHandler(this.processConfigChanged);
+            this.textTargetPort.TextChanged += new System.EventHandler(this.configTextBoxChanged);
             // 
-            // connectToTargetBtn
+            // initializeSocketBtn
             // 
-            this.connectToTargetBtn.CausesValidation = false;
-            this.connectToTargetBtn.Enabled = false;
-            this.connectToTargetBtn.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.connectToTargetBtn.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.connectToTargetBtn.Location = new System.Drawing.Point(104, 357);
-            this.connectToTargetBtn.Name = "connectToTargetBtn";
-            this.connectToTargetBtn.Size = new System.Drawing.Size(127, 56);
-            this.connectToTargetBtn.TabIndex = 2;
-            this.connectToTargetBtn.TabStop = false;
-            this.connectToTargetBtn.Text = "Connect";
-            this.connectToTargetBtn.UseVisualStyleBackColor = true;
-            this.connectToTargetBtn.Click += new System.EventHandler(this.connectToTargetBtn_Click);
+            this.initializeSocketBtn.CausesValidation = false;
+            this.initializeSocketBtn.Enabled = false;
+            this.initializeSocketBtn.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.initializeSocketBtn.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.initializeSocketBtn.Location = new System.Drawing.Point(104, 357);
+            this.initializeSocketBtn.Name = "initializeSocketBtn";
+            this.initializeSocketBtn.Size = new System.Drawing.Size(127, 56);
+            this.initializeSocketBtn.TabIndex = 2;
+            this.initializeSocketBtn.TabStop = false;
+            this.initializeSocketBtn.Text = "Initialize";
+            this.initializeSocketBtn.UseVisualStyleBackColor = true;
+            this.initializeSocketBtn.Click += new System.EventHandler(this.initializeSocketBtn_Click);
             // 
-            // disconnectFromTargetBtn
+            // stopSocketBtn
             // 
-            this.disconnectFromTargetBtn.BackColor = System.Drawing.Color.LightGray;
-            this.disconnectFromTargetBtn.CausesValidation = false;
-            this.disconnectFromTargetBtn.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.disconnectFromTargetBtn.FlatAppearance.BorderSize = 0;
-            this.disconnectFromTargetBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.disconnectFromTargetBtn.Location = new System.Drawing.Point(161, 68);
-            this.disconnectFromTargetBtn.Name = "disconnectFromTargetBtn";
-            this.disconnectFromTargetBtn.Size = new System.Drawing.Size(110, 26);
-            this.disconnectFromTargetBtn.TabIndex = 6;
-            this.disconnectFromTargetBtn.TabStop = false;
-            this.disconnectFromTargetBtn.Text = "Disconnect";
-            this.disconnectFromTargetBtn.UseVisualStyleBackColor = false;
-            this.disconnectFromTargetBtn.Click += new System.EventHandler(this.disconnectFromTargetBtn_Click);
+            this.stopSocketBtn.BackColor = System.Drawing.Color.LightGray;
+            this.stopSocketBtn.CausesValidation = false;
+            this.stopSocketBtn.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.stopSocketBtn.FlatAppearance.BorderSize = 0;
+            this.stopSocketBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.stopSocketBtn.Location = new System.Drawing.Point(161, 68);
+            this.stopSocketBtn.Name = "stopSocketBtn";
+            this.stopSocketBtn.Size = new System.Drawing.Size(110, 26);
+            this.stopSocketBtn.TabIndex = 6;
+            this.stopSocketBtn.TabStop = false;
+            this.stopSocketBtn.Text = "Disconnect";
+            this.stopSocketBtn.UseVisualStyleBackColor = false;
+            this.stopSocketBtn.Click += new System.EventHandler(this.stopSocketBtn_Click);
             // 
             // pictureBoxConnectionStatus
             // 
@@ -678,8 +678,8 @@
             this.Controls.Add(this.label6);
             this.Controls.Add(this.labelConnectionStatus);
             this.Controls.Add(this.pictureBoxConnectionStatus);
-            this.Controls.Add(this.disconnectFromTargetBtn);
-            this.Controls.Add(this.connectToTargetBtn);
+            this.Controls.Add(this.stopSocketBtn);
+            this.Controls.Add(this.initializeSocketBtn);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.knowledgeGroupBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -709,12 +709,12 @@
 
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Button connectToTargetBtn;
+        private System.Windows.Forms.Button initializeSocketBtn;
         private System.Windows.Forms.TextBox textProcessPort;
         private System.Windows.Forms.TextBox textProcessIp;
         private System.Windows.Forms.TextBox textTargetPort;
         private System.Windows.Forms.TextBox textTargetIp;
-        private System.Windows.Forms.Button disconnectFromTargetBtn;
+        private System.Windows.Forms.Button stopSocketBtn;
         private System.Windows.Forms.PictureBox pictureBoxConnectionStatus;
         private System.Windows.Forms.Label labelConnectionStatus;
         private System.Windows.Forms.Label label6;

@@ -1,32 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Windows.Forms;
 
 namespace lsa_Tanenbaum_app
 {
-    public static class Helpers
+    public class HelperMethods
     {
-        public const string CONFIGURATION_HEADER = "CONFIGURATION:";
-        public const string ELECTION_HEADER = "ELECTION:";
-        public const string COORDINATOR_HEADER = "COORDINATOR:";
-        public const string PRIORITY_HEADER = "PRIORITY:";
-        public const string LIST_HEADER = "LIST:";
-        public const string ICMP_ECHO_REQUEST_HEADER = "ICMP_ECHO_REQUEST:";
-        public const string ICMP_ECHO_REPLY_HEADER = "ICMP_ECHO_REPLY:";
+        private Random _randomizer;
+        private ASCIIEncoding _encoding;
 
-        public static void RandomizeProcessIdentity(TextBox textBox, Random randomizer)
+        public HelperMethods()
         {
-            textBox.Text = "P-" + randomizer.Next(1000, 9999);
+            _randomizer = new Random();
+            _encoding = new ASCIIEncoding();
         }
 
-        public static string RemoveZeroCharactersFromString(string text)
+        public void RandomizeProcessIdentity(TextBox textBox)
+        {
+            textBox.Text = "P-" + _randomizer.Next(1000, 9999);
+        }
+
+        public string RemoveZeroCharactersFromString(string text)
         {
             return text.Replace("\0", "");
         }
 
-        public static void ChangeTextBoxCollectionReadOnlyStatus(TextBox[] textBoxes)
+        public void ChangeTextBoxCollectionReadOnlyStatus(TextBox[] textBoxes)
         {
             foreach (TextBox textBox in textBoxes)
             {
@@ -34,26 +36,26 @@ namespace lsa_Tanenbaum_app
             }
         }
 
-        public static byte[] PackMessage(ASCIIEncoding encoding, string message)
+        public byte[] PackMessage(string message)
         {
-            return encoding.GetBytes(
+            return _encoding.GetBytes(
                 RemoveZeroCharactersFromString(message)
             );
         }
 
-        public static string UnpackMessage(ASCIIEncoding encoding, byte[] message)
+        public string UnpackMessage(byte[] message)
         {
             return RemoveZeroCharactersFromString(
-                encoding.GetString(message)
+                _encoding.GetString(message)
             );
         }
 
-        public static string GetCurrentTimeStamp(DateTime date)
+        public string GetCurrentTimeStamp(DateTime date)
         {
             return date.ToString("HH:mm:ss");
         }
 
-        public static IPEndPoint BuildIPEndPoint(string address, string port)
+        public IPEndPoint BuildIPEndPoint(string address, string port)
         {
             return new IPEndPoint(IPAddress.Parse(address), Convert.ToInt32(port));
         }
@@ -62,7 +64,7 @@ namespace lsa_Tanenbaum_app
         // The string split method will have the first element as String.Empty
         // if your delimiter appears at the beginning of the string. 
         // source: https://stackoverflow.com/questions/28901249/why-split-function-doesnt-return-a-null-at-the-first-of-this-string
-        public static (List<IPEndPoint>, List<int>) TranslateDataFromMessage(string header, string message)
+        public (List<IPEndPoint>, List<int>) TranslateDataFromMessage(string header, string message)
         {
             if (String.IsNullOrWhiteSpace(header) || String.IsNullOrWhiteSpace(message))
             {
@@ -97,10 +99,47 @@ namespace lsa_Tanenbaum_app
             return (addresses, priorities);
         }
 
-        public static void SwitchTwoButtons(Button button1, Button button2)
+        public void SwitchTwoButtonsEnabledStatus(Button button1, Button button2)
         {
             button1.Enabled = !button1.Enabled;
             button2.Enabled = !button2.Enabled;
+        }
+
+        public string GetLocalAddress()
+        {
+            IPHostEntry host;
+            host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (IPAddress ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return ip.ToString();
+                }
+            }
+            return "127.0.0.1";
+        }
+
+        public bool CheckIfConfigFieldsAreNotEmpty(TextBox[] configurationTextBoxes)
+        {
+            bool result = true;
+
+            if (configurationTextBoxes != null)
+            {
+                foreach (TextBox configField in configurationTextBoxes)
+                {
+                    if (string.IsNullOrWhiteSpace(configField.Text))
+                    {
+                        result = false;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                result = false;
+            }
+
+            return result;
         }
     }
 }
