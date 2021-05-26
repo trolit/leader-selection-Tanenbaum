@@ -36,8 +36,8 @@
             this.label3 = new System.Windows.Forms.Label();
             this.textProcessName = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
-            this.textProcessPort = new System.Windows.Forms.TextBox();
-            this.textProcessIp = new System.Windows.Forms.TextBox();
+            this.textSourcePort = new System.Windows.Forms.TextBox();
+            this.textSourceIp = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.textTargetPort = new System.Windows.Forms.TextBox();
             this.initializeSocketBtn = new System.Windows.Forms.Button();
@@ -93,8 +93,8 @@
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.textProcessName);
             this.groupBox1.Controls.Add(this.label7);
-            this.groupBox1.Controls.Add(this.textProcessPort);
-            this.groupBox1.Controls.Add(this.textProcessIp);
+            this.groupBox1.Controls.Add(this.textSourcePort);
+            this.groupBox1.Controls.Add(this.textSourceIp);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.textTargetPort);
             this.groupBox1.Location = new System.Drawing.Point(12, 118);
@@ -159,8 +159,10 @@
             this.textProcessName.Location = new System.Drawing.Point(10, 48);
             this.textProcessName.MaxLength = 25;
             this.textProcessName.Name = "textProcessName";
+            this.textProcessName.ReadOnly = true;
             this.textProcessName.Size = new System.Drawing.Size(158, 24);
-            this.textProcessName.TabIndex = 1;
+            this.textProcessName.TabIndex = 155;
+            this.textProcessName.TabStop = false;
             this.textProcessName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.textProcessName.TextChanged += new System.EventHandler(this.configTextBoxChanged);
             // 
@@ -173,29 +175,29 @@
             this.label7.TabIndex = 4;
             this.label7.Text = "Name";
             // 
-            // textProcessPort
+            // textSourcePort
             // 
-            this.textProcessPort.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textProcessPort.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.textProcessPort.Location = new System.Drawing.Point(187, 108);
-            this.textProcessPort.MaxLength = 6;
-            this.textProcessPort.Name = "textProcessPort";
-            this.textProcessPort.Size = new System.Drawing.Size(54, 24);
-            this.textProcessPort.TabIndex = 3;
-            this.textProcessPort.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textProcessPort.TextChanged += new System.EventHandler(this.configTextBoxChanged);
+            this.textSourcePort.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.textSourcePort.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.textSourcePort.Location = new System.Drawing.Point(187, 108);
+            this.textSourcePort.MaxLength = 6;
+            this.textSourcePort.Name = "textSourcePort";
+            this.textSourcePort.Size = new System.Drawing.Size(54, 24);
+            this.textSourcePort.TabIndex = 3;
+            this.textSourcePort.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textSourcePort.TextChanged += new System.EventHandler(this.configTextBoxChanged);
             // 
-            // textProcessIp
+            // textSourceIp
             // 
-            this.textProcessIp.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textProcessIp.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.textProcessIp.Location = new System.Drawing.Point(10, 107);
-            this.textProcessIp.MaxLength = 25;
-            this.textProcessIp.Name = "textProcessIp";
-            this.textProcessIp.Size = new System.Drawing.Size(158, 24);
-            this.textProcessIp.TabIndex = 2;
-            this.textProcessIp.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textProcessIp.TextChanged += new System.EventHandler(this.configTextBoxChanged);
+            this.textSourceIp.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.textSourceIp.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.textSourceIp.Location = new System.Drawing.Point(10, 107);
+            this.textSourceIp.MaxLength = 25;
+            this.textSourceIp.Name = "textSourceIp";
+            this.textSourceIp.Size = new System.Drawing.Size(158, 24);
+            this.textSourceIp.TabIndex = 2;
+            this.textSourceIp.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textSourceIp.TextChanged += new System.EventHandler(this.configTextBoxChanged);
             // 
             // label2
             // 
@@ -238,6 +240,7 @@
             this.stopSocketBtn.BackColor = System.Drawing.Color.LightGray;
             this.stopSocketBtn.CausesValidation = false;
             this.stopSocketBtn.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.stopSocketBtn.Enabled = false;
             this.stopSocketBtn.FlatAppearance.BorderSize = 0;
             this.stopSocketBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.stopSocketBtn.Location = new System.Drawing.Point(161, 68);
@@ -345,6 +348,7 @@
             0,
             0,
             65536});
+            this.diagnosticPingFrequency.ValueChanged += new System.EventHandler(this.onPingFrequencyValueChange);
             // 
             // ringSynchronizationBtn
             // 
@@ -613,6 +617,7 @@
             0,
             0,
             0});
+            this.replyTimeout.ValueChanged += new System.EventHandler(this.onReplyTimeOutValueChange);
             // 
             // disableDiagnosticPingBtn
             // 
@@ -710,8 +715,8 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button initializeSocketBtn;
-        private System.Windows.Forms.TextBox textProcessPort;
-        private System.Windows.Forms.TextBox textProcessIp;
+        private System.Windows.Forms.TextBox textSourcePort;
+        private System.Windows.Forms.TextBox textSourceIp;
         private System.Windows.Forms.TextBox textTargetPort;
         private System.Windows.Forms.TextBox textTargetIp;
         private System.Windows.Forms.Button stopSocketBtn;

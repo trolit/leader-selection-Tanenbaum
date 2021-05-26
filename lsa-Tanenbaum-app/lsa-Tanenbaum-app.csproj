@@ -8,6 +8,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>lsa_Tanenbaum_app</RootNamespace>
     <AssemblyName>lsa-Tanenbaum-app</AssemblyName>
+    <LangVersion>8.0</LangVersion>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -52,7 +53,6 @@
     <Compile Include="Extensions\ListBoxExtensions.cs" />
     <Compile Include="Extensions\PictureBoxExtensions.cs" />
     <Compile Include="Extensions\RichTextBoxExtensions.cs" />
-    <Compile Include="Extensions\SocketExtensions.cs" />
     <Compile Include="Extensions\TextBoxExtensions.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -60,10 +60,16 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Headers.cs" />
     <Compile Include="HelperMethods.cs" />
+    <Compile Include="Models\Process.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Structures\RawAddress.cs" />
+    <Compile Include="Services\CallBackService.cs" />
+    <Compile Include="Services\ConfigurationService.cs" />
+    <Compile Include="Services\RequestService.cs" />
+    <Compile Include="Services\TimerService.cs" />
+    <Compile Include="Structures\Address.cs" />
     <Compile Include="Structures\EndPoints.cs" />
     <Compile Include="Structures\InitializedSocketResult.cs" />
     <EmbeddedResource Include="Form1.resx">
@@ -96,8 +102,6 @@
     <Content Include="Resources\status_connected.png" />
     <Content Include="Resources\status_notconnected.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Handlers\CallBackHandlers\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

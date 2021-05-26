@@ -1,11 +1,11 @@
 ﻿namespace lsa_Tanenbaum_app.Structures
 {
-    public struct RawAddress
+    public struct Address
     {
         public string IP;
         public string port;
 
-        public RawAddress(string IP, string port)
+        public Address(string IP, string port)
         {
             this.IP = IP;
             this.port = port;
