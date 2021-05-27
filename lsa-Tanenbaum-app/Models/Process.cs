@@ -30,25 +30,42 @@ namespace lsa_Tanenbaum_app.Models
 
         public int Priority { get; set; }
 
+        /// <summary>
+        /// Flag to control MessageCallback triggering.
+        /// </summary>
         public bool IsInitialized { get; set; } = false;
 
-        // to verify callback received by ring synchiornization caller
+        /// <summary>
+        /// Flag to verify callback received by ring synchronization caller.
+        /// </summary>
         public bool IsRingObtained { get; set; } = false;
 
-        // for coordinator message initializer 
+        /// <summary>
+        /// Flag to verify callback received by coordinator message invoker.
+        /// </summary>
         public bool IsCoordinatorMessageSend { get; set; } = false;
 
         public TextBox[] ConfigurationTextBoxes { get; set; }
 
         public RichTextBox LogBox { get; set; }
 
+        /// <summary>
+        /// String to exchange ring intel during synchronization stage.
+        /// </summary>
         public string SynchronizationContainer { get; set; }
 
-        public decimal ReplyTimeOut { get; set; } = 3;
+        /// <summary>
+        /// Limits diagnostic ping answer waiting time (in seconds). 
+        /// </summary>
+        public decimal ReplyTimeout { get; set; } = 3;
 
+        /// <summary>
+        /// Space between each diagnostic ping invoked by process (in seconds)
+        /// </summary>
         public decimal PingFrequency { get; set; } = 0.5M;
 
         public Button DisableDiagnosticPingButton { get; set; }
+
         public void UpdateTarget(HelperMethods helperMethods, string address, string port)
         {
             Address newTargetAddress = new Address(address, port);

@@ -25,13 +25,17 @@ namespace lsa_Tanenbaum_app.Services
         private int currentCoordinatorTimeoutTick = 0;
         private int currentElectionTimeoutTick = 0;
 
+        #region Diagnostic Ping Timer
+
         public void InitDiagnosticPingTimer()
         {
             diagnosticPingTimer = new Timer();
             diagnosticPingTimer.Tick += new EventHandler(diagnosticPingTimer_Tick);
-            diagnosticPingTimer.Interval = Process.PingFrequency < 1 ? 500 : (int) (Process.PingFrequency * 1000); // 5 * 1000 = 5000ms (5s)
+            diagnosticPingTimer.Interval = Process.PingFrequency < 1 ? 500 : (int)(Process.PingFrequency * 1000); // 5 * 1000 = 5000ms (5s)
             diagnosticPingTimer.Start();
         }
+
+
 
         private void diagnosticPingTimer_Tick(object sender, EventArgs e)
         {
@@ -43,25 +47,9 @@ namespace lsa_Tanenbaum_app.Services
             }
         }
 
-        private void diagnosticPingCoordinatorTimeoutTimer_Tick(object sender, EventArgs e)
-        {
-            if (currentCoordinatorTimeoutTick == Process.ReplyTimeOut)
-            {
-                // disable coordinator timeout timer
-                StopDiagnosticPingCoordinatorTimeoutTimer();
+        #endregion
 
-                Process.DisableDiagnosticPingButton.PerformClick();
-
-                Process.LogBox.WriteEvent($"PING: ICMP Echo Request timed out. Start election.");
-
-                RequestService.SendElectionRequest(this);
-            }
-            else
-            {
-                currentCoordinatorTimeoutTick += 1;
-                Process.LogBox.WriteEvent($"PING: Waiting for ICMP Echo Reply {currentCoordinatorTimeoutTick}s / {Process.ReplyTimeOut}s.");
-            }
-        }
+        #region Diagnostic Ping Coordinator Timeout Timer
 
         public void InitDiagnosticPingCoordinatorTimeoutTimer()
         {
@@ -69,6 +57,26 @@ namespace lsa_Tanenbaum_app.Services
             diagnosticPingCoordinatorTimeoutTimer.Tick += new EventHandler(diagnosticPingCoordinatorTimeoutTimer_Tick);
             diagnosticPingCoordinatorTimeoutTimer.Interval = 1000;
             diagnosticPingCoordinatorTimeoutTimer.Start();
+        }
+
+        private void diagnosticPingCoordinatorTimeoutTimer_Tick(object sender, EventArgs e)
+        {
+            if (currentCoordinatorTimeoutTick == Process.ReplyTimeout)
+            {
+                // disable coordinator timeout timer
+                StopDiagnosticPingCoordinatorTimeoutTimer();
+
+                Process.DisableDiagnosticPingButton.PerformClick();
+
+                Process.LogBox.WriteEvent($"ICMP Echo Request timed out. Call election.");
+
+                RequestService.SendElectionRequest(this);
+            }
+            else
+            {
+                currentCoordinatorTimeoutTick += 1;
+                Process.LogBox.WriteEvent($"..waiting for ICMP Echo Reply {currentCoordinatorTimeoutTick}s / {Process.ReplyTimeout}s.");
+            }
         }
 
         public void StopDiagnosticPingCoordinatorTimeoutTimer()
@@ -81,18 +89,22 @@ namespace lsa_Tanenbaum_app.Services
             }
         }
 
+        #endregion
+
+        #region Diagnostic Ping Election Timeout Timer 
+
         private void diagnosticPingElectionTimeoutTimer_Tick(object sender, EventArgs e)
         {
-            if (currentElectionTimeoutTick == Process.ReplyTimeOut)
+            if (currentElectionTimeoutTick == Process.ReplyTimeout)
             {
-                Process.LogBox.WriteEvent($"ELEC: Connection with {Process.ListOfAddresses[RequestService.GetTestedNeighbourId()]} failed.");
+                Process.LogBox.WriteEvent($"Connection with {Process.ListOfAddresses[RequestService.GetTestedNeighbourId()]} failed.");
                 RequestService.IncreaseIncrementer();
                 StopDiagnosticPingElectionTimeoutTimer();
             }
             else
             {
                 currentElectionTimeoutTick += 1;
-                Process.LogBox.WriteEvent($"ELEC_PING: Waiting for ICMP Echo Reply {currentElectionTimeoutTick}s / {Process.ReplyTimeOut}s.");
+                Process.LogBox.WriteEvent($"..waiting for ICMP Echo Reply {currentElectionTimeoutTick}s / {Process.ReplyTimeout}s.");
             }
         }
 
@@ -113,5 +125,7 @@ namespace lsa_Tanenbaum_app.Services
             }
             currentElectionTimeoutTick = 0;
         }
+
+        #endregion
     }
 }

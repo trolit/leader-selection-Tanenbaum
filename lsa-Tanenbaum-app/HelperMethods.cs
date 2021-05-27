@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -23,11 +24,17 @@ namespace lsa_Tanenbaum_app
             textBox.Text = "P-" + _randomizer.Next(1000, 9999);
         }
 
+        /// <summary>
+        /// Removes null terminator \0 occurences from string.
+        /// </summary>
         public string RemoveZeroCharactersFromString(string text)
         {
             return text.Replace("\0", "");
         }
 
+        /// <summary>
+        /// Makes configuration step input fields readonly.
+        /// </summary>
         public void ChangeTextBoxCollectionReadOnlyStatus(TextBox[] textBoxes)
         {
             foreach (TextBox textBox in textBoxes)
@@ -36,6 +43,9 @@ namespace lsa_Tanenbaum_app
             }
         }
 
+        /// <summary>
+        /// Converts string message into byte array.
+        /// </summary>
         public byte[] PackMessage(string message)
         {
             return _encoding.GetBytes(
@@ -43,6 +53,9 @@ namespace lsa_Tanenbaum_app
             );
         }
 
+        /// <summary>
+        /// Converts byte array into string and removes zero characters.
+        /// </summary>
         public string UnpackMessage(byte[] message)
         {
             return RemoveZeroCharactersFromString(
@@ -55,6 +68,9 @@ namespace lsa_Tanenbaum_app
             return date.ToString("HH:mm:ss");
         }
 
+        /// <summary>
+        /// Converts given address and port into IPEndPoint.
+        /// </summary>
         public IPEndPoint BuildIPEndPoint(string address, string port)
         {
             return new IPEndPoint(IPAddress.Parse(address), Convert.ToInt32(port));
@@ -64,6 +80,11 @@ namespace lsa_Tanenbaum_app
         // The string split method will have the first element as String.Empty
         // if your delimiter appears at the beginning of the string. 
         // source: https://stackoverflow.com/questions/28901249/why-split-function-doesnt-return-a-null-at-the-first-of-this-string
+
+        /// <summary>
+        /// Translates raw string data into two collections(one for addresses and second for priorities).
+        /// </summary>
+        /// <returns>Extracted list of addresses and list of priorities</returns>
         public (List<IPEndPoint>, List<int>) TranslateDataFromMessage(string header, string message)
         {
             if (String.IsNullOrWhiteSpace(header) || String.IsNullOrWhiteSpace(message))
@@ -140,6 +161,11 @@ namespace lsa_Tanenbaum_app
             }
 
             return result;
+        }
+
+        public int GetIdOfHighestPriorityInList(List<int> listOfPriorities)
+        {
+            return listOfPriorities.IndexOf(listOfPriorities.Max());
         }
     }
 }

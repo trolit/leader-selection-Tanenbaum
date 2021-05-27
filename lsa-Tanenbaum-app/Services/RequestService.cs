@@ -1,5 +1,6 @@
 ﻿using lsa_Tanenbaum_app.Models;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Windows.Forms;
 using static lsa_Tanenbaum_app.Headers;
@@ -53,7 +54,7 @@ namespace lsa_Tanenbaum_app.Services
 
             Process.SynchronizationContainer = _helperMethods.RemoveZeroCharactersFromString(Process.SynchronizationContainer);
 
-            Process.LogBox.WriteEvent($"Request network synchronization \n[{Process.SynchronizationContainer}].");
+            Process.LogBox.WriteEvent($"Request network synchronization \nstate:[{Process.SynchronizationContainer}].");
 
             Process.Socket.SendTo(PackMessage(Process.SynchronizationContainer), Process.TargetEndPoint);
         }
@@ -62,7 +63,7 @@ namespace lsa_Tanenbaum_app.Services
         {
             Process.SynchronizationContainer = Process.SynchronizationContainer.Replace(Configuration, List);
             Process.Socket.SendTo(PackMessage(Process.SynchronizationContainer), Process.TargetEndPoint);
-            Process.LogBox.WriteEvent($"Pass ring to [{Process.TargetIPEndPoint}].");
+            Process.LogBox.WriteEvent($"Send obtained ring to [{Process.TargetIPEndPoint}].");
         }
 
         public void SendPriorityUpdateRequest()
@@ -128,21 +129,20 @@ namespace lsa_Tanenbaum_app.Services
 
         public void SendElectionRequest(TimerService timerService, string previousMessage = "")
         {
-            // TODO: WORK ON LISTOFADDRESSES COPY!!!!
-
             int numberOfAddresses = Process.ListOfAddresses.Count;
             IPEndPoint nextProcessIP = Process.SourceIPEndPoint;
+            List<IPEndPoint> temporaryListOfAddresses = Process.ListOfAddresses;
 
             while (!isNextAvailableNeighbourFound)
             {
                 if (timerService.diagnosticPingElectionTimeoutTimer == null)
                 {
-                    nextProcessIP = GetIPOfNextProcessOnElectionRequest(numberOfAddresses);
+                    nextProcessIP = GetIPOfNextProcessOnElectionRequest(numberOfAddresses, temporaryListOfAddresses);
 
                     if (nextProcessIP.ToString() == Process.SourceIPEndPoint.ToString())
                         break;
 
-                    Process.LogBox.WriteEvent($"Trying to communicate with {nextProcessIP}");
+                    Process.LogBox.WriteEvent($"Trying to communicate with {nextProcessIP}.");
 
                     timerService.InitDiagnosticPingElectionTimeoutTimer();
                     SendEchoRequest(nextProcessIP);
@@ -156,7 +156,7 @@ namespace lsa_Tanenbaum_app.Services
 
             if (!isNextAvailableNeighbourFound)
             {
-                Process.LogBox.WriteEvent($"ELEC: No other available processes found. Can't resolve election :(");
+                Process.LogBox.WriteEvent($"No other available processes found. Can't resolve election :(");
             }
             else
             {
@@ -170,27 +170,26 @@ namespace lsa_Tanenbaum_app.Services
                 isNextAvailableNeighbourFound = false;
 
                 Process.Socket.SendTo(message, nextProcessIP);
-                Process.LogBox.WriteEvent($"ELEC: Election message sent to {nextProcessIP}");
+                Process.LogBox.WriteEvent($"Election message sent to {nextProcessIP}");
             }
         }
 
-        private IPEndPoint GetIPOfNextProcessOnElectionRequest(int numberOfAddresses)
+        private IPEndPoint GetIPOfNextProcessOnElectionRequest(int numberOfAddresses, List<IPEndPoint> temporaryListOfAddresses)
         {
             if (numberOfAddresses == 2)
             {
                 return Process.SourceIPEndPoint;
             }
 
-            testedNeighbourId = Process.ListOfAddresses.IndexOf(Process.SourceIPEndPoint) + incrementer;
+            testedNeighbourId = temporaryListOfAddresses.IndexOf(Process.SourceIPEndPoint) + incrementer;
 
             if (testedNeighbourId >= numberOfAddresses)
             {
                 testedNeighbourId -= numberOfAddresses;
             }
 
-            if (Process.ListOfAddresses[testedNeighbourId] == Process.RingCoordinatorIP)
+            if (temporaryListOfAddresses[testedNeighbourId] == Process.RingCoordinatorIP)
             {
-                //Process.LogBox.WriteEvent($"{Process.ListOfAddresses[testedNeighbourId]} was coordinator so skipping it.");
                 testedNeighbourId += 1;
                 incrementer += 1;
             }
@@ -200,7 +199,7 @@ namespace lsa_Tanenbaum_app.Services
                 testedNeighbourId -= numberOfAddresses;
             }
 
-            return Process.ListOfAddresses[testedNeighbourId];
+            return temporaryListOfAddresses[testedNeighbourId];
         }
     }
 }

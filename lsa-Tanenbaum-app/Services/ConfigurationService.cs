@@ -2,16 +2,19 @@
 using System;
 using System.Net;
 using System.Net.Sockets;
-using static lsa_Tanenbaum_app.Headers;
 
 namespace lsa_Tanenbaum_app.Services
 {
     public class ConfigurationService
     {
+        /// <summary>
+        /// Initializes socket with given EndPoints and starts to listen for incoming data.
+        /// </summary>
+        /// <param name="process">Process instance</param>
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="OnDataReceived">Callback message reference</param>
         public void InitializeSocket(Process process, int bufferSize, AsyncCallback OnDataReceived)
         {
-            process.SynchronizationContainer = Configuration;
-
             process.Socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             process.Socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
 
@@ -24,6 +27,7 @@ namespace lsa_Tanenbaum_app.Services
             // initialize target EndPoint
             process.TargetEndPoint = new IPEndPoint(IPAddress.Parse(process.TargetAddress.IP), Convert.ToInt32(process.TargetAddress.port));
 
+            // mark flag
             process.IsInitialized = true;
 
             // start listening
@@ -31,6 +35,9 @@ namespace lsa_Tanenbaum_app.Services
             process.Socket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(OnDataReceived), buffer);
         }
 
+        /// <summary>
+        /// Closes socket for both receiving and sending packages.
+        /// </summary>
         public void StopSocket(Process process)
         {
             process.IsInitialized = false;

@@ -65,13 +65,10 @@
     <Compile Include="Models\Process.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\CallBackService.cs" />
     <Compile Include="Services\ConfigurationService.cs" />
     <Compile Include="Services\RequestService.cs" />
     <Compile Include="Services\TimerService.cs" />
     <Compile Include="Structures\Address.cs" />
-    <Compile Include="Structures\EndPoints.cs" />
-    <Compile Include="Structures\InitializedSocketResult.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

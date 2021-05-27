@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
@@ -46,7 +47,6 @@
             this.labelConnectionStatus = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.diagnosticPingFrequency = new System.Windows.Forms.NumericUpDown();
@@ -97,7 +97,7 @@
             this.groupBox1.Controls.Add(this.textSourceIp);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.textTargetPort);
-            this.groupBox1.Location = new System.Drawing.Point(12, 118);
+            this.groupBox1.Location = new System.Drawing.Point(12, 94);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(259, 213);
             this.groupBox1.TabIndex = 0;
@@ -226,7 +226,7 @@
             this.initializeSocketBtn.Enabled = false;
             this.initializeSocketBtn.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.initializeSocketBtn.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.initializeSocketBtn.Location = new System.Drawing.Point(104, 357);
+            this.initializeSocketBtn.Location = new System.Drawing.Point(95, 334);
             this.initializeSocketBtn.Name = "initializeSocketBtn";
             this.initializeSocketBtn.Size = new System.Drawing.Size(127, 56);
             this.initializeSocketBtn.TabIndex = 2;
@@ -243,9 +243,9 @@
             this.stopSocketBtn.Enabled = false;
             this.stopSocketBtn.FlatAppearance.BorderSize = 0;
             this.stopSocketBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.stopSocketBtn.Location = new System.Drawing.Point(161, 68);
+            this.stopSocketBtn.Location = new System.Drawing.Point(171, 50);
             this.stopSocketBtn.Name = "stopSocketBtn";
-            this.stopSocketBtn.Size = new System.Drawing.Size(110, 26);
+            this.stopSocketBtn.Size = new System.Drawing.Size(100, 26);
             this.stopSocketBtn.TabIndex = 6;
             this.stopSocketBtn.TabStop = false;
             this.stopSocketBtn.Text = "Disconnect";
@@ -255,7 +255,7 @@
             // pictureBoxConnectionStatus
             // 
             this.pictureBoxConnectionStatus.Image = global::lsa_Tanenbaum_app.Properties.Resources.status_notconnected;
-            this.pictureBoxConnectionStatus.Location = new System.Drawing.Point(12, 68);
+            this.pictureBoxConnectionStatus.Location = new System.Drawing.Point(22, 50);
             this.pictureBoxConnectionStatus.Name = "pictureBoxConnectionStatus";
             this.pictureBoxConnectionStatus.Size = new System.Drawing.Size(13, 23);
             this.pictureBoxConnectionStatus.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -265,7 +265,7 @@
             // labelConnectionStatus
             // 
             this.labelConnectionStatus.AutoSize = true;
-            this.labelConnectionStatus.Location = new System.Drawing.Point(31, 71);
+            this.labelConnectionStatus.Location = new System.Drawing.Point(41, 53);
             this.labelConnectionStatus.Name = "labelConnectionStatus";
             this.labelConnectionStatus.Size = new System.Drawing.Size(102, 17);
             this.labelConnectionStatus.TabIndex = 8;
@@ -274,10 +274,11 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("MV Boli", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(70, 18);
+            this.label6.Font = new System.Drawing.Font("Dubai", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.ForeColor = System.Drawing.SystemColors.AppWorkspace;
+            this.label6.Location = new System.Drawing.Point(70, 7);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(161, 31);
+            this.label6.Size = new System.Drawing.Size(150, 40);
             this.label6.TabIndex = 10;
             this.label6.Text = "Configuration";
             this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -285,21 +286,14 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Font = new System.Drawing.Font("MV Boli", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(393, 18);
+            this.label8.Font = new System.Drawing.Font("Dubai", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.ForeColor = System.Drawing.SystemColors.AppWorkspace;
+            this.label8.Location = new System.Drawing.Point(375, 7);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(221, 31);
+            this.label8.Size = new System.Drawing.Size(194, 40);
             this.label8.TabIndex = 11;
             this.label8.Text = "Parameters Setup";
             this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label9
-            // 
-            this.label9.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label9.Location = new System.Drawing.Point(284, 94);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(5, 500);
-            this.label9.TabIndex = 12;
             // 
             // label5
             // 
@@ -355,7 +349,7 @@
             this.ringSynchronizationBtn.CausesValidation = false;
             this.ringSynchronizationBtn.Enabled = false;
             this.ringSynchronizationBtn.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.ringSynchronizationBtn.Location = new System.Drawing.Point(104, 438);
+            this.ringSynchronizationBtn.Location = new System.Drawing.Point(95, 415);
             this.ringSynchronizationBtn.Name = "ringSynchronizationBtn";
             this.ringSynchronizationBtn.Size = new System.Drawing.Size(127, 56);
             this.ringSynchronizationBtn.TabIndex = 17;
@@ -369,7 +363,7 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Leelawadee", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.SystemColors.AppWorkspace;
-            this.label1.Location = new System.Drawing.Point(48, 367);
+            this.label1.Location = new System.Drawing.Point(39, 344);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(38, 36);
             this.label1.TabIndex = 25;
@@ -380,7 +374,7 @@
             this.label16.AutoSize = true;
             this.label16.Font = new System.Drawing.Font("Leelawadee", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label16.ForeColor = System.Drawing.SystemColors.AppWorkspace;
-            this.label16.Location = new System.Drawing.Point(48, 448);
+            this.label16.Location = new System.Drawing.Point(39, 425);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(38, 36);
             this.label16.TabIndex = 26;
@@ -394,14 +388,15 @@
             this.logBox.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.logBox.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.logBox.HideSelection = false;
-            this.logBox.Location = new System.Drawing.Point(681, 100);
+            this.logBox.Location = new System.Drawing.Point(681, 12);
             this.logBox.Name = "logBox";
             this.logBox.ReadOnly = true;
-            this.logBox.Size = new System.Drawing.Size(562, 505);
+            this.logBox.Size = new System.Drawing.Size(562, 593);
             this.logBox.TabIndex = 27;
             this.logBox.TabStop = false;
-            this.logBox.Text = "// *********************************************\n// LSA - Tanenbaum log\n// ******" +
-    "***************************************\n";
+            this.logBox.Text = "// *************************************************************\n// Leader Select" +
+    "ion Algorithm log\n// Tanenbaum\'s variant\n// ************************************" +
+    "*************************\n";
             this.logBox.WordWrap = false;
             // 
             // addressesListBox
@@ -460,7 +455,7 @@
             this.knowledgeGroupBox.Controls.Add(this.label17);
             this.knowledgeGroupBox.Controls.Add(this.addressesListBox);
             this.knowledgeGroupBox.Controls.Add(this.prioritiesListBox);
-            this.knowledgeGroupBox.Location = new System.Drawing.Point(305, 393);
+            this.knowledgeGroupBox.Location = new System.Drawing.Point(293, 393);
             this.knowledgeGroupBox.Name = "knowledgeGroupBox";
             this.knowledgeGroupBox.Size = new System.Drawing.Size(370, 211);
             this.knowledgeGroupBox.TabIndex = 35;
@@ -501,9 +496,9 @@
             this.updatePriorityBtn.Enabled = false;
             this.updatePriorityBtn.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.updatePriorityBtn.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.updatePriorityBtn.Location = new System.Drawing.Point(11, 93);
+            this.updatePriorityBtn.Location = new System.Drawing.Point(29, 93);
             this.updatePriorityBtn.Name = "updatePriorityBtn";
-            this.updatePriorityBtn.Size = new System.Drawing.Size(336, 29);
+            this.updatePriorityBtn.Size = new System.Drawing.Size(300, 29);
             this.updatePriorityBtn.TabIndex = 36;
             this.updatePriorityBtn.TabStop = false;
             this.updatePriorityBtn.Text = "call priority update";
@@ -512,11 +507,11 @@
             // 
             // priorityTrackBar
             // 
-            this.priorityTrackBar.Location = new System.Drawing.Point(0, 48);
+            this.priorityTrackBar.Location = new System.Drawing.Point(6, 48);
             this.priorityTrackBar.Maximum = 100;
             this.priorityTrackBar.Minimum = 1;
             this.priorityTrackBar.Name = "priorityTrackBar";
-            this.priorityTrackBar.Size = new System.Drawing.Size(289, 56);
+            this.priorityTrackBar.Size = new System.Drawing.Size(283, 56);
             this.priorityTrackBar.TabIndex = 37;
             this.priorityTrackBar.TabStop = false;
             this.priorityTrackBar.Value = 5;
@@ -562,7 +557,7 @@
             this.groupBox2.Controls.Add(this.label19);
             this.groupBox2.Controls.Add(this.textPriority);
             this.groupBox2.Controls.Add(this.label12);
-            this.groupBox2.Location = new System.Drawing.Point(305, 100);
+            this.groupBox2.Location = new System.Drawing.Point(293, 94);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(370, 136);
             this.groupBox2.TabIndex = 40;
@@ -577,7 +572,7 @@
             this.diagnosticPingGroupBox.Controls.Add(this.enableDiagnosticPingBtn);
             this.diagnosticPingGroupBox.Controls.Add(this.label11);
             this.diagnosticPingGroupBox.Controls.Add(this.diagnosticPingFrequency);
-            this.diagnosticPingGroupBox.Location = new System.Drawing.Point(305, 250);
+            this.diagnosticPingGroupBox.Location = new System.Drawing.Point(293, 250);
             this.diagnosticPingGroupBox.Name = "diagnosticPingGroupBox";
             this.diagnosticPingGroupBox.Size = new System.Drawing.Size(370, 130);
             this.diagnosticPingGroupBox.TabIndex = 41;
@@ -658,11 +653,12 @@
             // 
             this.label20.AutoSize = true;
             this.label20.Font = new System.Drawing.Font("Sitka Small", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label20.Location = new System.Drawing.Point(50, 516);
+            this.label20.Location = new System.Drawing.Point(32, 492);
             this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(203, 40);
+            this.label20.Size = new System.Drawing.Size(219, 100);
             this.label20.TabIndex = 35;
-            this.label20.Text = "Successfull synchronization\r\ninitializes starting leader.";
+            this.label20.Text = "Important:\r\n* Successfull synchronization \r\ninitializes starting leader.\r\n* Prior" +
+    "ity can be set before \r\nring synchronization.";
             this.label20.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // Form1
@@ -670,7 +666,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.ClientSize = new System.Drawing.Size(1255, 635);
+            this.ClientSize = new System.Drawing.Size(1255, 615);
             this.Controls.Add(this.label20);
             this.Controls.Add(this.diagnosticPingGroupBox);
             this.Controls.Add(this.groupBox2);
@@ -678,7 +674,6 @@
             this.Controls.Add(this.label16);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.ringSynchronizationBtn);
-            this.Controls.Add(this.label9);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.labelConnectionStatus);
@@ -688,6 +683,7 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.knowledgeGroupBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -725,7 +721,6 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.NumericUpDown diagnosticPingFrequency;
