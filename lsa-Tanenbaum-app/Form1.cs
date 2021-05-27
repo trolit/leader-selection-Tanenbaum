@@ -302,6 +302,7 @@ namespace lsa_Tanenbaum_app
             int highestPriorityId = _process.ListOfPriorities.IndexOf(highestPriority);
             _process.RingCoordinatorIP = _process.ListOfAddresses[highestPriorityId];
             _process.LogBox.WriteEvent("Ring coordinator chosen.");
+            HideDiagnosticPingGroupBoxForCoordinator();
         }
 
         private void UpdateRingCoordinatorLabel()
