@@ -81,12 +81,12 @@ namespace lsa_Tanenbaum_app.Services
 
         public void StopDiagnosticPingCoordinatorTimeoutTimer()
         {
-            currentCoordinatorTimeoutTick = 0;
             if (diagnosticPingCoordinatorTimeoutTimer != null)
             {
                 diagnosticPingCoordinatorTimeoutTimer.Stop();
                 diagnosticPingCoordinatorTimeoutTimer = null;
             }
+            currentCoordinatorTimeoutTick = 0;
         }
 
         #endregion
