@@ -32,7 +32,7 @@ namespace lsa_Tanenbaum_app.Services
 
             // start listening
             byte[] buffer = new byte[bufferSize];
-            process.Socket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(OnDataReceived), buffer);
+            process.Socket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, OnDataReceived, buffer);
         }
 
         /// <summary>
