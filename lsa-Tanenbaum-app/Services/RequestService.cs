@@ -1,9 +1,11 @@
 ﻿using lsa_Tanenbaum_app.Models;
-using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using static lsa_Tanenbaum_app.Headers;
+using static lsa_Tanenbaum_app.LogSymbols;
 
 namespace lsa_Tanenbaum_app.Services
 {
@@ -37,7 +39,7 @@ namespace lsa_Tanenbaum_app.Services
             {
                 byte[] message = PackMessage($"{EchoReply}{Process.SourceIPEndPoint}");
                 Process.Socket.SendTo(message, Process.ListOfAddresses[index]);
-                Process.LogBox.WriteEvent($"Send ICMP Echo Reply to requester({socketAddress}).");
+                Process.LogBox.WriteEvent($"{SEND_SYMBOL} echo reply to {socketAddress}.");
             }
         }
 
@@ -54,22 +56,34 @@ namespace lsa_Tanenbaum_app.Services
 
             Process.SynchronizationContainer = _helperMethods.RemoveZeroCharactersFromString(Process.SynchronizationContainer);
 
-            Process.LogBox.WriteEvent($"Request network synchronization \nstate:[{Process.SynchronizationContainer}].");
+            Process.LogBox.WriteEvent($"{SEND_SYMBOL} network synchronization request to {Process.TargetIPEndPoint}.");
 
             Process.Socket.SendTo(PackMessage(Process.SynchronizationContainer), Process.TargetEndPoint);
         }
 
         public void SendRingList()
         {
+            Process.LogBox.WriteEvent($"{SEND_SYMBOL} ring structure to {Process.TargetIPEndPoint}");
             Process.SynchronizationContainer = Process.SynchronizationContainer.Replace(Configuration, List);
             Process.Socket.SendTo(PackMessage(Process.SynchronizationContainer), Process.TargetEndPoint);
-            Process.LogBox.WriteEvent($"Send obtained ring to [{Process.TargetIPEndPoint}].");
         }
 
         public void SendPriorityUpdateRequest()
         {
+            Process.LogBox.WriteEvent($"{SEND_SYMBOL} priority update request to {Process.TargetIPEndPoint}.");
             byte[] message = PackMessage($"{Priority}{Process.SourceIPEndPoint}:{Process.Priority}");
             Process.Socket.SendTo(message, Process.TargetEndPoint);
+        }
+
+        public void InitiateCoordinatorMessage(string electionMessage)
+        {
+            string message = electionMessage.Replace(Election, "");
+            string coordinatorMessage = $"{Coordinator}{Process.Id}{message}";
+            byte[] coordinatorPackedMessage = PackMessage(coordinatorMessage);
+            IPEndPoint nextProcessIPEndPoint = GetNextProcessIPEndPointOnCoordinatorRequest();
+
+            Process.LogBox.WriteEvent($"{SEND_SYMBOL} coordinator message to {nextProcessIPEndPoint}.");
+            Process.Socket.SendTo(coordinatorPackedMessage, nextProcessIPEndPoint);
         }
 
         public void SendCoordinatorMessage(string electionMessage)
@@ -142,7 +156,7 @@ namespace lsa_Tanenbaum_app.Services
                     if (nextProcessIP.ToString() == Process.SourceIPEndPoint.ToString())
                         break;
 
-                    Process.LogBox.WriteEvent($"Trying to communicate with {nextProcessIP}.");
+                    Process.LogBox.WriteEvent($"{SEND_SYMBOL} echo request to {nextProcessIP}");
 
                     timerService.InitDiagnosticPingElectionTimeoutTimer();
                     SendEchoRequest(nextProcessIP);
@@ -156,21 +170,72 @@ namespace lsa_Tanenbaum_app.Services
 
             if (!isNextAvailableNeighbourFound)
             {
-                Process.LogBox.WriteEvent($"No other available processes found. Can't resolve election :(");
+                Process.LogBox.WriteEvent($"!=----------------------------------------------");
+                Process.LogBox.WriteEvent($"{SOURCE_SYMBOL} No other available processes found. \nCan't resolve election :(");
+                Process.LogBox.WriteEvent($"!=----------------------------------------------");
             }
             else
             {
+                isNextAvailableNeighbourFound = false;
                 byte[] message;
 
-                if (previousMessage == string.Empty)
-                    message = PackMessage($"{Election}|{Process.SourceIPEndPoint}:{Process.Priority}");
+                if (previousMessage == "" || previousMessage.Contains(Process.Id))
+                    message = PackMessage($"{Election}{Process.Id}|{Process.SourceIPEndPoint}:{Process.Priority}");
                 else
                     message = PackMessage($"{previousMessage}|{Process.SourceIPEndPoint}:{Process.Priority}");
 
-                isNextAvailableNeighbourFound = false;
-
+                Process.LogBox.WriteEvent($"{SEND_SYMBOL} election message to {nextProcessIP}");
+                Process.LogBox.BreakLine();
                 Process.Socket.SendTo(message, nextProcessIP);
-                Process.LogBox.WriteEvent($"Election message sent to {nextProcessIP}");
+            }
+        }
+
+        public void SendElectionRequest(TimerService timerService, ElectionRequest request, string previousMessage = "")
+        {
+            int numberOfAddresses = Process.ListOfAddresses.Count;
+            IPEndPoint nextProcessIP = Process.SourceIPEndPoint;
+            List<IPEndPoint> temporaryListOfAddresses = Process.ListOfAddresses;
+
+            while (!request.IsNextFound)
+            {
+                if (timerService.diagnosticPingElectionTimeoutTimer == null)
+                {
+                    nextProcessIP = GetIPOfNextProcessOnElectionRequest(numberOfAddresses, temporaryListOfAddresses);
+
+                    if (nextProcessIP.ToString() == Process.SourceIPEndPoint.ToString())
+                        break;
+
+                    Process.LogBox.WriteEvent($"{SEND_SYMBOL} echo request to {nextProcessIP}");
+
+                    timerService.InitDiagnosticPingElectionTimeoutTimer();
+                    SendEchoRequest(nextProcessIP);
+                }
+
+                Application.DoEvents();
+            }
+
+            timerService.StopDiagnosticPingElectionTimeoutTimer();
+            incrementer = 1;
+
+            if (!request.IsNextFound)
+            {
+                Process.LogBox.WriteEvent($"!=----------------------------------------------");
+                Process.LogBox.WriteEvent($"{SOURCE_SYMBOL} No other available processes found. \nCan't resolve election :(");
+                Process.LogBox.WriteEvent($"!=----------------------------------------------");
+            }
+            else
+            {
+                isNextAvailableNeighbourFound = false;
+                byte[] message;
+
+                if (previousMessage == "" || previousMessage.Contains(Process.Id))
+                    message = PackMessage($"{Election}{Process.Id}|{Process.SourceIPEndPoint}:{Process.Priority}");
+                else
+                    message = PackMessage($"{previousMessage}|{Process.SourceIPEndPoint}:{Process.Priority}");
+
+                Process.LogBox.WriteEvent($"{SEND_SYMBOL} election message ({_helperMethods.UnpackMessage(message)}) to {nextProcessIP}");
+                Process.LogBox.BreakLine();
+                Process.Socket.SendTo(message, nextProcessIP);
             }
         }
 

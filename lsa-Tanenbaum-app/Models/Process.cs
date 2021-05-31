@@ -8,8 +8,12 @@ namespace lsa_Tanenbaum_app.Models
 {
     public class Process
     {
-        public Socket Socket { get; set; }
+        public string Id { get; set; }
 
+        public int MessageId { get; set; } = 0;
+
+        public Socket Socket { get; set; }
+        
         public List<IPEndPoint> ListOfAddresses { get; set; } = new List<IPEndPoint>();
 
         public List<int> ListOfPriorities { get; set; } = new List<int>();
@@ -40,11 +44,6 @@ namespace lsa_Tanenbaum_app.Models
         /// </summary>
         public bool IsRingObtained { get; set; } = false;
 
-        /// <summary>
-        /// Flag to verify callback received by coordinator message invoker.
-        /// </summary>
-        public bool IsCoordinatorMessageSend { get; set; } = false;
-
         public TextBox[] ConfigurationTextBoxes { get; set; }
 
         public RichTextBox LogBox { get; set; }
@@ -71,6 +70,12 @@ namespace lsa_Tanenbaum_app.Models
             Address newTargetAddress = new Address(address, port);
             TargetAddress = newTargetAddress;
             TargetEndPoint = helperMethods.BuildIPEndPoint(address, port);
+        }
+
+        public int ReturnMessageIdAndIncrement()
+        {
+            MessageId += 1;
+            return MessageId;
         }
     }
 }

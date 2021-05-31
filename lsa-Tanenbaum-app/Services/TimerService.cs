@@ -1,6 +1,7 @@
 ﻿using lsa_Tanenbaum_app.Models;
 using System;
 using System.Windows.Forms;
+using static lsa_Tanenbaum_app.LogSymbols;
 
 namespace lsa_Tanenbaum_app.Services
 {
@@ -43,7 +44,7 @@ namespace lsa_Tanenbaum_app.Services
             {
                 RequestService.SendEchoRequest(Process.RingCoordinatorIP);
                 InitDiagnosticPingCoordinatorTimeoutTimer();
-                Process.LogBox.WriteEvent($"Send ICMP Echo Request to coordinator.");
+                Process.LogBox.WriteEvent($"{SEND_SYMBOL} echo request to coordinator.");
             }
         }
 
@@ -68,14 +69,14 @@ namespace lsa_Tanenbaum_app.Services
 
                 Process.DisableDiagnosticPingButton.PerformClick();
 
-                Process.LogBox.WriteEvent($"ICMP Echo Request timed out. Call election.");
-
+                Process.LogBox.WriteEvent($"{SOURCE_SYMBOL} echo request timed out");
+                Process.LogBox.WriteEvent($"{SEND_SYMBOL} initiate election");
                 RequestService.SendElectionRequest(this);
             }
             else
             {
                 currentCoordinatorTimeoutTick += 1;
-                Process.LogBox.WriteEvent($"..waiting for ICMP Echo Reply {currentCoordinatorTimeoutTick}s / {Process.ReplyTimeout}s.");
+                Process.LogBox.WriteEvent($"{SOURCE_SYMBOL} ..waiting for Echo Reply {currentCoordinatorTimeoutTick}s / {Process.ReplyTimeout}s.");
             }
         }
 
@@ -97,14 +98,14 @@ namespace lsa_Tanenbaum_app.Services
         {
             if (currentElectionTimeoutTick == Process.ReplyTimeout)
             {
-                Process.LogBox.WriteEvent($"Connection with {Process.ListOfAddresses[RequestService.GetTestedNeighbourId()]} failed.");
+                Process.LogBox.WriteEvent($"{SOURCE_SYMBOL} Connection with {Process.ListOfAddresses[RequestService.GetTestedNeighbourId()]} failed.");
                 RequestService.IncreaseIncrementer();
                 StopDiagnosticPingElectionTimeoutTimer();
             }
             else
             {
                 currentElectionTimeoutTick += 1;
-                Process.LogBox.WriteEvent($"..waiting for ICMP Echo Reply {currentElectionTimeoutTick}s / {Process.ReplyTimeout}s.");
+                Process.LogBox.WriteEvent($"{SOURCE_SYMBOL} ..waiting for Echo Reply {currentElectionTimeoutTick}s / {Process.ReplyTimeout}s.");
             }
         }
 

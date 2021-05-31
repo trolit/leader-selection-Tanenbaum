@@ -226,7 +226,7 @@
             this.initializeSocketBtn.Enabled = false;
             this.initializeSocketBtn.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.initializeSocketBtn.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.initializeSocketBtn.Location = new System.Drawing.Point(95, 334);
+            this.initializeSocketBtn.Location = new System.Drawing.Point(95, 329);
             this.initializeSocketBtn.Name = "initializeSocketBtn";
             this.initializeSocketBtn.Size = new System.Drawing.Size(127, 56);
             this.initializeSocketBtn.TabIndex = 2;
@@ -349,7 +349,7 @@
             this.ringSynchronizationBtn.CausesValidation = false;
             this.ringSynchronizationBtn.Enabled = false;
             this.ringSynchronizationBtn.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.ringSynchronizationBtn.Location = new System.Drawing.Point(95, 415);
+            this.ringSynchronizationBtn.Location = new System.Drawing.Point(95, 410);
             this.ringSynchronizationBtn.Name = "ringSynchronizationBtn";
             this.ringSynchronizationBtn.Size = new System.Drawing.Size(127, 56);
             this.ringSynchronizationBtn.TabIndex = 17;
@@ -363,7 +363,7 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Leelawadee", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.SystemColors.AppWorkspace;
-            this.label1.Location = new System.Drawing.Point(39, 344);
+            this.label1.Location = new System.Drawing.Point(39, 339);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(38, 36);
             this.label1.TabIndex = 25;
@@ -374,7 +374,7 @@
             this.label16.AutoSize = true;
             this.label16.Font = new System.Drawing.Font("Leelawadee", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label16.ForeColor = System.Drawing.SystemColors.AppWorkspace;
-            this.label16.Location = new System.Drawing.Point(39, 425);
+            this.label16.Location = new System.Drawing.Point(39, 420);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(38, 36);
             this.label16.TabIndex = 26;
@@ -391,13 +391,12 @@
             this.logBox.Location = new System.Drawing.Point(681, 12);
             this.logBox.Name = "logBox";
             this.logBox.ReadOnly = true;
-            this.logBox.Size = new System.Drawing.Size(562, 593);
+            this.logBox.Size = new System.Drawing.Size(562, 557);
             this.logBox.TabIndex = 27;
             this.logBox.TabStop = false;
-            this.logBox.Text = "// *************************************************************\n// Leader Select" +
-    "ion Algorithm log\n// Tanenbaum\'s variant\n// ************************************" +
-    "*************************\n";
-            this.logBox.WordWrap = false;
+            this.logBox.Text = "// *************************************************************\n// 🔷 Leader Sel" +
+    "ection Algorithm log\n// Tanenbaum\'s variant \n// ********************************" +
+    "*****************************\n";
             // 
             // addressesListBox
             // 

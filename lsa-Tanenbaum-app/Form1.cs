@@ -10,6 +10,8 @@ using lsa_Tanenbaum_app.Models;
 using lsa_Tanenbaum_app.Structures;
 using lsa_Tanenbaum_app.Services;
 using static lsa_Tanenbaum_app.Headers;
+using static lsa_Tanenbaum_app.LogSymbols;
+using System.Threading;
 
 /* 
  * ---------------------------------------------------------------------------
@@ -53,10 +55,9 @@ namespace lsa_Tanenbaum_app
             _configurationService = new ConfigurationService();
             _helperMethods.RandomizeProcessIdentity(textProcessName);
 
-            SetProcessTitle();
-
             _process = new Process()
             {
+                Id = textProcessName.Text,
                 ConfigurationTextBoxes = new TextBox[] { textProcessName, textSourceIp, textSourcePort, textTargetIp, textTargetPort },
                 LogBox = logBox,
                 Priority = Convert.ToInt32(textPriority.Text),
@@ -71,12 +72,12 @@ namespace lsa_Tanenbaum_app
             textSourceIp.Text = _helperMethods.GetLocalAddress();
             textTargetIp.Text = _helperMethods.GetLocalAddress();
 
-            _process.LogBox.WriteEvent($"Process {System.Diagnostics.Process.GetCurrentProcess().Id}({textProcessName.Text}) initialized.");
+            _process.LogBox.WriteEvent($"{SOURCE_SYMBOL} Process {System.Diagnostics.Process.GetCurrentProcess().Id}({textProcessName.Text}) initialized.");
         }
 
-        private void SetProcessTitle()
+        private void UpdateProcessTitle()
         {
-            Text = $"Tanenbaum LSA | {textProcessName.Text}";
+            Text = $"{textProcessName.Text} | {textSourceIp.Text}:{textSourcePort.Text}";
         }
 
         // **************************************************
@@ -99,7 +100,7 @@ namespace lsa_Tanenbaum_app
 
                     // Setup callback again
                     _buffer = new byte[BUFFER_SIZE];
-                    _process.Socket.BeginReceive(_buffer, 0, _buffer.Length, SocketFlags.None, new AsyncCallback(OnDataReceived), _buffer);
+                    _process.Socket.BeginReceive(_buffer, 0, _buffer.Length, SocketFlags.None, OnDataReceived, _buffer);
 
                     switch (receivedMessage)
                     {
@@ -110,7 +111,7 @@ namespace lsa_Tanenbaum_app
 
                                 if (_process.SynchronizationContainer.Contains($"{_process.SourceIPEndPoint}"))
                                 {
-                                    _process.LogBox.WriteEvent("Synchronization request returned to the caller. Ring obtained.");
+                                    _process.LogBox.WriteEvent($"{RECEIVE_SYMBOL} synchronization request returned to the initiator.");
                                     _process.IsRingObtained = true;
 
                                     // pass obtained ring further
@@ -119,7 +120,7 @@ namespace lsa_Tanenbaum_app
                                 }
                                 else
                                 {
-                                    _process.LogBox.WriteEvent($"Synchronization request received. Passing it further.");
+                                    _process.LogBox.WriteEvent($"{RECEIVE_SYMBOL} synchronization request.");
                                     _requestService.SendRingSynchronizationRequest();
                                 }
                             }
@@ -136,11 +137,12 @@ namespace lsa_Tanenbaum_app
                                 if (_process.IsRingObtained == false)
                                 {
                                     _process.IsRingObtained = true;
-                                    _process.LogBox.WriteEvent($"Ring structure obtained \nstate:[{_process.SynchronizationContainer}].");
+                                    _process.LogBox.WriteEvent($"{RECEIVE_SYMBOL} ring structure.");
                                     _requestService.SendRingList();
                                 } else
                                 {
-                                    _process.LogBox.WriteEvent("Ring structure returned to synchronization caller. Remove message.");
+                                    _process.LogBox.WriteEvent($"{RECEIVE_SYMBOL} ring structure returned to the sync caller.");
+                                    _process.LogBox.WriteEvent($"{SOURCE_SYMBOL} message removed.");
                                 }
 
                                 UpdateInterfaceOnCompletedRingSynchronization();
@@ -149,16 +151,18 @@ namespace lsa_Tanenbaum_app
 
                         case string priorityMessage when receivedMessage.Contains(Priority):
                             {
-                                _process.LogBox.WriteEvent("Priority update request received.");
+                                _process.LogBox.WriteEvent($"{RECEIVE_SYMBOL} priority update request.");
                                 if (priorityMessage.Contains($"{textSourceIp.Text}:{textSourcePort.Text}"))
                                 {
-                                    _process.LogBox.WriteEvent($"Update priority knowledge and delete request.");
+                                    _process.LogBox.WriteEvent($"{SOURCE_SYMBOL} update knowledge and remove message.");
                                     UpdatePriorityInListBox(priorityMessage);
                                 }
                                 else
                                 {
-                                    _process.LogBox.WriteEvent("Update priority knowledge and pass request further.");
+                                    _process.LogBox.WriteEvent($"{SOURCE_SYMBOL} update knowledge.");
+                                    _process.LogBox.WriteEvent($"{SEND_SYMBOL} send update request further.");
                                     UpdatePriorityInListBox(priorityMessage);
+
                                     _process.Socket.SendTo(receivedData, _process.TargetEndPoint);
                                 }
                             }
@@ -167,33 +171,37 @@ namespace lsa_Tanenbaum_app
                         case string echoRequestMessage when receivedMessage.Contains(EchoRequest):
                             {
                                 string cutMessage = echoRequestMessage.Replace(EchoRequest, "");
-                                _process.LogBox.WriteEvent($"Received ICMP Echo Request from {cutMessage}. Send reply.");
+                                _process.LogBox.WriteEvent($"{RECEIVE_SYMBOL} echo request from {cutMessage}.");
                                 _requestService.SendEchoReply(cutMessage);
                             }
                             break;
 
                         case string echopReplyMessage when receivedMessage.Contains(EchoReply):
                             {
+                                string cutMessage = echopReplyMessage.Replace(EchoReply, "");
+
                                 if (echopReplyMessage.Contains(_process.RingCoordinatorIP.ToString()))
                                 {
-                                    string cutMessage = echopReplyMessage.Replace(EchoReply, "");
-                                    _process.LogBox.WriteEvent($"Received ICMP Echo Reply from {cutMessage}.");
+                                    _process.LogBox.WriteEvent($"{RECEIVE_SYMBOL} echo reply from {cutMessage}.");
                                     _timerService.StopDiagnosticPingCoordinatorTimeoutTimer();
                                 }
-                                else if (echopReplyMessage.Contains(_process.ListOfAddresses[_requestService.GetTestedNeighbourId()].ToString()))
+                                else
                                 {
-                                    _process.LogBox.WriteEvent($"Election diagnostic ping response received!");
+                                    _process.LogBox.WriteEvent($"{RECEIVE_SYMBOL} election ping response from {cutMessage}");
                                     _requestService.MarkTestedProcessAsAvailable();
-                                }
+                                } 
                             }
                             break;
 
                         case string electionMessage when receivedMessage.Contains(Election):
                             {
-                                if (electionMessage.Contains($"{_process.SourceIPEndPoint}"))
+                                _process.LogBox.BreakLine();
+                                if (electionMessage.Contains($"{_process.Id}"))
                                 {
                                     // election message returned to the process that initialized it
-                                    _process.LogBox.WriteEvent($"Received back election message with data: {electionMessage}.");
+                                    _process.LogBox.WriteEvent($"{RECEIVE_SYMBOL} election message \n[{electionMessage}]");
+
+                                    electionMessage = electionMessage.Replace(_process.Id, "");
 
                                     // 1. translate data
                                     UpdateKnowledgeSection(Election, electionMessage);
@@ -205,35 +213,38 @@ namespace lsa_Tanenbaum_app
                                     UpdateRingCoordinatorLabel();
 
                                     // 4. send COORDINATOR message and new ring structure
-                                    _process.IsCoordinatorMessageSend = true;
-                                    _requestService.SendCoordinatorMessage(electionMessage);
-
-                                    _process.LogBox.WriteEvent($"Send coordinator message containing election results.");
+                                    _requestService.InitiateCoordinatorMessage(electionMessage);
                                 }
                                 else
                                 {
+                                    
                                     // pass election message further
-                                    _process.LogBox.WriteEvent($"Received election message. Begin election request.");
-                                    _requestService.SendElectionRequest(_timerService, electionMessage);
+                                    _process.LogBox.WriteEvent($"{RECEIVE_SYMBOL} election message \n[{electionMessage}]");
+                                    _requestService.SendElectionRequest(new TimerService(_process, _requestService), electionMessage);       
                                 }
                             }
                             break;
 
                         case string coordinatorMessage when receivedMessage.Contains(Coordinator):
                             {
-                                if (_process.IsCoordinatorMessageSend)
+                                _process.LogBox.BreakLine();
+                                if (coordinatorMessage.Contains(_process.Id))
                                 {
+                                    coordinatorMessage = coordinatorMessage.Replace(_process.Id, "");
+
                                     UpdateTargetIntel();
-                                    _process.LogBox.WriteEvent($"Coordinator message returned to election initiator. Message removed.");
-                                    _process.IsCoordinatorMessageSend = false;
+                                    _process.LogBox.BreakLine();
+                                    _process.LogBox.WriteEvent($"{RECEIVE_SYMBOL} coordinator message returned to election initiator.");
+                                    _process.LogBox.WriteEvent($"{SOURCE_SYMBOL} message removed.");
                                 }
                                 else
                                 {
-                                    _process.LogBox.WriteEvent($"Coordinator message received. Updating knowledge and passing it further.");
+                                    _process.LogBox.WriteEvent($"{RECEIVE_SYMBOL} coordinator message. Updating knowledge.");
                                     UpdateKnowledgeSection(Coordinator, coordinatorMessage);
                                     SelectRingCoordinator();
                                     UpdateTargetIntel();
                                     UpdateRingCoordinatorLabel();
+                                    _process.LogBox.WriteEvent($"{SEND_SYMBOL} send coordinator message further.");
                                     _requestService.SendCoordinatorMessage(coordinatorMessage);
                                 }
                             }
@@ -301,7 +312,6 @@ namespace lsa_Tanenbaum_app
             int highestPriority = _process.ListOfPriorities.Max();
             int highestPriorityId = _process.ListOfPriorities.IndexOf(highestPriority);
             _process.RingCoordinatorIP = _process.ListOfAddresses[highestPriorityId];
-            _process.LogBox.WriteEvent("Ring coordinator chosen.");
             HideDiagnosticPingGroupBoxForCoordinator();
         }
 
@@ -386,7 +396,6 @@ namespace lsa_Tanenbaum_app
 
         private void callPriorityUpdateBtn_Click(object sender, EventArgs e)
         {
-            _process.LogBox.WriteEvent($"Send PRIORITY UPDATE request.");
             _requestService.SendPriorityUpdateRequest();
         }
 
@@ -399,13 +408,15 @@ namespace lsa_Tanenbaum_app
 
             _helperMethods.ChangeTextBoxCollectionReadOnlyStatus(_process.ConfigurationTextBoxes);
 
-            _process.LogBox.WriteEvent($"{textProcessName.Text} initialization finished.");
+            _process.LogBox.WriteEvent($"{SOURCE_SYMBOL} {textProcessName.Text} initialization finished.");
 
             pictureBoxConnectionStatus.Image = Resources.status_connected;
 
             labelConnectionStatus.SetText("Connected");
 
             _helperMethods.SwitchTwoButtonsEnabledStatus(initializeSocketBtn, stopSocketBtn);
+
+            UpdateProcessTitle();
 
             if (_process.ListOfAddresses.Count == 0)
                 ringSynchronizationBtn.Enabled = true;
@@ -425,7 +436,7 @@ namespace lsa_Tanenbaum_app
 
             _helperMethods.ChangeTextBoxCollectionReadOnlyStatus(_process.ConfigurationTextBoxes);
 
-            _process.LogBox.WriteEvent($"{textProcessName.Text} socket closed.");
+            _process.LogBox.WriteEvent($"{SOURCE_SYMBOL} {textProcessName.Text} socket closed.");
         }
 
         /// <summary>Manages initializeSocketBtn interaction availability by validating if all configuration 
