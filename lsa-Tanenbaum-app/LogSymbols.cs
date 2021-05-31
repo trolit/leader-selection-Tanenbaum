@@ -6,6 +6,6 @@
 
         public static readonly string SEND_SYMBOL = "➖▶";
 
-        public static readonly string SOURCE_SYMBOL = "🔲";
+        public static readonly string SOURCE_SYMBOL = "🔧";
     }
 }
