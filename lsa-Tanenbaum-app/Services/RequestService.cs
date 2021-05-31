@@ -188,17 +188,6 @@ namespace lsa_Tanenbaum_app.Services
                 testedNeighbourId -= numberOfAddresses;
             }
 
-            if (temporaryListOfAddresses[testedNeighbourId] == Process.RingCoordinatorIP)
-            {
-                testedNeighbourId += 1;
-                incrementer += 1;
-            }
-
-            if (testedNeighbourId >= numberOfAddresses)
-            {
-                testedNeighbourId -= numberOfAddresses;
-            }
-
             return temporaryListOfAddresses[testedNeighbourId];
         }
     }
