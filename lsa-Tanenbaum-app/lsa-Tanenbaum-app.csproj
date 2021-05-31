@@ -62,6 +62,7 @@
     </Compile>
     <Compile Include="Headers.cs" />
     <Compile Include="HelperMethods.cs" />
+    <Compile Include="LogSymbols.cs" />
     <Compile Include="Models\Process.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
