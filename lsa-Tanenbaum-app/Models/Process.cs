@@ -66,6 +66,12 @@ namespace lsa_Tanenbaum_app.Models
 
         public List<ElectionRequest> ElectionRequestsContainer { get; set; } = new List<ElectionRequest>();
 
+        /// <summary>
+        /// Occurs(true) when process initializes election and is removed(false) when 
+        /// ElectionRequestsContainer is empty on coordinator message receive. 
+        /// </summary>
+        public bool IsElectionRaised { get; set; } = false;
+
         public void UpdateTarget(HelperMethods helperMethods, string address, string port)
         {
             Address newTargetAddress = new Address(address, port);

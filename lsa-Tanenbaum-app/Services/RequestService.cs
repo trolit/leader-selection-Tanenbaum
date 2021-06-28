@@ -1,9 +1,6 @@
 ﻿using lsa_Tanenbaum_app.Models;
 using lsa_Tanenbaum_app.Requests;
-using System.Collections.Generic;
 using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using static lsa_Tanenbaum_app.Headers;
 using static lsa_Tanenbaum_app.LogSymbols;
@@ -78,6 +75,7 @@ namespace lsa_Tanenbaum_app.Services
 
         public void SendElectionRequest(string electionMessage = "")
         {
+            Process.IsElectionRaised = true;
             new ElectionRequest(this, Process, _helperMethods, electionMessage);
         }
 

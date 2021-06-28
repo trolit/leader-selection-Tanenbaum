@@ -11,13 +11,13 @@ using lsa_Tanenbaum_app.Structures;
 using lsa_Tanenbaum_app.Services;
 using static lsa_Tanenbaum_app.Headers;
 using static lsa_Tanenbaum_app.LogSymbols;
-using System.Threading;
 using lsa_Tanenbaum_app.Requests;
 
 /* 
  * ---------------------------------------------------------------------------
  * 
  * Leader Selection Algorithm 2021, Tanenbaum's variant
+ * Author: Pawel Idzikowski
  * Repository: https://github.com/trolit/leader-selection-Tanenbaum
  * App icon made by Becris, https://www.flaticon.com/authors/becris 
  * 
@@ -177,11 +177,11 @@ namespace lsa_Tanenbaum_app
                             }
                             break;
 
-                        case string echopReplyMessage when receivedMessage.Contains(EchoReply):
+                        case string echoReplyMessage when receivedMessage.Contains(EchoReply):
                             {
-                                string cutMessage = echopReplyMessage.Replace(EchoReply, "");
+                                string cutMessage = echoReplyMessage.Replace(EchoReply, "");
 
-                                if (echopReplyMessage.Contains(_process.RingCoordinatorIP.ToString()))
+                                if (echoReplyMessage.Contains(_process.RingCoordinatorIP.ToString()) && !_process.IsElectionRaised)
                                 {
                                     _timerService.StopDiagnosticPingCoordinatorTimeoutTimer();
                                     _process.LogBox.WriteEvent($"{RECEIVE_SYMBOL} echo reply from {cutMessage}.");
@@ -196,7 +196,6 @@ namespace lsa_Tanenbaum_app
                                         electionRequest.CompleteNextProcessFindingStage();
                                         _process.ElectionRequestsContainer.Remove(electionRequest);
                                     }
-                                    // _requestService.MarkTestedProcessAsAvailable();
                                 } 
                             }
                             break;
@@ -253,6 +252,11 @@ namespace lsa_Tanenbaum_app
                                     UpdateRingCoordinatorLabel();
                                     _process.LogBox.WriteEvent($"{SEND_SYMBOL} send coordinator message further.");
                                     _requestService.SendCoordinatorMessage(coordinatorMessage);
+                                }
+
+                                if (_process.ElectionRequestsContainer.Count == 0)
+                                {
+                                    _process.IsElectionRaised = false;
                                 }
                             }
                             break;
