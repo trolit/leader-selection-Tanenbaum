@@ -1,6 +1,6 @@
 ﻿using lsa_Tanenbaum_app.Models;
-using lsa_Tanenbaum_app.Requests;
 using System;
+using System.Net;
 using System.Windows.Forms;
 using static lsa_Tanenbaum_app.LogSymbols;
 
@@ -23,9 +23,6 @@ namespace lsa_Tanenbaum_app.Services
         public Timer diagnosticPingCoordinatorTimeoutTimer;
         public Timer diagnosticPingElectionTimeoutTimer;
         public Timer diagnosticPingTimer;
-
-        private int currentCoordinatorTimeoutTick = 0;
-        private int currentElectionTimeoutTick = 0;
 
         #region Diagnostic Ping Timer
 
@@ -50,6 +47,8 @@ namespace lsa_Tanenbaum_app.Services
         #endregion
 
         #region Diagnostic Ping Coordinator Timeout Timer
+
+        private int currentCoordinatorTimeoutTick = 0;
 
         public void InitDiagnosticPingCoordinatorTimeoutTimer()
         {
@@ -76,7 +75,7 @@ namespace lsa_Tanenbaum_app.Services
             else
             {
                 currentCoordinatorTimeoutTick += 1;
-                Process.LogBox.WriteEvent($"{SOURCE_SYMBOL} ..waiting for Echo Reply {currentCoordinatorTimeoutTick}s / {Process.ReplyTimeout}s.");
+                Process.LogBox.WriteEvent($"{SOURCE_SYMBOL} ..waiting for Echo Reply {currentCoordinatorTimeoutTick}s / {Process.ReplyTimeout}s from coordinator.");
             }
         }
 
@@ -94,26 +93,31 @@ namespace lsa_Tanenbaum_app.Services
 
         #region Diagnostic Ping Election Timeout Timer 
 
+        private int currentElectionTimeoutTick = 0;
+
+        private IPEndPoint _target;
+
+        public void InitDiagnosticPingElectionTimeoutTimer(IPEndPoint target)
+        {
+            _target = target;
+            diagnosticPingElectionTimeoutTimer = new Timer();
+            diagnosticPingElectionTimeoutTimer.Tick += new EventHandler(diagnosticPingElectionTimeoutTimer_Tick);
+            diagnosticPingElectionTimeoutTimer.Interval = 1000;
+            diagnosticPingElectionTimeoutTimer.Start();
+        }
+
         private void diagnosticPingElectionTimeoutTimer_Tick(object sender, EventArgs e)
         {
             if (currentElectionTimeoutTick == Process.ReplyTimeout)
             {
-                Process.LogBox.WriteEvent($"{SOURCE_SYMBOL} Connection attempt failed.");
+                Process.LogBox.WriteEvent($"{SOURCE_SYMBOL} Connection attempt failed!");
                 StopDiagnosticPingElectionTimeoutTimer();
             }
             else
             {
                 currentElectionTimeoutTick += 1;
-                Process.LogBox.WriteEvent($"{SOURCE_SYMBOL} ..waiting for Echo Reply {currentElectionTimeoutTick}s / {Process.ReplyTimeout}s.");
+                Process.LogBox.WriteEvent($"{SOURCE_SYMBOL} waiting for Echo Reply {currentElectionTimeoutTick}s / {Process.ReplyTimeout}s from {_target}.");
             }
-        }
-
-        public void InitDiagnosticPingElectionTimeoutTimer()
-        {
-            diagnosticPingElectionTimeoutTimer = new Timer();
-            diagnosticPingElectionTimeoutTimer.Tick += new EventHandler(diagnosticPingElectionTimeoutTimer_Tick);
-            diagnosticPingElectionTimeoutTimer.Interval = 1000;
-            diagnosticPingElectionTimeoutTimer.Start();
         }
 
         public void StopDiagnosticPingElectionTimeoutTimer()
