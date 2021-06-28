@@ -12,6 +12,7 @@ using lsa_Tanenbaum_app.Services;
 using static lsa_Tanenbaum_app.Headers;
 using static lsa_Tanenbaum_app.LogSymbols;
 using System.Threading;
+using lsa_Tanenbaum_app.Requests;
 
 /* 
  * ---------------------------------------------------------------------------
@@ -182,13 +183,20 @@ namespace lsa_Tanenbaum_app
 
                                 if (echopReplyMessage.Contains(_process.RingCoordinatorIP.ToString()))
                                 {
-                                    _process.LogBox.WriteEvent($"{RECEIVE_SYMBOL} echo reply from {cutMessage}.");
                                     _timerService.StopDiagnosticPingCoordinatorTimeoutTimer();
+                                    _process.LogBox.WriteEvent($"{RECEIVE_SYMBOL} echo reply from {cutMessage}.");
                                 }
                                 else
                                 {
                                     _process.LogBox.WriteEvent($"{RECEIVE_SYMBOL} election ping response from {cutMessage}");
-                                    _requestService.MarkTestedProcessAsAvailable();
+
+                                    if (_process.ElectionRequestsContainer.Count > 0)
+                                    {
+                                        ElectionRequest electionRequest = _process.ElectionRequestsContainer.First();
+                                        electionRequest.CompleteNextProcessFindingStage();
+                                        _process.ElectionRequestsContainer.Remove(electionRequest);
+                                    }
+                                    // _requestService.MarkTestedProcessAsAvailable();
                                 } 
                             }
                             break;
@@ -216,11 +224,10 @@ namespace lsa_Tanenbaum_app
                                     _requestService.InitiateCoordinatorMessage(electionMessage);
                                 }
                                 else
-                                {
-                                    
+                                {                         
                                     // pass election message further
                                     _process.LogBox.WriteEvent($"{RECEIVE_SYMBOL} election message \n[{electionMessage}]");
-                                    _requestService.SendElectionRequest(new TimerService(_process, _requestService), electionMessage);       
+                                    _requestService.SendElectionRequest(electionMessage);
                                 }
                             }
                             break;

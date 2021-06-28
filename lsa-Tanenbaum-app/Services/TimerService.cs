@@ -1,4 +1,5 @@
 ﻿using lsa_Tanenbaum_app.Models;
+using lsa_Tanenbaum_app.Requests;
 using System;
 using System.Windows.Forms;
 using static lsa_Tanenbaum_app.LogSymbols;
@@ -36,8 +37,6 @@ namespace lsa_Tanenbaum_app.Services
             diagnosticPingTimer.Start();
         }
 
-
-
         private void diagnosticPingTimer_Tick(object sender, EventArgs e)
         {
             if (diagnosticPingCoordinatorTimeoutTimer == null)
@@ -70,8 +69,9 @@ namespace lsa_Tanenbaum_app.Services
                 Process.DisableDiagnosticPingButton.PerformClick();
 
                 Process.LogBox.WriteEvent($"{SOURCE_SYMBOL} echo request timed out");
-                Process.LogBox.WriteEvent($"{SEND_SYMBOL} initiate election");
-                RequestService.SendElectionRequest(this);
+                Process.LogBox.WriteEvent($"{SEND_SYMBOL} initialize election");
+
+                RequestService.SendElectionRequest();
             }
             else
             {
@@ -98,8 +98,7 @@ namespace lsa_Tanenbaum_app.Services
         {
             if (currentElectionTimeoutTick == Process.ReplyTimeout)
             {
-                Process.LogBox.WriteEvent($"{SOURCE_SYMBOL} Connection with {Process.ListOfAddresses[RequestService.GetTestedNeighbourId()]} failed.");
-                RequestService.IncreaseIncrementer();
+                Process.LogBox.WriteEvent($"{SOURCE_SYMBOL} Connection attempt failed.");
                 StopDiagnosticPingElectionTimeoutTimer();
             }
             else
