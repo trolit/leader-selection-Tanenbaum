@@ -29,12 +29,12 @@ namespace lsa_Tanenbaum_app.Requests
 
         private List<IPEndPoint> _listOfAddresses;
 
-        public ElectionRequest(RequestService requestService, Process process, string previousMessage = "")
+        public ElectionRequest(RequestService requestService, Process process, HelperMethods helperMethods, string previousMessage = "")
         {
             _requestService = requestService;
             _process = process;
             _timerService = new TimerService(Process, RequestService);
-            _helpers = new HelperMethods();
+            _helpers = helperMethods;
 
             Process.ElectionRequestsContainer.Add(this);
 

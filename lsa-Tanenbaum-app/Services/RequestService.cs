@@ -78,7 +78,7 @@ namespace lsa_Tanenbaum_app.Services
 
         public void SendElectionRequest(string electionMessage = "")
         {
-            new ElectionRequest(this, Process, electionMessage);
+            new ElectionRequest(this, Process, _helperMethods, electionMessage);
         }
 
         public void InitiateCoordinatorMessage(string electionMessage)
