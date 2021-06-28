@@ -1,4 +1,5 @@
 ﻿using lsa_Tanenbaum_app.Models;
+using lsa_Tanenbaum_app.Requests;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading;
@@ -75,6 +76,11 @@ namespace lsa_Tanenbaum_app.Services
             Process.Socket.SendTo(message, Process.TargetEndPoint);
         }
 
+        public void SendElectionRequest(string electionMessage = "")
+        {
+            new ElectionRequest(this, Process, electionMessage);
+        }
+
         public void InitiateCoordinatorMessage(string electionMessage)
         {
             string message = electionMessage.Replace(Election, "");
@@ -116,144 +122,5 @@ namespace lsa_Tanenbaum_app.Services
             return Process.ListOfAddresses[nextProcessId];
         }
 
-        // ***************************************
-        //
-        // ELECTION REQUEST
-        //
-        // ***************************************
-
-        private bool isNextAvailableNeighbourFound = false;
-        private int testedNeighbourId;
-        private int incrementer = 1;
-
-        public void IncreaseIncrementer()
-        {
-            incrementer += 1;
-        }
-
-        public int GetTestedNeighbourId()
-        {
-            return testedNeighbourId;
-        }
-
-        public void MarkTestedProcessAsAvailable()
-        {
-            isNextAvailableNeighbourFound = true;
-        }
-
-        public void SendElectionRequest(TimerService timerService, string previousMessage = "")
-        {
-            int numberOfAddresses = Process.ListOfAddresses.Count;
-            IPEndPoint nextProcessIP = Process.SourceIPEndPoint;
-            List<IPEndPoint> temporaryListOfAddresses = Process.ListOfAddresses;
-
-            while (!isNextAvailableNeighbourFound)
-            {
-                if (timerService.diagnosticPingElectionTimeoutTimer == null)
-                {
-                    nextProcessIP = GetIPOfNextProcessOnElectionRequest(numberOfAddresses, temporaryListOfAddresses);
-
-                    if (nextProcessIP.ToString() == Process.SourceIPEndPoint.ToString())
-                        break;
-
-                    Process.LogBox.WriteEvent($"{SEND_SYMBOL} echo request to {nextProcessIP}");
-
-                    timerService.InitDiagnosticPingElectionTimeoutTimer();
-                    SendEchoRequest(nextProcessIP);
-                }
-
-                Application.DoEvents();
-            }
-
-            timerService.StopDiagnosticPingElectionTimeoutTimer();
-            incrementer = 1;
-
-            if (!isNextAvailableNeighbourFound)
-            {
-                Process.LogBox.WriteEvent($"!=----------------------------------------------");
-                Process.LogBox.WriteEvent($"{SOURCE_SYMBOL} No other available processes found. \nCan't resolve election :(");
-                Process.LogBox.WriteEvent($"!=----------------------------------------------");
-            }
-            else
-            {
-                isNextAvailableNeighbourFound = false;
-                byte[] message;
-
-                if (previousMessage == "" || previousMessage.Contains(Process.Id))
-                    message = PackMessage($"{Election}{Process.Id}|{Process.SourceIPEndPoint}:{Process.Priority}");
-                else
-                    message = PackMessage($"{previousMessage}|{Process.SourceIPEndPoint}:{Process.Priority}");
-
-                Process.LogBox.WriteEvent($"{SEND_SYMBOL} election message to {nextProcessIP}");
-                Process.LogBox.BreakLine();
-                Process.Socket.SendTo(message, nextProcessIP);
-            }
-        }
-
-        public void SendElectionRequest(TimerService timerService, ElectionRequest request, string previousMessage = "")
-        {
-            int numberOfAddresses = Process.ListOfAddresses.Count;
-            IPEndPoint nextProcessIP = Process.SourceIPEndPoint;
-            List<IPEndPoint> temporaryListOfAddresses = Process.ListOfAddresses;
-
-            while (!request.IsNextFound)
-            {
-                if (timerService.diagnosticPingElectionTimeoutTimer == null)
-                {
-                    nextProcessIP = GetIPOfNextProcessOnElectionRequest(numberOfAddresses, temporaryListOfAddresses);
-
-                    if (nextProcessIP.ToString() == Process.SourceIPEndPoint.ToString())
-                        break;
-
-                    Process.LogBox.WriteEvent($"{SEND_SYMBOL} echo request to {nextProcessIP}");
-
-                    timerService.InitDiagnosticPingElectionTimeoutTimer();
-                    SendEchoRequest(nextProcessIP);
-                }
-
-                Application.DoEvents();
-            }
-
-            timerService.StopDiagnosticPingElectionTimeoutTimer();
-            incrementer = 1;
-
-            if (!request.IsNextFound)
-            {
-                Process.LogBox.WriteEvent($"!=----------------------------------------------");
-                Process.LogBox.WriteEvent($"{SOURCE_SYMBOL} No other available processes found. \nCan't resolve election :(");
-                Process.LogBox.WriteEvent($"!=----------------------------------------------");
-            }
-            else
-            {
-                isNextAvailableNeighbourFound = false;
-                byte[] message;
-
-                if (previousMessage == "" || previousMessage.Contains(Process.Id))
-                    message = PackMessage($"{Election}{Process.Id}|{Process.SourceIPEndPoint}:{Process.Priority}");
-                else
-                    message = PackMessage($"{previousMessage}|{Process.SourceIPEndPoint}:{Process.Priority}");
-
-                Process.LogBox.WriteEvent($"{SEND_SYMBOL} election message ({_helperMethods.UnpackMessage(message)}) to {nextProcessIP}");
-                Process.LogBox.BreakLine();
-                Process.Socket.SendTo(message, nextProcessIP);
-            }
-        }
-
-        private IPEndPoint GetIPOfNextProcessOnElectionRequest(int numberOfAddresses, List<IPEndPoint> temporaryListOfAddresses)
-        {
-            if (numberOfAddresses == 2)
-            {
-                return Process.SourceIPEndPoint;
-            }
-
-            testedNeighbourId = temporaryListOfAddresses.IndexOf(Process.SourceIPEndPoint) + incrementer;
-
-            if (testedNeighbourId >= numberOfAddresses)
-            {
-                testedNeighbourId -= numberOfAddresses;
-            }
-
-            return temporaryListOfAddresses[testedNeighbourId];
-        }
     }
 }
