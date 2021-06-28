@@ -10,7 +10,8 @@ namespace lsa_Tanenbaum_app.Requests
 {
     public class ElectionRequest
     {
-        
+        #region Declarations
+
         private RequestService _requestService;
         private TimerService _timerService;
         private Process _process;
@@ -29,6 +30,8 @@ namespace lsa_Tanenbaum_app.Requests
 
         private List<IPEndPoint> _listOfAddresses;
 
+        #endregion
+
         public ElectionRequest(RequestService requestService, Process process, HelperMethods helperMethods, string previousMessage = "")
         {
             _requestService = requestService;
@@ -46,21 +49,22 @@ namespace lsa_Tanenbaum_app.Requests
 
         private void InitializeElection(string previousMessage = "")
         {
-            IPEndPoint nextProcessIP = Process.SourceIPEndPoint;
+            IPEndPoint testedProcessIp = Process.SourceIPEndPoint;
 
             while (!_isNextProcessFound)
             {
                 if (TimerService.diagnosticPingElectionTimeoutTimer == null)
                 {
-                    nextProcessIP = GetIPOfNextProcess(nextProcessIP);
+                    testedProcessIp = GetIPOfNextProcess(testedProcessIp);
 
-                    if (nextProcessIP.ToString() == Process.SourceIPEndPoint.ToString())
+                    if (testedProcessIp.ToString() == Process.SourceIPEndPoint.ToString())
                         break;
 
-                    Process.LogBox.WriteEvent($"{SEND_SYMBOL} echo request to {nextProcessIP}");
+                    Process.LogBox.WriteEvent($"{SEND_SYMBOL} echo request to {testedProcessIp}");
 
-                    TimerService.InitDiagnosticPingElectionTimeoutTimer();
-                    RequestService.SendEchoRequest(nextProcessIP);
+                    TimerService.InitDiagnosticPingElectionTimeoutTimer(testedProcessIp);
+
+                    RequestService.SendEchoRequest(testedProcessIp);
                 }
 
                 Application.DoEvents();
@@ -68,7 +72,7 @@ namespace lsa_Tanenbaum_app.Requests
 
             TimerService.StopDiagnosticPingElectionTimeoutTimer();
 
-            if (nextProcessIP.ToString() == Process.SourceIPEndPoint.ToString())
+            if (!_isNextProcessFound)
             {
                 Process.LogBox.WriteEvent($"!=----------------------------------------------");
                 Process.LogBox.WriteEvent($"{SOURCE_SYMBOL} No other available processes found. \nCan't resolve election :(");
@@ -83,9 +87,9 @@ namespace lsa_Tanenbaum_app.Requests
                 else
                     message = Helpers.PackMessage($"{previousMessage}|{Process.SourceIPEndPoint}:{Process.Priority}");
 
-                Process.LogBox.WriteEvent($"{SEND_SYMBOL} election message to {nextProcessIP}");
+                Process.LogBox.WriteEvent($"{SEND_SYMBOL} election message to {testedProcessIp}");
                 Process.LogBox.BreakLine();
-                Process.Socket.SendTo(message, nextProcessIP);
+                Process.Socket.SendTo(message, testedProcessIp);
             }
         }
 
