@@ -1,4 +1,5 @@
-﻿using lsa_Tanenbaum_app.Structures;
+﻿using lsa_Tanenbaum_app.Requests;
+using lsa_Tanenbaum_app.Structures;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -9,8 +10,6 @@ namespace lsa_Tanenbaum_app.Models
     public class Process
     {
         public string Id { get; set; }
-
-        public int MessageId { get; set; } = 0;
 
         public Socket Socket { get; set; }
         
@@ -65,17 +64,13 @@ namespace lsa_Tanenbaum_app.Models
 
         public Button DisableDiagnosticPingButton { get; set; }
 
+        public List<ElectionRequest> ElectionRequestsContainer { get; set; } = new List<ElectionRequest>();
+
         public void UpdateTarget(HelperMethods helperMethods, string address, string port)
         {
             Address newTargetAddress = new Address(address, port);
             TargetAddress = newTargetAddress;
             TargetEndPoint = helperMethods.BuildIPEndPoint(address, port);
-        }
-
-        public int ReturnMessageIdAndIncrement()
-        {
-            MessageId += 1;
-            return MessageId;
         }
     }
 }
