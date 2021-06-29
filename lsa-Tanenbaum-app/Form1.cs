@@ -492,5 +492,9 @@ namespace lsa_Tanenbaum_app
             resizeWindowBtn.Text = resizeWindowBtn.Text == RECEIVE_SYMBOL ? SEND_SYMBOL : RECEIVE_SYMBOL;
         }
 
+        private void toggleCreditsBtn_Click(object sender, EventArgs e)
+        {
+            creditsPanel.Visible = !creditsPanel.Visible;
+        }
     }
 }

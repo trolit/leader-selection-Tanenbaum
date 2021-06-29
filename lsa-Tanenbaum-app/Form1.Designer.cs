@@ -83,6 +83,7 @@
             this.label10 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
             this.label22 = new System.Windows.Forms.Label();
+            this.label23 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxConnectionStatus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.diagnosticPingFrequency)).BeginInit();
@@ -697,6 +698,99 @@
             this.toolTipControl.ReshowDelay = 100;
             this.toolTipControl.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
             this.toolTipControl.ToolTipTitle = "GUI Element";
+            // 
+            // toggleCreditsBtn
+            // 
+            this.toggleCreditsBtn.BackColor = System.Drawing.Color.DimGray;
+            this.toggleCreditsBtn.CausesValidation = false;
+            this.toggleCreditsBtn.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.toggleCreditsBtn.FlatAppearance.BorderSize = 0;
+            this.toggleCreditsBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.toggleCreditsBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.toggleCreditsBtn.ForeColor = System.Drawing.Color.Cornsilk;
+            this.toggleCreditsBtn.Location = new System.Drawing.Point(78, -13);
+            this.toggleCreditsBtn.Name = "toggleCreditsBtn";
+            this.toggleCreditsBtn.Size = new System.Drawing.Size(50, 39);
+            this.toggleCreditsBtn.TabIndex = 43;
+            this.toggleCreditsBtn.TabStop = false;
+            this.toggleCreditsBtn.Text = "🔰";
+            this.toggleCreditsBtn.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.toolTipControl.SetToolTip(this.toggleCreditsBtn, "Toggle \"credits\" section");
+            this.toggleCreditsBtn.UseVisualStyleBackColor = false;
+            this.toggleCreditsBtn.Click += new System.EventHandler(this.toggleCreditsBtn_Click);
+            // 
+            // creditsPanel
+            // 
+            this.creditsPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.creditsPanel.Controls.Add(this.label23);
+            this.creditsPanel.Controls.Add(this.label22);
+            this.creditsPanel.Controls.Add(this.label14);
+            this.creditsPanel.Controls.Add(this.label10);
+            this.creditsPanel.Controls.Add(this.label9);
+            this.creditsPanel.Location = new System.Drawing.Point(22, 42);
+            this.creditsPanel.Name = "creditsPanel";
+            this.creditsPanel.Size = new System.Drawing.Size(529, 201);
+            this.creditsPanel.TabIndex = 44;
+            this.creditsPanel.Visible = false;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("Lucida Bright", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.Location = new System.Drawing.Point(19, 63);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(455, 34);
+            this.label9.TabIndex = 156;
+            this.label9.Text = "Leader Selection algorithm simulation (Tanenbaum\'s variant)\r\nin distributed syste" +
+    "ms using .NET sockets.";
+            this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("Lucida Bright", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.Location = new System.Drawing.Point(176, 149);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(138, 17);
+            this.label10.TabIndex = 157;
+            this.label10.Text = "Pawel Idzikowski";
+            this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Font = new System.Drawing.Font("Lucida Bright", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label14.ForeColor = System.Drawing.SystemColors.MenuHighlight;
+            this.label14.Location = new System.Drawing.Point(143, 171);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(193, 17);
+            this.label14.TabIndex = 158;
+            this.label14.Text = "https://github.com/trolit";
+            this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Font = new System.Drawing.Font("Lucida Bright", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label22.ForeColor = System.Drawing.SystemColors.MenuHighlight;
+            this.label22.Location = new System.Drawing.Point(39, 112);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(410, 17);
+            this.label22.TabIndex = 159;
+            this.label22.Text = "https://github.com/trolit/leader-selection-Tanenbaum";
+            this.label22.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Font = new System.Drawing.Font("Lucida Bright", 28.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label23.Location = new System.Drawing.Point(215, 3);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(79, 55);
+            this.label23.TabIndex = 160;
+            this.label23.Text = "🎓";
+            this.label23.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -796,6 +890,13 @@
         private System.Windows.Forms.Label label21;
         private System.Windows.Forms.Button resizeWindowBtn;
         private System.Windows.Forms.ToolTip toolTipControl;
+        private System.Windows.Forms.Button toggleCreditsBtn;
+        private System.Windows.Forms.Panel creditsPanel;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.Label label23;
     }
 }
 
