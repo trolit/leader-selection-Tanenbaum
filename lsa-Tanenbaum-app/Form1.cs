@@ -28,16 +28,20 @@ namespace lsa_Tanenbaum_app
 {
     public partial class Form1 : Form
     {
+        #region Declarations
+
         private const int BUFFER_SIZE = 1500;
         private byte[] _buffer;
 
         private Process _process;
 
-        private HelperMethods _helperMethods;
+        private HelperMethods _helpers;
 
         private ConfigurationService _configurationService;
         private RequestService _requestService;
         private TimerService _timerService;
+
+        #endregion
 
         public Form1()
         {
@@ -52,9 +56,9 @@ namespace lsa_Tanenbaum_app
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            _helperMethods = new HelperMethods();
+            _helpers = new HelperMethods();
             _configurationService = new ConfigurationService();
-            _helperMethods.RandomizeProcessIdentity(textProcessName);
+            _helpers.RandomizeProcessIdentity(textProcessName);
 
             _process = new Process()
             {
@@ -66,12 +70,12 @@ namespace lsa_Tanenbaum_app
                 DisableDiagnosticPingButton = disableDiagnosticPingBtn
         };
 
-            _requestService = new RequestService(_helperMethods, _process);
+            _requestService = new RequestService(_helpers, _process);
             _timerService = new TimerService(_process, _requestService);
 
             // put user IP
-            textSourceIp.Text = _helperMethods.GetLocalAddress();
-            textTargetIp.Text = _helperMethods.GetLocalAddress();
+            textSourceIp.Text = _helpers.GetLocalAddress();
+            textTargetIp.Text = _helpers.GetLocalAddress();
 
             _process.LogBox.WriteEvent($"{SOURCE_SYMBOL} Process {System.Diagnostics.Process.GetCurrentProcess().Id}({textProcessName.Text}) initialized.");
         }
@@ -97,7 +101,7 @@ namespace lsa_Tanenbaum_app
                     receivedData = (byte[])result.AsyncState;
 
                     // Convert byte[] to string
-                    string receivedMessage = _helperMethods.UnpackMessage(receivedData);
+                    string receivedMessage = _helpers.UnpackMessage(receivedData);
 
                     // Setup callback again
                     _buffer = new byte[BUFFER_SIZE];
@@ -233,7 +237,6 @@ namespace lsa_Tanenbaum_app
 
                         case string coordinatorMessage when receivedMessage.Contains(Coordinator):
                             {
-                                _process.LogBox.BreakLine();
                                 if (coordinatorMessage.Contains(_process.Id))
                                 {
                                     coordinatorMessage = coordinatorMessage.Replace(_process.Id, "");
@@ -277,7 +280,7 @@ namespace lsa_Tanenbaum_app
 
         private void UpdateKnowledgeSection(string header, string source)
         {
-            (List<IPEndPoint>, List<int>) data = _helperMethods.TranslateDataFromMessage(header, source);
+            (List<IPEndPoint>, List<int>) data = _helpers.TranslateDataFromMessage(header, source);
             _process.ListOfAddresses = data.Item1;
             _process.ListOfPriorities = data.Item2;
             addressesListBox.UpdateCollection(_process.ListOfAddresses);
@@ -307,16 +310,8 @@ namespace lsa_Tanenbaum_app
             textTargetIp.SetText(newConsequentAddress);
             textTargetPort.SetText(newConsequentPort);
 
-            _process.UpdateTarget(_helperMethods, newConsequentAddress, newConsequentPort);
+            _process.UpdateTarget(_helpers, newConsequentAddress, newConsequentPort);
         }
-
-
-
-        // **************************************************
-        //
-        //               PART FUNCTIONS
-        //
-        // **************************************************     
 
         private void SelectRingCoordinator()
         {
@@ -328,9 +323,9 @@ namespace lsa_Tanenbaum_app
 
         private void UpdateRingCoordinatorLabel()
         {
-            int highestPriorityId = _helperMethods.GetIdOfHighestPriorityInList(_process.ListOfPriorities);
+            int highestPriorityId = _helpers.GetIdOfHighestPriorityInList(_process.ListOfPriorities);
             ringCoordinatorAddressText.SetText(_process.RingCoordinatorIP.ToString());
-            ringCoordinatorPriorityText.SetText($"with priority {_process.ListOfPriorities[highestPriorityId]} ({_helperMethods.GetCurrentTimeStamp(DateTime.Now)})");
+            ringCoordinatorPriorityText.SetText($"with priority {_process.ListOfPriorities[highestPriorityId]} ({_helpers.GetCurrentTimeStamp(DateTime.Now)})");
         }
 
         private void HideDiagnosticPingGroupBoxForCoordinator()
@@ -348,14 +343,13 @@ namespace lsa_Tanenbaum_app
         {
             // pattern: PRIO:192....:80:10
             string[] splitMessage = message.Replace(Priority, "").Split(':');
-            IPEndPoint address = _helperMethods.BuildIPEndPoint(splitMessage[0], splitMessage[1]);
+            IPEndPoint address = _helpers.BuildIPEndPoint(splitMessage[0], splitMessage[1]);
             int index = _process.ListOfAddresses.IndexOf(address);
 
             _process.ListOfPriorities[index] = Convert.ToInt32(splitMessage[2]);
 
             prioritiesListBox.UpdateCollection(_process.ListOfPriorities);
         }
-
 
         // **************************************************
         //
@@ -366,7 +360,7 @@ namespace lsa_Tanenbaum_app
         private void activateDiagnosticPingBtn_Click(object sender, EventArgs e)
         {
             _timerService.InitDiagnosticPingTimer();
-            _helperMethods.SwitchTwoButtonsEnabledStatus(enableDiagnosticPingBtn, disableDiagnosticPingBtn);
+            _helpers.SwitchTwoButtonsEnabledStatus(enableDiagnosticPingBtn, disableDiagnosticPingBtn);
         }
 
         private void deactivateDiagnosticPingBtn_Click(object sender, EventArgs e)
@@ -374,7 +368,7 @@ namespace lsa_Tanenbaum_app
             if (_timerService.diagnosticPingTimer != null)
             {
                 _timerService.diagnosticPingTimer.Stop();
-                _helperMethods.SwitchTwoButtonsEnabledStatus(enableDiagnosticPingBtn, disableDiagnosticPingBtn);
+                _helpers.SwitchTwoButtonsEnabledStatus(enableDiagnosticPingBtn, disableDiagnosticPingBtn);
             }
         }
 
@@ -417,7 +411,7 @@ namespace lsa_Tanenbaum_app
 
             _configurationService.InitializeSocket(_process, BUFFER_SIZE, OnDataReceived);
 
-            _helperMethods.ChangeTextBoxCollectionReadOnlyStatus(_process.ConfigurationTextBoxes);
+            _helpers.ChangeTextBoxCollectionReadOnlyStatus(_process.ConfigurationTextBoxes);
 
             _process.LogBox.WriteEvent($"{SOURCE_SYMBOL} {textProcessName.Text} initialization finished.");
 
@@ -425,7 +419,7 @@ namespace lsa_Tanenbaum_app
 
             labelConnectionStatus.SetText("Connected");
 
-            _helperMethods.SwitchTwoButtonsEnabledStatus(initializeSocketBtn, stopSocketBtn);
+            _helpers.SwitchTwoButtonsEnabledStatus(initializeSocketBtn, stopSocketBtn);
 
             UpdateProcessTitle();
 
@@ -441,23 +435,23 @@ namespace lsa_Tanenbaum_app
 
             labelConnectionStatus.SetText("Not Connected");
 
-            _helperMethods.SwitchTwoButtonsEnabledStatus(initializeSocketBtn, stopSocketBtn);
+            _helpers.SwitchTwoButtonsEnabledStatus(initializeSocketBtn, stopSocketBtn);
 
             configTextBoxChanged(sender, e);
 
-            _helperMethods.ChangeTextBoxCollectionReadOnlyStatus(_process.ConfigurationTextBoxes);
+            _helpers.ChangeTextBoxCollectionReadOnlyStatus(_process.ConfigurationTextBoxes);
 
             _process.LogBox.WriteEvent($"{SOURCE_SYMBOL} {textProcessName.Text} socket closed.");
         }
 
         /// <summary>Manages initializeSocketBtn interaction availability by validating if all configuration 
-        /// fields are filled in (provided that socket has not been initialized).
+        /// fields are filled in (provided that socket has not been initialized yet).
         /// </summary>
         private void configTextBoxChanged(object sender, EventArgs e)
         {
             if (_process != null && _process.IsInitialized == false)
             {
-                initializeSocketBtn.Enabled = _helperMethods.CheckIfConfigFieldsAreNotEmpty(_process.ConfigurationTextBoxes);
+                initializeSocketBtn.Enabled = _helpers.CheckIfConfigFieldsAreNotEmpty(_process.ConfigurationTextBoxes);
             }
         }
 

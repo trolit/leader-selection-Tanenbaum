@@ -8,11 +8,19 @@ namespace lsa_Tanenbaum_app.Services
 {
     public class TimerService
     {
+        #region Declarations
+
         private Process _process;
         private RequestService _requestService;
 
         private Process Process => _process;
         private RequestService RequestService => _requestService;
+
+        public Timer diagnosticPingCoordinatorTimeoutTimer;
+        public Timer diagnosticPingElectionTimeoutTimer;
+        public Timer diagnosticPingTimer;
+
+        #endregion
 
         public TimerService(Process process, RequestService requestService)
         {
@@ -20,17 +28,13 @@ namespace lsa_Tanenbaum_app.Services
             _requestService = requestService;
         }
 
-        public Timer diagnosticPingCoordinatorTimeoutTimer;
-        public Timer diagnosticPingElectionTimeoutTimer;
-        public Timer diagnosticPingTimer;
-
         #region Diagnostic Ping Timer
 
         public void InitDiagnosticPingTimer()
         {
             diagnosticPingTimer = new Timer();
             diagnosticPingTimer.Tick += new EventHandler(diagnosticPingTimer_Tick);
-            diagnosticPingTimer.Interval = Process.PingFrequency < 1 ? 500 : (int)(Process.PingFrequency * 1000); // 5 * 1000 = 5000ms (5s)
+            diagnosticPingTimer.Interval = Process.PingFrequency < 1 ? 500 : (int) (Process.PingFrequency * 1000); // 5 * 1000 = 5000ms (5s)
             diagnosticPingTimer.Start();
         }
 

@@ -9,10 +9,14 @@ namespace lsa_Tanenbaum_app.Services
 {
     public class RequestService
     {
+        #region Declarations
+
         private readonly HelperMethods _helperMethods;
         private Process _process;
 
         private Process Process => _process;
+
+        #endregion
 
         public RequestService(HelperMethods helperMethods, Process process)
         {
