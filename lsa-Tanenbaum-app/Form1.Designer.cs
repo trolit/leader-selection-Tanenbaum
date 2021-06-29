@@ -571,7 +571,7 @@
             this.diagnosticPingGroupBox.Controls.Add(this.enableDiagnosticPingBtn);
             this.diagnosticPingGroupBox.Controls.Add(this.label11);
             this.diagnosticPingGroupBox.Controls.Add(this.diagnosticPingFrequency);
-            this.diagnosticPingGroupBox.Location = new System.Drawing.Point(293, 246);
+            this.diagnosticPingGroupBox.Location = new System.Drawing.Point(293, 245);
             this.diagnosticPingGroupBox.Name = "diagnosticPingGroupBox";
             this.diagnosticPingGroupBox.Size = new System.Drawing.Size(370, 130);
             this.diagnosticPingGroupBox.TabIndex = 41;
@@ -664,7 +664,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.BackColor = System.Drawing.SystemColors.InactiveBorder;
             this.ClientSize = new System.Drawing.Size(1255, 615);
             this.Controls.Add(this.label20);
             this.Controls.Add(this.diagnosticPingGroupBox);

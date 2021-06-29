@@ -41,6 +41,8 @@ namespace lsa_Tanenbaum_app
         private RequestService _requestService;
         private TimerService _timerService;
 
+        private int _lastKnowledgeGroupBoxYLocation;
+
         #endregion
 
         public Form1()
@@ -68,7 +70,9 @@ namespace lsa_Tanenbaum_app
                 Priority = Convert.ToInt32(textPriority.Text),
                 SynchronizationContainer = Configuration,
                 DisableDiagnosticPingButton = disableDiagnosticPingBtn
-        };
+            };
+
+            _lastKnowledgeGroupBoxYLocation = knowledgeGroupBox.Location.Y;
 
             _requestService = new RequestService(_helpers, _process);
             _timerService = new TimerService(_process, _requestService);
@@ -293,7 +297,7 @@ namespace lsa_Tanenbaum_app
             knowledgeGroupBox.SetText($"{textProcessName.Text} network knowledge");
             knowledgeGroupBox.Display();
             diagnosticPingGroupBox.Display();
-            HideDiagnosticPingGroupBoxForCoordinator();
+            UpdateGroupBoxesOnCoordinatorSelection();
             updatePriorityBtn.ReverseEnabledStatus();
         }
 
@@ -318,7 +322,7 @@ namespace lsa_Tanenbaum_app
             int highestPriority = _process.ListOfPriorities.Max();
             int highestPriorityId = _process.ListOfPriorities.IndexOf(highestPriority);
             _process.RingCoordinatorIP = _process.ListOfAddresses[highestPriorityId];
-            HideDiagnosticPingGroupBoxForCoordinator();
+            UpdateGroupBoxesOnCoordinatorSelection();
         }
 
         private void UpdateRingCoordinatorLabel()
@@ -328,13 +332,19 @@ namespace lsa_Tanenbaum_app
             ringCoordinatorPriorityText.SetText($"with priority {_process.ListOfPriorities[highestPriorityId]} ({_helpers.GetCurrentTimeStamp(DateTime.Now)})");
         }
 
-        private void HideDiagnosticPingGroupBoxForCoordinator()
+        private void UpdateGroupBoxesOnCoordinatorSelection()
         {
             if (_process.RingCoordinatorIP.ToString().Contains(_process.SourceIPEndPoint.ToString()))
             {
                 Invoke(new MethodInvoker(() => {
                     diagnosticPingGroupBox.Visible = false;
                     knowledgeGroupBox.Location = new Point(knowledgeGroupBox.Location.X, 200);
+                }));
+            } else
+            {
+                Invoke(new MethodInvoker(() => {
+                    diagnosticPingGroupBox.Visible = true;
+                    knowledgeGroupBox.Location = new Point(knowledgeGroupBox.Location.X, _lastKnowledgeGroupBoxYLocation);
                 }));
             }
         } 
