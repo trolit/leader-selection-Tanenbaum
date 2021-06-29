@@ -53,7 +53,7 @@ namespace lsa_Tanenbaum_app.Models
         public string SynchronizationContainer { get; set; }
 
         /// <summary>
-        /// Limits diagnostic ping answer waiting time (in seconds). 
+        /// Limits diagnostic ping & election ping answer waiting time (in seconds). 
         /// </summary>
         public decimal ReplyTimeout { get; set; } = 3;
 

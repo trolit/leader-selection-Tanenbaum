@@ -344,7 +344,7 @@ namespace lsa_Tanenbaum_app
 
         private void UpdatePriorityInListBox(string message)
         {
-            // pattern: PRIO:192....:80:10
+            // pattern: PRIORITY:192....:80:10
             string[] splitMessage = message.Replace(Priority, "").Split(':');
             IPEndPoint address = _helpers.BuildIPEndPoint(splitMessage[0], splitMessage[1]);
             int index = _process.ListOfAddresses.IndexOf(address);
