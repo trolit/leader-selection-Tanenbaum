@@ -148,9 +148,9 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(7, 145);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(84, 17);
+            this.label3.Size = new System.Drawing.Size(154, 17);
             this.label3.TabIndex = 3;
-            this.label3.Text = "Consequent";
+            this.label3.Text = "Address of consequent";
             // 
             // textProcessName
             // 
@@ -226,7 +226,7 @@
             this.initializeSocketBtn.Enabled = false;
             this.initializeSocketBtn.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.initializeSocketBtn.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.initializeSocketBtn.Location = new System.Drawing.Point(95, 329);
+            this.initializeSocketBtn.Location = new System.Drawing.Point(97, 337);
             this.initializeSocketBtn.Name = "initializeSocketBtn";
             this.initializeSocketBtn.Size = new System.Drawing.Size(127, 56);
             this.initializeSocketBtn.TabIndex = 2;
@@ -275,7 +275,7 @@
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Dubai", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.ForeColor = System.Drawing.SystemColors.AppWorkspace;
+            this.label6.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.label6.Location = new System.Drawing.Point(70, 7);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(150, 40);
@@ -287,7 +287,7 @@
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Dubai", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.ForeColor = System.Drawing.SystemColors.AppWorkspace;
+            this.label8.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.label8.Location = new System.Drawing.Point(375, 7);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(194, 40);
@@ -349,7 +349,7 @@
             this.ringSynchronizationBtn.CausesValidation = false;
             this.ringSynchronizationBtn.Enabled = false;
             this.ringSynchronizationBtn.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.ringSynchronizationBtn.Location = new System.Drawing.Point(95, 410);
+            this.ringSynchronizationBtn.Location = new System.Drawing.Point(97, 418);
             this.ringSynchronizationBtn.Name = "ringSynchronizationBtn";
             this.ringSynchronizationBtn.Size = new System.Drawing.Size(127, 56);
             this.ringSynchronizationBtn.TabIndex = 17;
@@ -363,7 +363,7 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Leelawadee", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.SystemColors.AppWorkspace;
-            this.label1.Location = new System.Drawing.Point(39, 339);
+            this.label1.Location = new System.Drawing.Point(41, 347);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(38, 36);
             this.label1.TabIndex = 25;
@@ -374,7 +374,7 @@
             this.label16.AutoSize = true;
             this.label16.Font = new System.Drawing.Font("Leelawadee", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label16.ForeColor = System.Drawing.SystemColors.AppWorkspace;
-            this.label16.Location = new System.Drawing.Point(39, 420);
+            this.label16.Location = new System.Drawing.Point(41, 428);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(38, 36);
             this.label16.TabIndex = 26;
@@ -391,7 +391,7 @@
             this.logBox.Location = new System.Drawing.Point(681, 12);
             this.logBox.Name = "logBox";
             this.logBox.ReadOnly = true;
-            this.logBox.Size = new System.Drawing.Size(562, 557);
+            this.logBox.Size = new System.Drawing.Size(562, 592);
             this.logBox.TabIndex = 27;
             this.logBox.TabStop = false;
             this.logBox.Text = "// *************************************************************\n// 🔷 Leader Sel" +
@@ -571,7 +571,7 @@
             this.diagnosticPingGroupBox.Controls.Add(this.enableDiagnosticPingBtn);
             this.diagnosticPingGroupBox.Controls.Add(this.label11);
             this.diagnosticPingGroupBox.Controls.Add(this.diagnosticPingFrequency);
-            this.diagnosticPingGroupBox.Location = new System.Drawing.Point(293, 250);
+            this.diagnosticPingGroupBox.Location = new System.Drawing.Point(293, 246);
             this.diagnosticPingGroupBox.Name = "diagnosticPingGroupBox";
             this.diagnosticPingGroupBox.Size = new System.Drawing.Size(370, 130);
             this.diagnosticPingGroupBox.TabIndex = 41;
@@ -652,7 +652,7 @@
             // 
             this.label20.AutoSize = true;
             this.label20.Font = new System.Drawing.Font("Sitka Small", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label20.Location = new System.Drawing.Point(32, 492);
+            this.label20.Location = new System.Drawing.Point(34, 504);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(219, 100);
             this.label20.TabIndex = 35;
