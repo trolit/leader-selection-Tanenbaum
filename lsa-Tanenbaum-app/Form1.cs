@@ -334,19 +334,12 @@ namespace lsa_Tanenbaum_app
 
         private void UpdateGroupBoxesOnCoordinatorSelection()
         {
-            if (_process.RingCoordinatorIP.ToString().Contains(_process.SourceIPEndPoint.ToString()))
-            {
-                Invoke(new MethodInvoker(() => {
-                    diagnosticPingGroupBox.Visible = false;
-                    knowledgeGroupBox.Location = new Point(knowledgeGroupBox.Location.X, 200);
-                }));
-            } else
-            {
-                Invoke(new MethodInvoker(() => {
-                    diagnosticPingGroupBox.Visible = true;
-                    knowledgeGroupBox.Location = new Point(knowledgeGroupBox.Location.X, _lastKnowledgeGroupBoxYLocation);
-                }));
-            }
+            Invoke(new MethodInvoker(() => {
+                bool isRingCoordinator = _process.RingCoordinatorIP.ToString().Contains(_process.SourceIPEndPoint.ToString());
+                diagnosticPingGroupBox.Visible = !isRingCoordinator;
+                int newYLocation = isRingCoordinator ? 200 : _lastKnowledgeGroupBoxYLocation;
+                knowledgeGroupBox.Location = new Point(knowledgeGroupBox.Location.X, newYLocation);
+            }));
         } 
 
         private void UpdatePriorityInListBox(string message)
