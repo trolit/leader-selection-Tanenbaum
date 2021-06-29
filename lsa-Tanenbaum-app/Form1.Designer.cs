@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label4 = new System.Windows.Forms.Label();
@@ -74,6 +75,14 @@
             this.disableDiagnosticPingBtn = new System.Windows.Forms.Button();
             this.enableDiagnosticPingBtn = new System.Windows.Forms.Button();
             this.label20 = new System.Windows.Forms.Label();
+            this.resizeWindowBtn = new System.Windows.Forms.Button();
+            this.toolTipControl = new System.Windows.Forms.ToolTip(this.components);
+            this.toggleCreditsBtn = new System.Windows.Forms.Button();
+            this.creditsPanel = new System.Windows.Forms.Panel();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label22 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxConnectionStatus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.diagnosticPingFrequency)).BeginInit();
@@ -82,6 +91,7 @@
             this.groupBox2.SuspendLayout();
             this.diagnosticPingGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.replyTimeout)).BeginInit();
+            this.creditsPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -97,7 +107,7 @@
             this.groupBox1.Controls.Add(this.textSourceIp);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.textTargetPort);
-            this.groupBox1.Location = new System.Drawing.Point(12, 94);
+            this.groupBox1.Location = new System.Drawing.Point(12, 121);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(259, 213);
             this.groupBox1.TabIndex = 0;
@@ -226,7 +236,7 @@
             this.initializeSocketBtn.Enabled = false;
             this.initializeSocketBtn.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.initializeSocketBtn.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.initializeSocketBtn.Location = new System.Drawing.Point(97, 337);
+            this.initializeSocketBtn.Location = new System.Drawing.Point(97, 364);
             this.initializeSocketBtn.Name = "initializeSocketBtn";
             this.initializeSocketBtn.Size = new System.Drawing.Size(127, 56);
             this.initializeSocketBtn.TabIndex = 2;
@@ -243,7 +253,7 @@
             this.stopSocketBtn.Enabled = false;
             this.stopSocketBtn.FlatAppearance.BorderSize = 0;
             this.stopSocketBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.stopSocketBtn.Location = new System.Drawing.Point(171, 50);
+            this.stopSocketBtn.Location = new System.Drawing.Point(171, 77);
             this.stopSocketBtn.Name = "stopSocketBtn";
             this.stopSocketBtn.Size = new System.Drawing.Size(100, 26);
             this.stopSocketBtn.TabIndex = 6;
@@ -255,7 +265,7 @@
             // pictureBoxConnectionStatus
             // 
             this.pictureBoxConnectionStatus.Image = global::lsa_Tanenbaum_app.Properties.Resources.status_notconnected;
-            this.pictureBoxConnectionStatus.Location = new System.Drawing.Point(22, 50);
+            this.pictureBoxConnectionStatus.Location = new System.Drawing.Point(22, 77);
             this.pictureBoxConnectionStatus.Name = "pictureBoxConnectionStatus";
             this.pictureBoxConnectionStatus.Size = new System.Drawing.Size(13, 23);
             this.pictureBoxConnectionStatus.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -265,7 +275,7 @@
             // labelConnectionStatus
             // 
             this.labelConnectionStatus.AutoSize = true;
-            this.labelConnectionStatus.Location = new System.Drawing.Point(41, 53);
+            this.labelConnectionStatus.Location = new System.Drawing.Point(41, 80);
             this.labelConnectionStatus.Name = "labelConnectionStatus";
             this.labelConnectionStatus.Size = new System.Drawing.Size(102, 17);
             this.labelConnectionStatus.TabIndex = 8;
@@ -276,7 +286,7 @@
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Dubai", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label6.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.label6.Location = new System.Drawing.Point(70, 7);
+            this.label6.Location = new System.Drawing.Point(70, 34);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(150, 40);
             this.label6.TabIndex = 10;
@@ -288,7 +298,7 @@
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Dubai", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label8.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.label8.Location = new System.Drawing.Point(375, 7);
+            this.label8.Location = new System.Drawing.Point(375, 34);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(194, 40);
             this.label8.TabIndex = 11;
@@ -349,7 +359,7 @@
             this.ringSynchronizationBtn.CausesValidation = false;
             this.ringSynchronizationBtn.Enabled = false;
             this.ringSynchronizationBtn.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.ringSynchronizationBtn.Location = new System.Drawing.Point(97, 418);
+            this.ringSynchronizationBtn.Location = new System.Drawing.Point(97, 445);
             this.ringSynchronizationBtn.Name = "ringSynchronizationBtn";
             this.ringSynchronizationBtn.Size = new System.Drawing.Size(127, 56);
             this.ringSynchronizationBtn.TabIndex = 17;
@@ -363,7 +373,7 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Leelawadee", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.SystemColors.AppWorkspace;
-            this.label1.Location = new System.Drawing.Point(41, 347);
+            this.label1.Location = new System.Drawing.Point(41, 374);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(38, 36);
             this.label1.TabIndex = 25;
@@ -374,7 +384,7 @@
             this.label16.AutoSize = true;
             this.label16.Font = new System.Drawing.Font("Leelawadee", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label16.ForeColor = System.Drawing.SystemColors.AppWorkspace;
-            this.label16.Location = new System.Drawing.Point(41, 428);
+            this.label16.Location = new System.Drawing.Point(41, 455);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(38, 36);
             this.label16.TabIndex = 26;
@@ -388,7 +398,7 @@
             this.logBox.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.logBox.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.logBox.HideSelection = false;
-            this.logBox.Location = new System.Drawing.Point(681, 12);
+            this.logBox.Location = new System.Drawing.Point(681, 39);
             this.logBox.Name = "logBox";
             this.logBox.ReadOnly = true;
             this.logBox.Size = new System.Drawing.Size(562, 592);
@@ -454,7 +464,7 @@
             this.knowledgeGroupBox.Controls.Add(this.label17);
             this.knowledgeGroupBox.Controls.Add(this.addressesListBox);
             this.knowledgeGroupBox.Controls.Add(this.prioritiesListBox);
-            this.knowledgeGroupBox.Location = new System.Drawing.Point(293, 393);
+            this.knowledgeGroupBox.Location = new System.Drawing.Point(293, 420);
             this.knowledgeGroupBox.Name = "knowledgeGroupBox";
             this.knowledgeGroupBox.Size = new System.Drawing.Size(370, 211);
             this.knowledgeGroupBox.TabIndex = 35;
@@ -556,7 +566,7 @@
             this.groupBox2.Controls.Add(this.label19);
             this.groupBox2.Controls.Add(this.textPriority);
             this.groupBox2.Controls.Add(this.label12);
-            this.groupBox2.Location = new System.Drawing.Point(293, 94);
+            this.groupBox2.Location = new System.Drawing.Point(293, 121);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(370, 136);
             this.groupBox2.TabIndex = 40;
@@ -571,7 +581,7 @@
             this.diagnosticPingGroupBox.Controls.Add(this.enableDiagnosticPingBtn);
             this.diagnosticPingGroupBox.Controls.Add(this.label11);
             this.diagnosticPingGroupBox.Controls.Add(this.diagnosticPingFrequency);
-            this.diagnosticPingGroupBox.Location = new System.Drawing.Point(293, 245);
+            this.diagnosticPingGroupBox.Location = new System.Drawing.Point(293, 272);
             this.diagnosticPingGroupBox.Name = "diagnosticPingGroupBox";
             this.diagnosticPingGroupBox.Size = new System.Drawing.Size(370, 130);
             this.diagnosticPingGroupBox.TabIndex = 41;
@@ -652,7 +662,7 @@
             // 
             this.label20.AutoSize = true;
             this.label20.Font = new System.Drawing.Font("Sitka Small", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label20.Location = new System.Drawing.Point(34, 504);
+            this.label20.Location = new System.Drawing.Point(34, 531);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(219, 100);
             this.label20.TabIndex = 35;
@@ -660,12 +670,42 @@
     "ity can be set before \r\nring synchronization.";
             this.label20.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // resizeWindowBtn
+            // 
+            this.resizeWindowBtn.BackColor = System.Drawing.Color.CornflowerBlue;
+            this.resizeWindowBtn.CausesValidation = false;
+            this.resizeWindowBtn.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.resizeWindowBtn.FlatAppearance.BorderSize = 0;
+            this.resizeWindowBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.resizeWindowBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.resizeWindowBtn.ForeColor = System.Drawing.Color.Cornsilk;
+            this.resizeWindowBtn.Location = new System.Drawing.Point(22, -13);
+            this.resizeWindowBtn.Name = "resizeWindowBtn";
+            this.resizeWindowBtn.Size = new System.Drawing.Size(50, 39);
+            this.resizeWindowBtn.TabIndex = 42;
+            this.resizeWindowBtn.TabStop = false;
+            this.resizeWindowBtn.Text = "➖▶";
+            this.resizeWindowBtn.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.toolTipControl.SetToolTip(this.resizeWindowBtn, "Show / hide log section\r\n");
+            this.resizeWindowBtn.UseVisualStyleBackColor = false;
+            this.resizeWindowBtn.Click += new System.EventHandler(this.resizeWindowBtn_Click);
+            // 
+            // toolTipControl
+            // 
+            this.toolTipControl.AutoPopDelay = 7500;
+            this.toolTipControl.InitialDelay = 300;
+            this.toolTipControl.ReshowDelay = 100;
+            this.toolTipControl.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+            this.toolTipControl.ToolTipTitle = "GUI Element";
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.InactiveBorder;
-            this.ClientSize = new System.Drawing.Size(1255, 615);
+            this.ClientSize = new System.Drawing.Size(1255, 642);
+            this.Controls.Add(this.creditsPanel);
+            this.Controls.Add(this.toggleCreditsBtn);
+            this.Controls.Add(this.resizeWindowBtn);
             this.Controls.Add(this.label20);
             this.Controls.Add(this.diagnosticPingGroupBox);
             this.Controls.Add(this.groupBox2);
@@ -700,6 +740,8 @@
             this.diagnosticPingGroupBox.ResumeLayout(false);
             this.diagnosticPingGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.replyTimeout)).EndInit();
+            this.creditsPanel.ResumeLayout(false);
+            this.creditsPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -752,6 +794,8 @@
         private System.Windows.Forms.Label ringCoordinatorPriorityText;
         private System.Windows.Forms.NumericUpDown replyTimeout;
         private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.Button resizeWindowBtn;
+        private System.Windows.Forms.ToolTip toolTipControl;
     }
 }
 

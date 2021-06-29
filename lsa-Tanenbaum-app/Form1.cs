@@ -42,6 +42,9 @@ namespace lsa_Tanenbaum_app
         private TimerService _timerService;
 
         private int _lastKnowledgeGroupBoxYLocation;
+        private int _coordinatorKnowledgeGroupBoxLocation = 223;
+        private int _initialFormWidth;
+        private int _compactFormWidth = 525;
 
         #endregion
 
@@ -58,6 +61,8 @@ namespace lsa_Tanenbaum_app
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            _initialFormWidth = Width;
+
             _helpers = new HelperMethods();
             _configurationService = new ConfigurationService();
             _helpers.RandomizeProcessIdentity(textProcessName);
@@ -71,6 +76,9 @@ namespace lsa_Tanenbaum_app
                 SynchronizationContainer = Configuration,
                 DisableDiagnosticPingButton = disableDiagnosticPingBtn
             };
+
+            resizeWindowBtn.Text = SEND_SYMBOL;
+            this.Width = _compactFormWidth;
 
             _lastKnowledgeGroupBoxYLocation = knowledgeGroupBox.Location.Y;
 
@@ -337,7 +345,7 @@ namespace lsa_Tanenbaum_app
             Invoke(new MethodInvoker(() => {
                 bool isRingCoordinator = _process.RingCoordinatorIP.ToString().Contains(_process.SourceIPEndPoint.ToString());
                 diagnosticPingGroupBox.Visible = !isRingCoordinator;
-                int newYLocation = isRingCoordinator ? 200 : _lastKnowledgeGroupBoxYLocation;
+                int newYLocation = isRingCoordinator ? _coordinatorKnowledgeGroupBoxLocation : _lastKnowledgeGroupBoxYLocation;
                 knowledgeGroupBox.Location = new Point(knowledgeGroupBox.Location.X, newYLocation);
             }));
         } 
@@ -477,5 +485,12 @@ namespace lsa_Tanenbaum_app
         {
             _process.ReplyTimeout = replyTimeout.Value;
         }
+
+        private void resizeWindowBtn_Click(object sender, EventArgs e)
+        {
+            this.Width = this.Width == _initialFormWidth ? _compactFormWidth : _initialFormWidth;
+            resizeWindowBtn.Text = resizeWindowBtn.Text == RECEIVE_SYMBOL ? SEND_SYMBOL : RECEIVE_SYMBOL;
+        }
+
     }
 }
