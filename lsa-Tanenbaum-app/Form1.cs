@@ -44,8 +44,7 @@ namespace lsa_Tanenbaum_app
         private int _lastKnowledgeGroupBoxYLocation;
         private int _coordinatorKnowledgeGroupBoxLocation = 223;
         private int _initialFormWidth;
-        private int _compactFormWidth = 525;
-
+        private int _compactFormWidth = 540;
         #endregion
 
         public Form1()
