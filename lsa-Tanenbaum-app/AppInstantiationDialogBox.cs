@@ -52,13 +52,13 @@ namespace lsa_Tanenbaum_app
 
         private void UpdateFormInvokingDialogBox(string baseIp, string sourcePort, string targetPort)
         {
-            _dialogBoxInvokerRef.initializeSocketBtn.Enabled = true;
-            _dialogBoxInvokerRef.initializeSocketBtn.PerformClick();
-
             _dialogBoxInvokerRef.textSourceIp.Text = _dialogBoxInvokerRef.textTargetIp.Text = baseIp;
 
             _dialogBoxInvokerRef.textSourcePort.Text = sourcePort;
             _dialogBoxInvokerRef.textTargetPort.Text = targetPort;
+
+            _dialogBoxInvokerRef.initializeSocketBtn.Enabled = true;
+            _dialogBoxInvokerRef.initializeSocketBtn.PerformClick();
         }
 
         private void ThreadStart(Form1 form1)
