@@ -46,6 +46,8 @@ namespace lsa_Tanenbaum_app
         private int _initialFormWidth;
         private int _compactFormWidth = 540;
 
+        public string processId;
+
         #endregion
 
         public Form1()
@@ -65,7 +67,6 @@ namespace lsa_Tanenbaum_app
 
             _helpers = new HelperMethods();
             _configurationService = new ConfigurationService();
-            _helpers.RandomizeProcessIdentity(textProcessName);
 
             _process = new Process()
             {
@@ -77,8 +78,17 @@ namespace lsa_Tanenbaum_app
                 DisableDiagnosticPingButton = disableDiagnosticPingBtn
             };
 
-            resizeWindowBtn.Text = SEND_SYMBOL;
-            this.Width = _compactFormWidth;
+            if (!string.IsNullOrWhiteSpace(processId))
+            {
+                textProcessName.Text = _process.Id = processId;
+            }
+            else
+            {
+                _helpers.RandomizeProcessIdentity(textProcessName);
+            }
+
+            resizeWindowBtn.Text = SEND_SYMBOL; 
+            Width = _compactFormWidth;
 
             _lastKnowledgeGroupBoxYLocation = knowledgeGroupBox.Location.Y;
 

@@ -27,6 +27,7 @@ namespace lsa_Tanenbaum_app
             int currentSourcePort = Convert.ToInt32(basePortTextBox.Text);
             string baseIp = baseIpTextBox.Text.ToString();
             int lastIteration = numberOfInstances - 1;
+            int processId = 1;
 
             UpdateFormInvokingDialogBox(baseIp, currentSourcePort.ToString(), (currentSourcePort + 1).ToString());
 
@@ -36,6 +37,9 @@ namespace lsa_Tanenbaum_app
                 int currentTargetPort = currentSourcePort + 1;
 
                 Form1 form1 = new Form1();
+                
+                form1.processId = $"P-{processId:0000}";
+                processId++;
 
                 form1.textSourcePort.Text = currentSourcePort.ToString();
                 form1.textTargetPort.Text = (currentSourcePort + 1 ).ToString();
