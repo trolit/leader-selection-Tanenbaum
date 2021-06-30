@@ -44,7 +44,6 @@
             this.textTargetPort = new System.Windows.Forms.TextBox();
             this.initializeSocketBtn = new System.Windows.Forms.Button();
             this.stopSocketBtn = new System.Windows.Forms.Button();
-            this.pictureBoxConnectionStatus = new System.Windows.Forms.PictureBox();
             this.labelConnectionStatus = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
@@ -60,6 +59,7 @@
             this.label17 = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
             this.knowledgeGroupBox = new System.Windows.Forms.GroupBox();
+            this.label26 = new System.Windows.Forms.Label();
             this.ringCoordinatorPriorityText = new System.Windows.Forms.Label();
             this.ringCoordinatorAddressText = new System.Windows.Forms.Label();
             this.label33 = new System.Windows.Forms.Label();
@@ -69,7 +69,9 @@
             this.label12 = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label25 = new System.Windows.Forms.Label();
             this.diagnosticPingGroupBox = new System.Windows.Forms.GroupBox();
+            this.label24 = new System.Windows.Forms.Label();
             this.label21 = new System.Windows.Forms.Label();
             this.replyTimeout = new System.Windows.Forms.NumericUpDown();
             this.disableDiagnosticPingBtn = new System.Windows.Forms.Button();
@@ -78,14 +80,15 @@
             this.resizeWindowBtn = new System.Windows.Forms.Button();
             this.toolTipControl = new System.Windows.Forms.ToolTip(this.components);
             this.toggleCreditsBtn = new System.Windows.Forms.Button();
+            this.createAppInstanceBtn = new System.Windows.Forms.Button();
             this.creditsPanel = new System.Windows.Forms.Panel();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.label14 = new System.Windows.Forms.Label();
-            this.label22 = new System.Windows.Forms.Label();
             this.label23 = new System.Windows.Forms.Label();
+            this.label22 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.pictureBoxConnectionStatus = new System.Windows.Forms.PictureBox();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxConnectionStatus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.diagnosticPingFrequency)).BeginInit();
             this.knowledgeGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.priorityTrackBar)).BeginInit();
@@ -93,6 +96,7 @@
             this.diagnosticPingGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.replyTimeout)).BeginInit();
             this.creditsPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxConnectionStatus)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -147,7 +151,7 @@
             this.textTargetIp.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textTargetIp.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.textTargetIp.Location = new System.Drawing.Point(10, 165);
-            this.textTargetIp.MaxLength = 25;
+            this.textTargetIp.MaxLength = 15;
             this.textTargetIp.Name = "textTargetIp";
             this.textTargetIp.Size = new System.Drawing.Size(158, 24);
             this.textTargetIp.TabIndex = 6;
@@ -203,7 +207,7 @@
             this.textSourceIp.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textSourceIp.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.textSourceIp.Location = new System.Drawing.Point(10, 107);
-            this.textSourceIp.MaxLength = 25;
+            this.textSourceIp.MaxLength = 15;
             this.textSourceIp.Name = "textSourceIp";
             this.textSourceIp.Size = new System.Drawing.Size(158, 24);
             this.textSourceIp.TabIndex = 2;
@@ -262,16 +266,6 @@
             this.stopSocketBtn.Text = "Disconnect";
             this.stopSocketBtn.UseVisualStyleBackColor = false;
             this.stopSocketBtn.Click += new System.EventHandler(this.stopSocketBtn_Click);
-            // 
-            // pictureBoxConnectionStatus
-            // 
-            this.pictureBoxConnectionStatus.Image = global::lsa_Tanenbaum_app.Properties.Resources.status_notconnected;
-            this.pictureBoxConnectionStatus.Location = new System.Drawing.Point(22, 77);
-            this.pictureBoxConnectionStatus.Name = "pictureBoxConnectionStatus";
-            this.pictureBoxConnectionStatus.Size = new System.Drawing.Size(13, 23);
-            this.pictureBoxConnectionStatus.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBoxConnectionStatus.TabIndex = 7;
-            this.pictureBoxConnectionStatus.TabStop = false;
             // 
             // labelConnectionStatus
             // 
@@ -399,10 +393,10 @@
             this.logBox.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.logBox.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.logBox.HideSelection = false;
-            this.logBox.Location = new System.Drawing.Point(681, 39);
+            this.logBox.Location = new System.Drawing.Point(699, 39);
             this.logBox.Name = "logBox";
             this.logBox.ReadOnly = true;
-            this.logBox.Size = new System.Drawing.Size(562, 592);
+            this.logBox.Size = new System.Drawing.Size(544, 592);
             this.logBox.TabIndex = 27;
             this.logBox.TabStop = false;
             this.logBox.Text = "// *************************************************************\n// 🔷 Leader Sel" +
@@ -415,7 +409,7 @@
             this.addressesListBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.addressesListBox.FormattingEnabled = true;
             this.addressesListBox.ItemHeight = 16;
-            this.addressesListBox.Location = new System.Drawing.Point(67, 45);
+            this.addressesListBox.Location = new System.Drawing.Point(48, 45);
             this.addressesListBox.Name = "addressesListBox";
             this.addressesListBox.SelectionMode = System.Windows.Forms.SelectionMode.None;
             this.addressesListBox.Size = new System.Drawing.Size(191, 114);
@@ -430,10 +424,10 @@
             this.prioritiesListBox.DisplayMember = "5";
             this.prioritiesListBox.FormattingEnabled = true;
             this.prioritiesListBox.ItemHeight = 16;
-            this.prioritiesListBox.Location = new System.Drawing.Point(264, 45);
+            this.prioritiesListBox.Location = new System.Drawing.Point(245, 45);
             this.prioritiesListBox.Name = "prioritiesListBox";
             this.prioritiesListBox.SelectionMode = System.Windows.Forms.SelectionMode.None;
-            this.prioritiesListBox.Size = new System.Drawing.Size(41, 114);
+            this.prioritiesListBox.Size = new System.Drawing.Size(65, 114);
             this.prioritiesListBox.TabIndex = 31;
             this.prioritiesListBox.TabStop = false;
             this.prioritiesListBox.UseTabStops = false;
@@ -441,7 +435,7 @@
             // label17
             // 
             this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(125, 25);
+            this.label17.Location = new System.Drawing.Point(106, 25);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(75, 17);
             this.label17.TabIndex = 32;
@@ -449,15 +443,15 @@
             // 
             // label18
             // 
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(253, 25);
+            this.label18.Location = new System.Drawing.Point(242, 25);
             this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(63, 17);
+            this.label18.Size = new System.Drawing.Size(68, 17);
             this.label18.TabIndex = 34;
             this.label18.Text = "Priorities";
             // 
             // knowledgeGroupBox
             // 
+            this.knowledgeGroupBox.Controls.Add(this.label26);
             this.knowledgeGroupBox.Controls.Add(this.ringCoordinatorPriorityText);
             this.knowledgeGroupBox.Controls.Add(this.ringCoordinatorAddressText);
             this.knowledgeGroupBox.Controls.Add(this.label33);
@@ -467,11 +461,22 @@
             this.knowledgeGroupBox.Controls.Add(this.prioritiesListBox);
             this.knowledgeGroupBox.Location = new System.Drawing.Point(293, 420);
             this.knowledgeGroupBox.Name = "knowledgeGroupBox";
-            this.knowledgeGroupBox.Size = new System.Drawing.Size(370, 211);
+            this.knowledgeGroupBox.Size = new System.Drawing.Size(389, 211);
             this.knowledgeGroupBox.TabIndex = 35;
             this.knowledgeGroupBox.TabStop = false;
             this.knowledgeGroupBox.Text = "My knowledge";
             this.knowledgeGroupBox.Visible = false;
+            // 
+            // label26
+            // 
+            this.label26.AutoSize = true;
+            this.label26.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.label26.Location = new System.Drawing.Point(353, 10);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(33, 29);
+            this.label26.TabIndex = 47;
+            this.label26.Text = "❔";
+            this.toolTipControl.SetToolTip(this.label26, "Knowledge represents what single process\r\nknows about ring and it\'s leader.");
             // 
             // ringCoordinatorPriorityText
             // 
@@ -530,7 +535,7 @@
             // textPriority
             // 
             this.textPriority.Location = new System.Drawing.Point(298, 59);
-            this.textPriority.MaxLength = 5;
+            this.textPriority.MaxLength = 4;
             this.textPriority.Name = "textPriority";
             this.textPriority.Size = new System.Drawing.Size(49, 22);
             this.textPriority.TabIndex = 25;
@@ -561,6 +566,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.label25);
             this.groupBox2.Controls.Add(this.updatePriorityBtn);
             this.groupBox2.Controls.Add(this.priorityTrackBar);
             this.groupBox2.Controls.Add(this.label5);
@@ -569,13 +575,25 @@
             this.groupBox2.Controls.Add(this.label12);
             this.groupBox2.Location = new System.Drawing.Point(293, 121);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(370, 136);
+            this.groupBox2.Size = new System.Drawing.Size(389, 136);
             this.groupBox2.TabIndex = 40;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Priority";
             // 
+            // label25
+            // 
+            this.label25.AutoSize = true;
+            this.label25.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.label25.Location = new System.Drawing.Point(353, 10);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(33, 29);
+            this.label25.TabIndex = 45;
+            this.label25.Text = "❔";
+            this.toolTipControl.SetToolTip(this.label25, "Set priority via slider(accepted values 1-100)\r\nor input field (max 9999)");
+            // 
             // diagnosticPingGroupBox
             // 
+            this.diagnosticPingGroupBox.Controls.Add(this.label24);
             this.diagnosticPingGroupBox.Controls.Add(this.label21);
             this.diagnosticPingGroupBox.Controls.Add(this.replyTimeout);
             this.diagnosticPingGroupBox.Controls.Add(this.disableDiagnosticPingBtn);
@@ -584,11 +602,24 @@
             this.diagnosticPingGroupBox.Controls.Add(this.diagnosticPingFrequency);
             this.diagnosticPingGroupBox.Location = new System.Drawing.Point(293, 272);
             this.diagnosticPingGroupBox.Name = "diagnosticPingGroupBox";
-            this.diagnosticPingGroupBox.Size = new System.Drawing.Size(370, 130);
+            this.diagnosticPingGroupBox.Size = new System.Drawing.Size(389, 130);
             this.diagnosticPingGroupBox.TabIndex = 41;
             this.diagnosticPingGroupBox.TabStop = false;
             this.diagnosticPingGroupBox.Text = "Diagnostic ping";
             this.diagnosticPingGroupBox.Visible = false;
+            // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.label24.Location = new System.Drawing.Point(352, 10);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(33, 29);
+            this.label24.TabIndex = 46;
+            this.label24.Text = "❔";
+            this.toolTipControl.SetToolTip(this.label24, "Ping frequency specifies time period between \r\neach ping requests sent to ring co" +
+        "ordinator \r\nwhile reply timeout stands for maximum \r\nwaiting time until request " +
+        "is considered as \r\n\"timed out\".");
             // 
             // label21
             // 
@@ -697,7 +728,6 @@
             this.toolTipControl.InitialDelay = 300;
             this.toolTipControl.ReshowDelay = 100;
             this.toolTipControl.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.toolTipControl.ToolTipTitle = "GUI Element";
             // 
             // toggleCreditsBtn
             // 
@@ -719,6 +749,26 @@
             this.toggleCreditsBtn.UseVisualStyleBackColor = false;
             this.toggleCreditsBtn.Click += new System.EventHandler(this.toggleCreditsBtn_Click);
             // 
+            // createAppInstanceBtn
+            // 
+            this.createAppInstanceBtn.BackColor = System.Drawing.Color.DeepSkyBlue;
+            this.createAppInstanceBtn.CausesValidation = false;
+            this.createAppInstanceBtn.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.createAppInstanceBtn.FlatAppearance.BorderSize = 0;
+            this.createAppInstanceBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.createAppInstanceBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.createAppInstanceBtn.ForeColor = System.Drawing.Color.Cornsilk;
+            this.createAppInstanceBtn.Location = new System.Drawing.Point(134, -13);
+            this.createAppInstanceBtn.Name = "createAppInstanceBtn";
+            this.createAppInstanceBtn.Size = new System.Drawing.Size(50, 39);
+            this.createAppInstanceBtn.TabIndex = 46;
+            this.createAppInstanceBtn.TabStop = false;
+            this.createAppInstanceBtn.Text = "🔷";
+            this.createAppInstanceBtn.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.toolTipControl.SetToolTip(this.createAppInstanceBtn, "Instantiate app {N} times and automatically \r\ninitialize all processes.");
+            this.createAppInstanceBtn.UseVisualStyleBackColor = false;
+            this.createAppInstanceBtn.Click += new System.EventHandler(this.createAppInstanceBtn_Click);
+            // 
             // creditsPanel
             // 
             this.creditsPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -733,40 +783,16 @@
             this.creditsPanel.TabIndex = 44;
             this.creditsPanel.Visible = false;
             // 
-            // label9
+            // label23
             // 
-            this.label9.AutoSize = true;
-            this.label9.Font = new System.Drawing.Font("Lucida Bright", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(19, 63);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(455, 34);
-            this.label9.TabIndex = 156;
-            this.label9.Text = "Leader Selection algorithm simulation (Tanenbaum\'s variant)\r\nin distributed syste" +
-    "ms using .NET sockets.";
-            this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Font = new System.Drawing.Font("Lucida Bright", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label10.Location = new System.Drawing.Point(176, 149);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(138, 17);
-            this.label10.TabIndex = 157;
-            this.label10.Text = "Pawel Idzikowski";
-            this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Font = new System.Drawing.Font("Lucida Bright", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label14.ForeColor = System.Drawing.SystemColors.MenuHighlight;
-            this.label14.Location = new System.Drawing.Point(143, 171);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(193, 17);
-            this.label14.TabIndex = 158;
-            this.label14.Text = "https://github.com/trolit";
-            this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label23.AutoSize = true;
+            this.label23.Font = new System.Drawing.Font("Lucida Bright", 28.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label23.Location = new System.Drawing.Point(215, 3);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(79, 55);
+            this.label23.TabIndex = 160;
+            this.label23.Text = "🎓";
+            this.label23.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label22
             // 
@@ -780,16 +806,50 @@
             this.label22.Text = "https://github.com/trolit/leader-selection-Tanenbaum";
             this.label22.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // label23
+            // label14
             // 
-            this.label23.AutoSize = true;
-            this.label23.Font = new System.Drawing.Font("Lucida Bright", 28.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label23.Location = new System.Drawing.Point(215, 3);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(79, 55);
-            this.label23.TabIndex = 160;
-            this.label23.Text = "🎓";
-            this.label23.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label14.AutoSize = true;
+            this.label14.Font = new System.Drawing.Font("Lucida Bright", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label14.ForeColor = System.Drawing.SystemColors.MenuHighlight;
+            this.label14.Location = new System.Drawing.Point(143, 171);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(193, 17);
+            this.label14.TabIndex = 158;
+            this.label14.Text = "https://github.com/trolit";
+            this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("Lucida Bright", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.Location = new System.Drawing.Point(176, 149);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(138, 17);
+            this.label10.TabIndex = 157;
+            this.label10.Text = "Pawel Idzikowski";
+            this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("Lucida Bright", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.Location = new System.Drawing.Point(19, 63);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(455, 34);
+            this.label9.TabIndex = 156;
+            this.label9.Text = "Leader Selection algorithm simulation (Tanenbaum\'s variant)\r\nin distributed syste" +
+    "ms using .NET sockets.";
+            this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // pictureBoxConnectionStatus
+            // 
+            this.pictureBoxConnectionStatus.Image = global::lsa_Tanenbaum_app.Properties.Resources.status_notconnected;
+            this.pictureBoxConnectionStatus.Location = new System.Drawing.Point(22, 77);
+            this.pictureBoxConnectionStatus.Name = "pictureBoxConnectionStatus";
+            this.pictureBoxConnectionStatus.Size = new System.Drawing.Size(13, 23);
+            this.pictureBoxConnectionStatus.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBoxConnectionStatus.TabIndex = 7;
+            this.pictureBoxConnectionStatus.TabStop = false;
             // 
             // Form1
             // 
@@ -797,7 +857,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.InactiveBorder;
             this.ClientSize = new System.Drawing.Size(1255, 642);
-            this.Controls.Add(this.creditsPanel);
+            this.Controls.Add(this.createAppInstanceBtn);
             this.Controls.Add(this.toggleCreditsBtn);
             this.Controls.Add(this.resizeWindowBtn);
             this.Controls.Add(this.label20);
@@ -815,6 +875,7 @@
             this.Controls.Add(this.initializeSocketBtn);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.knowledgeGroupBox);
+            this.Controls.Add(this.creditsPanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
@@ -824,7 +885,6 @@
             this.Load += new System.EventHandler(this.Form1_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxConnectionStatus)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.diagnosticPingFrequency)).EndInit();
             this.knowledgeGroupBox.ResumeLayout(false);
             this.knowledgeGroupBox.PerformLayout();
@@ -836,6 +896,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.replyTimeout)).EndInit();
             this.creditsPanel.ResumeLayout(false);
             this.creditsPanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxConnectionStatus)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -845,11 +906,6 @@
 
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Button initializeSocketBtn;
-        private System.Windows.Forms.TextBox textSourcePort;
-        private System.Windows.Forms.TextBox textSourceIp;
-        private System.Windows.Forms.TextBox textTargetPort;
-        private System.Windows.Forms.TextBox textTargetIp;
         private System.Windows.Forms.Button stopSocketBtn;
         private System.Windows.Forms.PictureBox pictureBoxConnectionStatus;
         private System.Windows.Forms.Label labelConnectionStatus;
@@ -897,6 +953,15 @@
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.Label label23;
+        private System.Windows.Forms.Label label25;
+        private System.Windows.Forms.Label label24;
+        private System.Windows.Forms.Label label26;
+        private System.Windows.Forms.Button createAppInstanceBtn;
+        public System.Windows.Forms.TextBox textSourceIp;
+        public System.Windows.Forms.TextBox textSourcePort;
+        public System.Windows.Forms.TextBox textTargetPort;
+        public System.Windows.Forms.TextBox textTargetIp;
+        public System.Windows.Forms.Button initializeSocketBtn;
     }
 }
 

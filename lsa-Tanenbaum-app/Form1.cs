@@ -45,6 +45,7 @@ namespace lsa_Tanenbaum_app
         private int _coordinatorKnowledgeGroupBoxLocation = 223;
         private int _initialFormWidth;
         private int _compactFormWidth = 540;
+
         #endregion
 
         public Form1()
@@ -84,11 +85,17 @@ namespace lsa_Tanenbaum_app
             _requestService = new RequestService(_helpers, _process);
             _timerService = new TimerService(_process, _requestService);
 
-            // put user IP and default port
+            // put user IP
             textSourceIp.Text = _helpers.GetLocalAddress();
             textTargetIp.Text = _helpers.GetLocalAddress();
 
-            _process.LogBox.WriteEvent($"{SOURCE_SYMBOL} Process {System.Diagnostics.Process.GetCurrentProcess().Id}({textProcessName.Text}) initialized.");
+            _process.LogBox.WriteEvent($"{SOURCE_SYMBOL} Process {System.Diagnostics.Process.GetCurrentProcess().Id}({textProcessName.Text}) launched.");
+
+            if (!string.IsNullOrWhiteSpace(textSourcePort.Text) && !string.IsNullOrWhiteSpace(textTargetPort.Text))
+            {
+                initializeSocketBtn.Enabled = true;
+                initializeSocketBtn.PerformClick();
+            }
         }
 
         // https://stackoverflow.com/questions/1669318/override-standard-close-x-button-in-a-windows-form
@@ -506,6 +513,13 @@ namespace lsa_Tanenbaum_app
         private void toggleCreditsBtn_Click(object sender, EventArgs e)
         {
             creditsPanel.Visible = !creditsPanel.Visible;
+        }
+
+
+        private void createAppInstanceBtn_Click(object sender, EventArgs e)
+        {
+            AppInstantiationDialogBox appInstantiationDialogBox = new AppInstantiationDialogBox(_helpers, this);
+            appInstantiationDialogBox.ShowDialog(this);
         }
     }
 }

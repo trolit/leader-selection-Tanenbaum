@@ -47,6 +47,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppInstantiationDialogBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AppInstantiationDialogBox.Designer.cs">
+      <DependentUpon>AppInstantiationDialogBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="Extensions\ButtonExtensions.cs" />
     <Compile Include="Extensions\GroupBoxExtensions.cs" />
     <Compile Include="Extensions\LabelExtensions.cs" />
@@ -71,6 +77,9 @@
     <Compile Include="Services\RequestService.cs" />
     <Compile Include="Services\TimerService.cs" />
     <Compile Include="Structures\Address.cs" />
+    <EmbeddedResource Include="AppInstantiationDialogBox.resx">
+      <DependentUpon>AppInstantiationDialogBox.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
