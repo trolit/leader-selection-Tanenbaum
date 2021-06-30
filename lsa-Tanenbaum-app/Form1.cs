@@ -67,6 +67,7 @@ namespace lsa_Tanenbaum_app
 
             _helpers = new HelperMethods();
             _configurationService = new ConfigurationService();
+            _helpers.RandomizeProcessIdentity(textProcessName);
 
             _process = new Process()
             {
@@ -81,10 +82,6 @@ namespace lsa_Tanenbaum_app
             if (!string.IsNullOrWhiteSpace(processId))
             {
                 textProcessName.Text = _process.Id = processId;
-            }
-            else
-            {
-                _helpers.RandomizeProcessIdentity(textProcessName);
             }
 
             resizeWindowBtn.Text = SEND_SYMBOL; 
