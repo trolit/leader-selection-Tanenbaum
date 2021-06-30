@@ -516,7 +516,12 @@ namespace lsa_Tanenbaum_app
 
         private void resizeWindowBtn_Click(object sender, EventArgs e)
         {
-            this.Width = this.Width == _initialFormWidth ? _compactFormWidth : _initialFormWidth;
+            logBox.Invoke(new MethodInvoker(() =>
+            {
+                logBox.Visible = Width != _initialFormWidth; 
+            }));
+
+            Width = Width == _initialFormWidth ? _compactFormWidth : _initialFormWidth;
             resizeWindowBtn.Text = resizeWindowBtn.Text == RECEIVE_SYMBOL ? SEND_SYMBOL : RECEIVE_SYMBOL;
         }
 
