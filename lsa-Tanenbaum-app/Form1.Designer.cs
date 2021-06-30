@@ -195,7 +195,7 @@
             this.textSourcePort.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textSourcePort.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.textSourcePort.Location = new System.Drawing.Point(187, 108);
-            this.textSourcePort.MaxLength = 6;
+            this.textSourcePort.MaxLength = 5;
             this.textSourcePort.Name = "textSourcePort";
             this.textSourcePort.Size = new System.Drawing.Size(54, 24);
             this.textSourcePort.TabIndex = 3;
@@ -228,7 +228,7 @@
             this.textTargetPort.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textTargetPort.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.textTargetPort.Location = new System.Drawing.Point(187, 165);
-            this.textTargetPort.MaxLength = 6;
+            this.textTargetPort.MaxLength = 5;
             this.textTargetPort.Name = "textTargetPort";
             this.textTargetPort.Size = new System.Drawing.Size(54, 24);
             this.textTargetPort.TabIndex = 7;
