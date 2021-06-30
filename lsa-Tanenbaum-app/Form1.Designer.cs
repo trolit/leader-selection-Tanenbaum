@@ -589,7 +589,8 @@
             this.label25.Size = new System.Drawing.Size(33, 29);
             this.label25.TabIndex = 45;
             this.label25.Text = "❔";
-            this.toolTipControl.SetToolTip(this.label25, "Set priority via slider(accepted values 1-100)\r\nor input field (max 9999)");
+            this.toolTipControl.SetToolTip(this.label25, "Set priority via slider(accepted values 1-100)\r\nor input field (max 9999). Note t" +
+        "hat priority\r\ncan be set before initialization process.");
             // 
             // diagnosticPingGroupBox
             // 
@@ -857,6 +858,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.InactiveBorder;
             this.ClientSize = new System.Drawing.Size(1255, 642);
+            this.Controls.Add(this.creditsPanel);
             this.Controls.Add(this.createAppInstanceBtn);
             this.Controls.Add(this.toggleCreditsBtn);
             this.Controls.Add(this.resizeWindowBtn);
@@ -875,7 +877,6 @@
             this.Controls.Add(this.initializeSocketBtn);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.knowledgeGroupBox);
-            this.Controls.Add(this.creditsPanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
