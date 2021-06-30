@@ -85,11 +85,23 @@ namespace lsa_Tanenbaum_app
             _requestService = new RequestService(_helpers, _process);
             _timerService = new TimerService(_process, _requestService);
 
-            // put user IP
+            // put user IP and default port
             textSourceIp.Text = _helpers.GetLocalAddress();
             textTargetIp.Text = _helpers.GetLocalAddress();
 
             _process.LogBox.WriteEvent($"{SOURCE_SYMBOL} Process {System.Diagnostics.Process.GetCurrentProcess().Id}({textProcessName.Text}) initialized.");
+        }
+
+        // https://stackoverflow.com/questions/1669318/override-standard-close-x-button-in-a-windows-form
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+
+            if (e.CloseReason == CloseReason.WindowsShutDown) 
+                return;
+
+            if (_process.IsInitialized)
+                _configurationService.StopSocket(_process);
         }
 
         private void UpdateProcessTitle()
