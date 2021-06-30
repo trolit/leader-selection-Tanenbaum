@@ -37,6 +37,9 @@ namespace lsa_Tanenbaum_app
 
                 Form1 form1 = new Form1();
 
+                form1.textSourcePort.Text = currentSourcePort.ToString();
+                form1.textTargetPort.Text = (currentSourcePort + 1 ).ToString();
+
                 if (i == lastIteration)
                 {
                     form1.textTargetPort.Text = (currentTargetPort - (numberOfInstances + 1)).ToString();
