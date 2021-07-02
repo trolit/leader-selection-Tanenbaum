@@ -117,7 +117,20 @@ namespace lsa_Tanenbaum_app
                 priorityPtr += 3;
             }
 
-            return (addresses, priorities);
+            return OrderData(addresses, priorities);
+        }
+
+        private (List<IPEndPoint>, List<int>) OrderData(List<IPEndPoint> addresses, List<int> priorities)
+        {
+            // https://stackoverflow.com/questions/10655327/how-to-simultaneously-sort-2-lists-using-linq
+            var orderedZip = addresses.Zip(priorities, (address, priority) => new { address, priority })
+                .OrderByDescending(pair => pair.priority)
+                .ToList();
+
+            List<IPEndPoint> orderedAddresses = orderedZip.Select(pair => pair.address).ToList();
+            List<int> orderedPriorities = orderedZip.Select(pair => pair.priority).ToList();
+
+            return (orderedAddresses, orderedPriorities);
         }
 
         public void SwitchTwoButtonsEnabledStatus(Button button1, Button button2)
