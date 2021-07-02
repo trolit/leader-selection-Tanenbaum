@@ -41,6 +41,8 @@ namespace lsa_Tanenbaum_app
                 form1.processId = $"P-{processId:0000}";
                 processId++;
 
+                form1.textSourceIp.Text = baseIp;
+                form1.textTargetIp.Text = baseIp;
                 form1.textSourcePort.Text = currentSourcePort.ToString();
                 form1.textTargetPort.Text = (currentSourcePort + 1 ).ToString();
 

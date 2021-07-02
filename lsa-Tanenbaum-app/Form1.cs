@@ -92,17 +92,18 @@ namespace lsa_Tanenbaum_app
             _requestService = new RequestService(_helpers, _process);
             _timerService = new TimerService(_process, _requestService);
 
-            // put user IP
-            textSourceIp.Text = _helpers.GetLocalAddress();
-            textTargetIp.Text = _helpers.GetLocalAddress();
-
-            _process.LogBox.WriteEvent($"{SOURCE_SYMBOL} Process {System.Diagnostics.Process.GetCurrentProcess().Id}({textProcessName.Text}) launched.");
-
             if (!string.IsNullOrWhiteSpace(textSourcePort.Text) && !string.IsNullOrWhiteSpace(textTargetPort.Text))
             {
                 initializeSocketBtn.Enabled = true;
                 initializeSocketBtn.PerformClick();
+            } else
+            {
+                // put user IP
+                textSourceIp.Text = _helpers.GetLocalAddress();
+                textTargetIp.Text = _helpers.GetLocalAddress();
             }
+
+            _process.LogBox.WriteEvent($"{SOURCE_SYMBOL} Process {System.Diagnostics.Process.GetCurrentProcess().Id}({textProcessName.Text}) launched.");
         }
 
         // https://stackoverflow.com/questions/1669318/override-standard-close-x-button-in-a-windows-form
