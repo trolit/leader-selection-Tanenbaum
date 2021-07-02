@@ -60,4 +60,6 @@ Legend:
 
 <br/>
 
+App icon made by Becris, https://www.flaticon.com/authors/becris 
+
 Template created on 2/7/2021 <br/> in <a href="https://github.com/trolit/EzGitDoc">EzGitDoc</a>
