@@ -448,20 +448,23 @@ namespace lsa_Tanenbaum_app
 
             _configurationService.InitializeSocket(_process, BUFFER_SIZE, OnDataReceived);
 
-            _helpers.ChangeTextBoxCollectionReadOnlyStatus(_process.ConfigurationTextBoxes);
+            if (_process.IsInitialized)
+            {
+                _helpers.ChangeTextBoxCollectionReadOnlyStatus(_process.ConfigurationTextBoxes);
 
-            _process.LogBox.WriteEvent($"{SOURCE_SYMBOL} {textProcessName.Text} initialization finished.");
+                _process.LogBox.WriteEvent($"{SOURCE_SYMBOL} {textProcessName.Text} initialization finished.");
 
-            pictureBoxConnectionStatus.Image = Resources.status_connected;
+                pictureBoxConnectionStatus.Image = Resources.status_connected;
 
-            labelConnectionStatus.SetText("Connected");
+                labelConnectionStatus.SetText("Connected");
 
-            _helpers.SwitchTwoButtonsEnabledStatus(initializeSocketBtn, stopSocketBtn);
+                _helpers.SwitchTwoButtonsEnabledStatus(initializeSocketBtn, stopSocketBtn);
 
-            UpdateProcessTitle();
+                UpdateProcessTitle();
 
-            if (_process.ListOfAddresses.Count == 0)
-                ringSynchronizationBtn.Enabled = true;
+                if (_process.ListOfAddresses.Count == 0)
+                    ringSynchronizationBtn.Enabled = true;
+            }
         }
 
         private void stopSocketBtn_Click(object sender, EventArgs e)

@@ -2,6 +2,7 @@
 using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Windows.Forms;
 
 namespace lsa_Tanenbaum_app.Services
 {
@@ -20,19 +21,26 @@ namespace lsa_Tanenbaum_app.Services
 
             // initialize source EndPoint
             process.SourceEndPoint = new IPEndPoint(IPAddress.Parse(process.SourceAddress.IP), Convert.ToInt32(process.SourceAddress.port));
+            
+            try
+            {
+                // bind socket
+                process.Socket.Bind(process.SourceEndPoint);
 
-            // bind socket
-            process.Socket.Bind(process.SourceEndPoint);
+                // initialize target EndPoint
+                process.TargetEndPoint = new IPEndPoint(IPAddress.Parse(process.TargetAddress.IP), Convert.ToInt32(process.TargetAddress.port));
 
-            // initialize target EndPoint
-            process.TargetEndPoint = new IPEndPoint(IPAddress.Parse(process.TargetAddress.IP), Convert.ToInt32(process.TargetAddress.port));
+                // mark flag
+                process.IsInitialized = true;
 
-            // mark flag
-            process.IsInitialized = true;
-
-            // start listening
-            byte[] buffer = new byte[bufferSize];
-            process.Socket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, OnDataReceived, buffer);
+                // start listening
+                byte[] buffer = new byte[bufferSize];
+                process.Socket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, OnDataReceived, buffer);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
         }
 
         /// <summary>
