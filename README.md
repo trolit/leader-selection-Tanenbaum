@@ -1,6 +1,6 @@
 <p align="left"><img src="https://raw.githubusercontent.com/trolit/leader-selection-Tanenbaum/images/images/appLogo.png" alt="App logo" width="130"/></p>
 
-<p align="justify">LSA(Leader Selection Algorithm) is WinForms desktop app that implements ring algorithm election(Tanenbaum's variant) using .NET sockets mechanism. Ring knowledge isn't centralized. Ring synchronization in first turn gathers ring intel and then it's invoker passes collected data to other processes. While synchronization is completed, processes other than leader can ask coordinator if it's still alive or signal priority change. When one or more processes will found leader to be unreachable, election is started. Election message collects intel about available processes and on returning to the process that called it, gets mapped to coordinator message which contains updated ring structure from which new leader is chosen. Note that app was'nt tested on external addresses.</p> 
+<p align="justify">LSA(Leader Selection Algorithm) is WinForms desktop app that implements ring algorithm election(Tanenbaum's variant) using .NET sockets mechanism. Ring knowledge isn't centralized. Ring synchronization in first turn gathers ring intel and then it's invoker passes collected data to other processes. While synchronization is completed, processes other than leader can ask coordinator if it's still alive or signal priority change. When one or more processes will found leader to be unreachable, election is started. Election message collects intel about available processes and on returning to the process that called it, gets mapped to coordinator message which contains updated ring structure from which new leader is chosen. Note that app wasn't tested on external addresses.</p> 
 
 <br/> Application interface:
 
@@ -59,5 +59,7 @@ Legend:
 <p align="center"><img src="https://raw.githubusercontent.com/trolit/leader-selection-Tanenbaum/images/images/img8.png" alt="App preview 6"/></p>
 
 <br/>
+
+App icon made by Becris, https://www.flaticon.com/authors/becris 
 
 Template created on 2/7/2021 <br/> in <a href="https://github.com/trolit/EzGitDoc">EzGitDoc</a>
