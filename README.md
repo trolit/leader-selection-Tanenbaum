@@ -60,6 +60,10 @@ Legend:
 
 <br/>
 
+<strong>Note</strong> that when coordinator is being pinged by other process/processes and gets closed without toggling "disconnect" button, an exception in the messagebox will occur. Therefore it's recommended to use "Disconnect" button to simulate dead coordinator in order to test election stage. 
+
+<br/>
+
 App icon made by Becris, https://www.flaticon.com/authors/becris 
 
 Template created on 2/7/2021 <br/> in <a href="https://github.com/trolit/EzGitDoc">EzGitDoc</a>
