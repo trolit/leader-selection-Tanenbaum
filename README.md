@@ -1,6 +1,18 @@
 <p align="left"><img src="https://raw.githubusercontent.com/trolit/leader-selection-Tanenbaum/images/images/appLogo.png" alt="App logo" width="130"/></p>
 
-<p align="justify">LSA(Leader Selection Algorithm) is WinForms desktop app that implements ring algorithm election(Tanenbaum's variant) using .NET sockets mechanism. Ring knowledge isn't centralized. Ring synchronization in first turn gathers ring intel and then it's invoker passes collected data to other processes. While synchronization is completed, processes other than leader can ask coordinator if it's still alive or signal priority change. When one or more processes will found leader to be unreachable, election is started. Election message collects intel about available processes and on returning to the process that called it, gets mapped to coordinator message which contains updated ring structure from which new leader is chosen. Note that app wasn't tested on external addresses.</p> 
+<p align="justify">Leader Selection Algorithm comes as **WinForms desktop app** that implements distributed systems ring algorithm election(Tanenbaum's variant). Some facts: <br/>
+<pre>
+
+> <> Ring knowledge isn't centralized. Therefore ring synchronization in first turn gathers ring intel
+and then it's invoker passes collected data to other processes.
+> <> While synchronization is completed, processes(other than leader) can ask coordinator if it's still 
+"alive" or signal priority change. 
+> <> When one or more processes find leader to be unreachable, election/elections are raised. 
+> <> Election message collects intel about available processes and on returning to the process that called 
+it, gets mapped to coordinator message which contains updated ring structure from which new leader is picked.
+> <> Every process will select the same leader on coordinator message since of descending data ordering 
+through priority property.
+> <> App wasn't tested on external addresses.</pre></p> 
 
 <br/> Application interface:
 
@@ -22,7 +34,7 @@ Legend:
 - [10] Shows current knowledge of the process including ring structure, it's leader and when has been chosen..
 ```
 
-<h3>Preview</h3>
+<h3>Demonstration (cases)</h3>
 
 <p align="justify">Six processes initialized using button signed under [3]. </p>
 
